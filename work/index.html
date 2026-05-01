@@ -271,6 +271,7 @@ html, body {
   background: linear-gradient(135deg, var(--c-primary) 0%, #2c5282 100%);
   color: white;
   padding: var(--s-4) var(--s-3) var(--s-3);
+  position: relative;
 }
 .app-hero__title {
   font-size: 22px;
@@ -283,6 +284,24 @@ html, body {
   opacity: 0.85;
   font-weight: 500;
 }
+.app-hero__actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+  justify-content: flex-end;
+}
+.app-hero__btn {
+  background: rgba(255,255,255,0.18);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.35);
+  border-radius: 6px;
+  padding: 5px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.app-hero__btn:hover { background: rgba(255,255,255,0.28); }
 
 /* ⓣ 클로드 현황 (메인 본문 최상단) */
 .app-status {
@@ -381,8 +400,296 @@ html, body {
   height: calc(100vh - 56px); color: var(--c-text-3); font-size: 14px;
 }
 </style>
+<style id="auth-style">
+/* 비번 보호 overlay — 단순 진입 장벽 */
+#auth-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: var(--c-bg, #f5f7fa); z-index: 99999; display: flex; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box; }
+#auth-overlay.hidden { display: none; }
+.auth-card { background: #fff; border-radius: 12px; box-shadow: 0 4px 24px rgba(0,0,0,0.08); padding: 32px 28px; width: 100%; max-width: 360px; box-sizing: border-box; }
+.auth-card h1 { margin: 0 0 8px; font-size: 22px; color: #1a3a6e; text-align: center; font-weight: 700; }
+.auth-card .auth-sub { margin: 0 0 24px; font-size: 13px; color: #5a6680; text-align: center; line-height: 1.5; }
+.auth-card .auth-field { margin-bottom: 14px; }
+.auth-card .auth-label { display: block; font-size: 13px; color: #2c3e60; margin-bottom: 6px; font-weight: 600; }
+.auth-card input[type="password"], .auth-card input[type="text"] { width: 100%; padding: 11px 12px; border: 1.5px solid #d0d8e6; border-radius: 8px; font-size: 16px; box-sizing: border-box; outline: none; transition: border-color 0.15s; }
+.auth-card input[type="password"]:focus, .auth-card input[type="text"]:focus { border-color: #1a3a6e; }
+.auth-card button { width: 100%; padding: 12px; background: #1a3a6e; color: #fff; border: none; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; transition: background 0.15s; }
+.auth-card button:hover { background: #14305a; }
+.auth-card button.secondary { background: #fff; color: #1a3a6e; border: 1.5px solid #1a3a6e; margin-top: 10px; }
+.auth-card button.secondary:hover { background: #f0f4fa; }
+.auth-card .auth-error { color: #d04040; font-size: 13px; margin: 10px 0 0; text-align: center; min-height: 18px; }
+.auth-card .auth-toggle { text-align: center; margin-top: 18px; font-size: 13px; color: #5a6680; }
+.auth-card .auth-toggle a { color: #1a3a6e; cursor: pointer; text-decoration: underline; }
+#auth-change-section { display: none; margin-top: 18px; padding-top: 18px; border-top: 1px solid #e0e6ee; }
+#auth-change-section.show { display: block; }
+</style>
 </head>
 <body>
+
+<!-- 비번 보호 overlay — 단순 진입 장벽 (CTO 영역 ❌ 적용) -->
+<div id="auth-overlay">
+  <div class="auth-card">
+    <h1>통합업무파일</h1>
+    <p class="auth-sub" id="auth-sub-text">비밀번호를 입력하세요</p>
+    <div id="auth-main-section">
+      <div class="auth-field">
+        <label class="auth-label" id="auth-pw-label">비밀번호</label>
+        <input type="password" id="auth-pw-input" inputmode="numeric" pattern="[0-9]*" maxlength="8" autocomplete="off">
+      </div>
+      <button id="auth-submit-btn">확인</button>
+      <p class="auth-error" id="auth-error"></p>
+      <div class="auth-toggle" id="auth-change-toggle" style="display:none;">
+        <a id="auth-change-link">비밀번호 변경</a>
+      </div>
+    </div>
+    <div id="auth-change-section">
+      <div class="auth-field">
+        <label class="auth-label">현재 비밀번호</label>
+        <input type="password" id="auth-old-pw" inputmode="numeric" pattern="[0-9]*" maxlength="8" autocomplete="off">
+      </div>
+      <div class="auth-field">
+        <label class="auth-label">새 비밀번호 (숫자 4~8자리)</label>
+        <input type="password" id="auth-new-pw" inputmode="numeric" pattern="[0-9]*" maxlength="8" autocomplete="off">
+      </div>
+      <button id="auth-change-btn">변경</button>
+      <button class="secondary" id="auth-cancel-btn">취소</button>
+      <p class="auth-error" id="auth-change-error"></p>
+    </div>
+
+    <!-- hash 표시 영역 (비번 신설·변경 후 본 클로드 박제용) -->
+    <div id="auth-hash-section" style="display:none; margin-top:18px; padding-top:18px; border-top:1px solid #e0e6ee;">
+      <p style="font-size:13px; color:#2c3e60; margin:0 0 8px; font-weight:600;">박제용 코드 (관리자 전달)</p>
+      <div style="display:flex; gap:8px;">
+        <input type="text" id="auth-hash-display" readonly style="flex:1; font-family:monospace; font-size:13px; padding:8px; border:1.5px solid #d0d8e6; border-radius:6px; background:#f8f9fb; color:#1a3a6e;">
+        <button class="secondary" id="auth-hash-copy" type="button" style="margin-top:0; padding:8px 14px; font-size:12px; flex-shrink:0;">복사</button>
+      </div>
+      <p style="font-size:11px; color:#5a6680; margin:8px 0 0; line-height:1.5;">위 코드를 관리자에게 전달하면 모든 브라우저에서 동일 비번으로 로그인 가능</p>
+      <button id="auth-hash-continue" style="margin-top:14px;">계속</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  // ============================================================
+  // EMBEDDED_HASH — 박제 hash (모든 브라우저·기기 공유)
+  // 비어있으면 localStorage 방식 (브라우저별 별개)
+  // 박제 시: 본 클로드가 첫 비번 설정 후 받은 hash를 여기에 입력
+  // ============================================================
+  const EMBEDDED_HASH = ''; // 예: 'h_abc123' (현재 미박제 — 첫 hash 받으면 채움)
+
+  const STORAGE_KEY = 'tosscare_work_pw_hash';
+  const SESSION_KEY = 'tosscare_work_authed';
+  const TIMESTAMP_KEY = 'tosscare_work_authed_at';
+  const WINDOW_NAME_KEY = 'tw_authed_';
+  const EXPIRY_MS = 60 * 60 * 1000; // 60분
+
+  function hashPw(pw) { let h=0; for(let i=0;i<pw.length;i++){h=((h<<5)-h+pw.charCodeAt(i))|0;} return 'h_'+h.toString(36); }
+  function isValidPw(pw) { return /^[0-9]{4,8}$/.test(pw); }
+
+  // 검증 기준 hash 결정 (EMBEDDED 우선, ❌면 localStorage)
+  function getStoredHash() {
+    if (EMBEDDED_HASH && EMBEDDED_HASH.length > 0) return EMBEDDED_HASH;
+    return localStorage.getItem(STORAGE_KEY);
+  }
+
+  // 현재 인증 상태 검증 — sessionStorage + window.name + 60분 만료
+  function isCurrentlyAuthed() {
+    const sess = sessionStorage.getItem(SESSION_KEY);
+    if (sess !== 'ok') return false;
+    const ts = parseInt(sessionStorage.getItem(TIMESTAMP_KEY) || '0', 10);
+    if (!ts || (Date.now() - ts) > EXPIRY_MS) {
+      // 60분 만료
+      clearAuth();
+      return false;
+    }
+    // window.name 검증 — 마지막 탭 복원 케이스 차단
+    if (!window.name || window.name.indexOf(WINDOW_NAME_KEY) !== 0) {
+      // window.name이 신선하지 않음 = 새 탭/복원 가능성
+      clearAuth();
+      return false;
+    }
+    return true;
+  }
+
+  function setAuth() {
+    sessionStorage.setItem(SESSION_KEY, 'ok');
+    sessionStorage.setItem(TIMESTAMP_KEY, Date.now().toString());
+    window.name = WINDOW_NAME_KEY + Date.now();
+  }
+
+  function clearAuth() {
+    sessionStorage.removeItem(SESSION_KEY);
+    sessionStorage.removeItem(TIMESTAMP_KEY);
+    window.name = '';
+  }
+
+  // 페이지 종료 시 sessionStorage 강제 삭제 (탭 복원 차단)
+  window.addEventListener('pagehide', function(e) {
+    if (!e.persisted) {
+      // bfcache 아닌 진짜 종료 → 삭제
+      clearAuth();
+    }
+  });
+
+  function showOverlay() {
+    document.getElementById('auth-overlay').classList.remove('hidden');
+    // 메인 모드로 reset
+    document.getElementById('auth-main-section').style.display = 'block';
+    document.getElementById('auth-change-section').classList.remove('show');
+    document.getElementById('auth-pw-input').value = '';
+    document.getElementById('auth-error').textContent = '';
+    document.getElementById('auth-old-pw').value = '';
+    document.getElementById('auth-new-pw').value = '';
+    document.getElementById('auth-change-error').textContent = '';
+    document.getElementById('auth-hash-section').style.display = 'none';
+
+    const stored = getStoredHash();
+    const subText = document.getElementById('auth-sub-text');
+    const pwLabel = document.getElementById('auth-pw-label');
+    const changeToggle = document.getElementById('auth-change-toggle');
+    if (!stored) {
+      subText.textContent = '숫자 4~8자리로 비밀번호를 설정하세요';
+      pwLabel.textContent = '새 비밀번호';
+      changeToggle.style.display = 'none';
+    } else {
+      subText.textContent = '비밀번호를 입력하세요';
+      pwLabel.textContent = '비밀번호';
+      changeToggle.style.display = 'block';
+    }
+    setTimeout(function(){ document.getElementById('auth-pw-input').focus(); }, 50);
+  }
+
+  function showChangeMode() {
+    document.getElementById('auth-overlay').classList.remove('hidden');
+    document.getElementById('auth-main-section').style.display = 'none';
+    document.getElementById('auth-change-section').classList.add('show');
+    document.getElementById('auth-sub-text').textContent = '비밀번호 변경';
+    setTimeout(function(){ document.getElementById('auth-old-pw').focus(); }, 50);
+  }
+
+  // 페이지 로드 시 인증 상태 검증
+  if (isCurrentlyAuthed()) {
+    document.getElementById('auth-overlay').classList.add('hidden');
+  } else {
+    showOverlay();
+  }
+
+  // 확인 버튼
+  document.getElementById('auth-submit-btn').addEventListener('click', function() {
+    const pw = document.getElementById('auth-pw-input').value;
+    const errEl = document.getElementById('auth-error');
+    errEl.textContent = '';
+    if (!isValidPw(pw)) { errEl.textContent = '숫자 4~8자리로 입력하세요'; return; }
+    const stored = getStoredHash();
+    if (!stored) {
+      // 첫 신설 — hash 표시 후 통과
+      const newHash = hashPw(pw);
+      localStorage.setItem(STORAGE_KEY, newHash);
+      // hash 표시
+      document.getElementById('auth-main-section').style.display = 'none';
+      document.getElementById('auth-hash-section').style.display = 'block';
+      document.getElementById('auth-hash-display').value = newHash;
+      document.getElementById('auth-sub-text').textContent = '비밀번호 설정 완료';
+    } else {
+      // 검증
+      if (hashPw(pw) === stored) {
+        setAuth();
+        document.getElementById('auth-overlay').classList.add('hidden');
+      } else {
+        errEl.textContent = '비밀번호가 일치하지 않습니다';
+        document.getElementById('auth-pw-input').value = '';
+      }
+    }
+  });
+  document.getElementById('auth-pw-input').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') document.getElementById('auth-submit-btn').click();
+  });
+
+  // 비번 변경 toggle (overlay 안)
+  document.getElementById('auth-change-link').addEventListener('click', function() {
+    document.getElementById('auth-main-section').style.display = 'none';
+    document.getElementById('auth-change-section').classList.add('show');
+    document.getElementById('auth-sub-text').textContent = '비밀번호 변경';
+  });
+
+  // 비번 변경 취소
+  document.getElementById('auth-cancel-btn').addEventListener('click', function() {
+    document.getElementById('auth-main-section').style.display = 'block';
+    document.getElementById('auth-change-section').classList.remove('show');
+    document.getElementById('auth-sub-text').textContent = '비밀번호를 입력하세요';
+    document.getElementById('auth-old-pw').value = '';
+    document.getElementById('auth-new-pw').value = '';
+    document.getElementById('auth-change-error').textContent = '';
+  });
+
+  // 비번 변경 확인
+  document.getElementById('auth-change-btn').addEventListener('click', function() {
+    const oldPw = document.getElementById('auth-old-pw').value;
+    const newPw = document.getElementById('auth-new-pw').value;
+    const errEl = document.getElementById('auth-change-error');
+    errEl.textContent = '';
+    const stored = getStoredHash();
+    if (hashPw(oldPw) !== stored) { errEl.textContent = '현재 비밀번호가 일치하지 않습니다'; return; }
+    if (!isValidPw(newPw)) { errEl.textContent = '새 비밀번호는 숫자 4~8자리'; return; }
+    const newHash = hashPw(newPw);
+    localStorage.setItem(STORAGE_KEY, newHash);
+    // hash 표시
+    document.getElementById('auth-change-section').classList.remove('show');
+    document.getElementById('auth-hash-section').style.display = 'block';
+    document.getElementById('auth-hash-display').value = newHash;
+    document.getElementById('auth-sub-text').textContent = '비밀번호 변경 완료';
+  });
+
+  // hash 복사
+  document.getElementById('auth-hash-copy').addEventListener('click', function() {
+    const inp = document.getElementById('auth-hash-display');
+    inp.select();
+    inp.setSelectionRange(0, 99);
+    try {
+      document.execCommand('copy');
+      this.textContent = '복사됨';
+      setTimeout(() => { this.textContent = '복사'; }, 1500);
+    } catch (e) {
+      // navigator.clipboard fallback
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(inp.value).then(() => {
+          this.textContent = '복사됨';
+          setTimeout(() => { this.textContent = '복사'; }, 1500);
+        });
+      }
+    }
+  });
+
+  // hash 표시 후 계속
+  document.getElementById('auth-hash-continue').addEventListener('click', function() {
+    setAuth();
+    document.getElementById('auth-overlay').classList.add('hidden');
+  });
+
+  // 본 페이지 버튼 — DOM 준비 후 등록 (버튼이 body 본문에 있어 지연 등록 필수)
+  function attachPageBtns() {
+    const lockBtn = document.getElementById('auth-lock-btn');
+    if (lockBtn && !lockBtn._authBound) {
+      lockBtn._authBound = true;
+      lockBtn.addEventListener('click', function() {
+        clearAuth();
+        showOverlay();
+      });
+    }
+    const changePwBtn = document.getElementById('auth-change-pw-btn');
+    if (changePwBtn && !changePwBtn._authBound) {
+      changePwBtn._authBound = true;
+      changePwBtn.addEventListener('click', function() {
+        showChangeMode();
+      });
+    }
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', attachPageBtns);
+  } else {
+    attachPageBtns();
+  }
+})();
+</script>
 
 <!-- ============================================================
      LAYER 1: 데이터 (페르소나 + 자료 메타)
@@ -460,6 +767,10 @@ html, body {
     <div class="app-hero">
       <div class="app-hero__title">통합업무파일</div>
       <div class="app-hero__sub">동기화 통합 운용 · 마스터·복제 자동 전파 구조</div>
+      <div class="app-hero__actions">
+        <button class="app-hero__btn" id="auth-lock-btn" type="button">화면잠금</button>
+        <button class="app-hero__btn" id="auth-change-pw-btn" type="button">비번변경</button>
+      </div>
     </div>
     <div class="app-body">
 
