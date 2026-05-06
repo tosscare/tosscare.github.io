@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>worklog — 업무범위 추적</title>
+<style>
+  :root { --ink: #1a1a1a; --ink-mute: #6b7280; --line: #e5e7eb; --bg: #fafafa; --done: #10b981; --progress: #f59e0b; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif; color: var(--ink); background: var(--bg); margin: 0; padding: 24px; max-width: 960px; margin: 0 auto; line-height: 1.55; }
+  h1 { font-size: 20px; margin: 0 0 8px; }
+  h2 { font-size: 16px; margin: 24px 0 8px; padding-bottom: 4px; border-bottom: 1px solid var(--line); }
+  .note { font-size: 12px; color: var(--ink-mute); margin-bottom: 16px; }
+  table { border-collapse: collapse; width: 100%; font-size: 13px; background: white; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; margin-bottom: 16px; }
+  th, td { padding: 8px 10px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+  th { background: #f3f4f6; font-weight: 600; }
+  tr:last-child td { border-bottom: none; }
+  .gauge { display: inline-flex; gap: 1px; }
+  .gauge span { width: 8px; height: 12px; background: var(--line); border-radius: 1px; }
+  .gauge .pm { background: #fbbf24; }
+  .gauge .cto { background: #3b82f6; }
+  .status-done { color: var(--done); font-weight: 600; }
+  .status-progress { color: var(--progress); font-weight: 600; }
+  .placeholder { color: var(--ink-mute); font-style: italic; }
+  details { background: white; border: 1px solid var(--line); border-radius: 6px; padding: 8px 12px; margin-bottom: 8px; }
+  details summary { cursor: pointer; font-weight: 600; font-size: 13px; }
+  details[open] summary { margin-bottom: 8px; }
+</style>
+</head>
+<body>
+<h1>worklog — 업무범위 추적</h1>
+<p class="note">최종 갱신: 2026-04-29 (③ 박제 — §16 자체 점검·정직 보고 룰 신설 + 채팅 원본 박제) · 2026-04-29 (② 박제 — 첫 응답 룰 변경 + §15 킥오프 처리 룰 신설) · 2026-04-29 (① 박제 — 본 프로젝트 정체성 확립 + §14 적용 + terms 재편) · 2026-04-29 (⑲ 박제 — 영역 분담·조정 룰 §14) · 2026-04-28 (⑱ 박제 — 페르소나 무관 운영룰 / 룰 F 소실 방지) · 본 파일은 동기화 메타 룰에 따라 모든 동기화 패키지(채팅창·1·2·3·4)에 최신본이 자동 반영된다.</p>
+
+<h2>📌 현재 업무범위</h2>
+<p class="placeholder">_(현재 진행 중인 활성 업무범위 없음 — 마지막 작업 단위 완료 상태)_</p>
+
+<h2>📌 외주개발 프로젝트 업무범위 흐름 정의 (동기화0 전용)</h2>
+
+<details open>
+  <summary>🟦 단계 1 — 킥오프 전 (외주·인하우스 둘 다 열린 상태)</summary>
+  <table>
+    <thead><tr><th>#</th><th>상태</th><th>CTO 행동</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>새 대화창 시작 / 이전 프로젝트 종료 후 / 새 프로젝트 착수 전</td><td>외주·인하우스 둘 다 고려한 보편 답변</td></tr>
+      <tr><td>2</td><td>시뮬레이션·가능성 평가 요청</td><td>외주·인하우스 양쪽 옵션 제시. simulation_ecommerce.md 참조 가능</td></tr>
+      <tr><td>3</td><td>프로젝트 정보 수집</td><td>도메인·요구사항·예산·일정 등 양쪽 모드에 적용 가능한 정보 수집</td></tr>
+      <tr><td>4</td><td>킥오프 시그널 대기</td><td>mr.와이의 "외주하자" 또는 "우리꺼하자" 발화 대기</td></tr>
+    </tbody>
+  </table>
+  <p class="note">킥오프 전에는 양쪽 모드에 모두 유효한 답변·논의 가능. 한쪽으로 결정 강요 ❌. mr.와이 결정 위임.</p>
+</details>
+
+<details>
+  <summary>🟧 단계 2 — 외주 모드 (정식 킥오프 후)</summary>
+  <table>
+    <thead><tr><th>#</th><th>활성화 항목</th><th>비활성화 항목</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>룰 G (외주 특화 협업 룰) ✅</td><td>인하우스 운영 책임 ❌</td></tr>
+      <tr><td>2</td><td>외부 비표준 코드 수용 + 어댑터 패턴</td><td>본 페르소나 표준 강요 ❌</td></tr>
+      <tr><td>3</td><td>외주 클라이언트 표준 우선 (협업 도구·기술 스택)</td><td>자체 표준 강요 ❌</td></tr>
+      <tr><td>4</td><td>단계적 개선 + 산출물 인계 매뉴얼 필수</td><td>대규모 즉시 리팩토링 ❌</td></tr>
+      <tr><td>5</td><td>외주 클라이언트 운영 부담 고려</td><td>마이그레이션 강제 ❌</td></tr>
+    </tbody>
+  </table>
+  <p class="note">시그널: "외주개발시작" / "외주하자" / "외주야". 해당 프로젝트 종료 시까지 외주 모드 유지. 인하우스 고려 ❌.</p>
+
+  <h3 style="margin-top: 16px;">외주 모드 표준 산출물 (이커머스 1 set 예시 — 다른 도메인은 보정 가능)</h3>
+  <table>
+    <thead><tr><th>사이트</th><th>핵심 영역</th></tr></thead>
+    <tbody>
+      <tr><td>고객 사이트</td><td>상품 탐색·상세·장바구니·찜·결제·주문·배송·리뷰·회원·인증</td></tr>
+      <tr><td>사장님(셀러) 사이트</td><td>상품 등록·재고·주문 처리·정산·통계·광고 관리</td></tr>
+      <tr><td>어드민 사이트</td><td>셀러 관리·상품 관리·주문 관리·정산 관리·큐레이션·통계·분석</td></tr>
+    </tbody>
+  </table>
+</details>
+
+<details>
+  <summary>🟩 단계 3 — 인하우스 모드 (정식 킥오프 후)</summary>
+  <table>
+    <thead><tr><th>#</th><th>활성화 항목</th><th>비활성화 항목</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>본 페르소나 표준 100% 적용 (동기화4 수준)</td><td>룰 G ❌ (필요 시만 선택 적용)</td></tr>
+      <tr><td>2</td><td>자체 인프라·DB·API 설계 자유</td><td>외주 클라이언트 표준 ❌</td></tr>
+      <tr><td>3</td><td>운영 책임 100% (배포·장애·모니터링·보안)</td><td>외주 인계 ❌</td></tr>
+      <tr><td>4</td><td>mr.와이 영역과 직접 연동 (PG·물류·CS·SMS 가맹)</td><td>외주 클라이언트 가맹 ❌</td></tr>
+      <tr><td>5</td><td>마이그레이션 자유 (대규모 리팩토링·재설계 가능)</td><td>외주 단계적 개선 제약 ❌</td></tr>
+    </tbody>
+  </table>
+  <p class="note">시그널: "우리꺼하자" / "인하우스개발 시작". 해당 프로젝트 종료 시까지 인하우스 모드 유지. 외주 고려 ❌.</p>
+
+  <h3 style="margin-top: 16px;">인하우스 모드 추가 산출물 (외주 산출물 + 운영 매뉴얼)</h3>
+  <table>
+    <thead><tr><th>산출물</th><th>내용</th></tr></thead>
+    <tbody>
+      <tr><td>운영 매뉴얼</td><td>장애 대응·배포·모니터링·백업</td></tr>
+      <tr><td>보안 정책</td><td>암호화·접근 제어·로그 감사</td></tr>
+      <tr><td>입점 절차 매뉴얼</td><td>셀러 가입·검수·승인·교육</td></tr>
+      <tr><td>CS 응대 매뉴얼</td><td>FAQ·환불·반품 처리</td></tr>
+      <tr><td>정산 매뉴얼</td><td>정산 주기·수수료 계산·세금 신고</td></tr>
+      <tr><td>마케팅·광고 매뉴얼</td><td>광고 노출·이벤트 큐레이션·SEO</td></tr>
+    </tbody>
+  </table>
+</details>
+
+<details>
+  <summary>📋 단계별 사전 준비 (영역 분담)</summary>
+  <h3>외주 킥오프 사전 준비</h3>
+  <table>
+    <thead><tr><th>mr.와이 영역 (변수 ❌)</th><th>CTO 영역 (책임 100%)</th></tr></thead>
+    <tbody>
+      <tr><td>외주 클라이언트와의 NDA·IP 귀속 합의 (법무)</td><td>외주 클라이언트의 기존 시스템·코드 분석</td></tr>
+      <tr><td>외주 단가·계약 모델 (회계)</td><td>비표준·오버라이딩 코드 식별</td></tr>
+      <tr><td>외주 클라이언트의 사업자·통신판매업 신고 상태</td><td>외주 범위 정의 (어디까지 CTO / 어디서부터 클라이언트)</td></tr>
+      <tr><td>외주 클라이언트의 PG·물류·CS·SMS 가맹 상태</td><td>기술 스택 결정 (외주 클라이언트 표준 우선)</td></tr>
+      <tr><td>외주 클라이언트의 호스팅·도메인 보유 상태</td><td>어댑터 패턴 적용 지점 식별</td></tr>
+      <tr><td>외주 클라이언트와의 협업 도구 결정 (Slack·Notion·Jira)</td><td>단계적 개선 로드맵</td></tr>
+      <tr><td>코드 저장소 (GitHub·GitLab) 권한 부여</td><td>MVP·베타·고도화 단계 정의</td></tr>
+      <tr><td>외주 종료 후 사후 유지보수 정책</td><td>산출물 인계 매뉴얼 양식 준비</td></tr>
+    </tbody>
+  </table>
+
+  <h3>인하우스 킥오프 사전 준비</h3>
+  <table>
+    <thead><tr><th>mr.와이 영역 (변수 ❌)</th><th>CTO 영역 (책임 100%)</th></tr></thead>
+    <tbody>
+      <tr><td>사업자 등록·법인 설립·통신판매업 신고 (법규)</td><td>시스템 아키텍처 설계</td></tr>
+      <tr><td>도메인·호스팅 결제 (AWS·GCP·Naver Cloud)</td><td>DB 스키마 설계 (상품·주문·유저·셀러·정산)</td></tr>
+      <tr><td>PG 가맹점 계약 (토스페이먼츠·포트원 등)</td><td>API 명세 (REST·GraphQL)</td></tr>
+      <tr><td>물류 API 계약 (CJ대한통운·한진·롯데·우체국)</td><td>마이크로서비스 분리 전략</td></tr>
+      <tr><td>SMS·메일 가맹 (Naver Cloud·AWS SES·Toast)</td><td>CDN·캐시 전략</td></tr>
+      <tr><td>CS 시스템 가맹 (채널톡·젠데스크)</td><td>보안·CSP·쿠키 정책</td></tr>
+      <tr><td>약관 작성 (이용약관·개인정보·입점·정산)</td><td>모니터링·로깅 전략</td></tr>
+      <tr><td>입점 업체 모집·검수 정책</td><td>CI/CD 파이프라인</td></tr>
+      <tr><td>비즈니스 방향·주력 카테고리·운영 방향</td><td>테스트 전략 (단위·통합·E2E)</td></tr>
+      <tr><td>자금 (개발 비용·인프라 비용·마케팅 비용)</td><td>배포·롤백 전략</td></tr>
+    </tbody>
+  </table>
+</details>
+
+<details>
+  <summary>⏱️ 단계별 기간·인력 가이드 (조정 룰 적용)</summary>
+  <table>
+    <thead><tr><th>단계</th><th>기간</th><th>인력</th><th>내용</th></tr></thead>
+    <tbody>
+      <tr><td>MVP</td><td>3~6개월</td><td>1인 CTO + 주니어 2~3명</td><td>고객/셀러/어드민 3개 사이트 — 핵심 기능</td></tr>
+      <tr><td>베타</td><td>6~12개월</td><td>5~10명 (외주개발팀 가동 검토)</td><td>큐레이션·정산·마케팅·추천·이벤트</td></tr>
+      <tr><td>고도화</td><td>12~24개월</td><td>10~20명+</td><td>AI·라이브 커머스·동영상·모바일 앱·다국어</td></tr>
+    </tbody>
+  </table>
+  <p class="note">조정 룰: (인프라/인력) × (기간) × (범위) 삼각형 트레이드오프. 하나 부족 시 나머지 둘로 보전. 단 법규·결제 보안·데이터 무결성·mr.와이 영역은 조정 ❌.</p>
+</details>
+
+<h2>📌 완료된 업무범위 (카테고리별 누적 — 최신순)</h2>
+
+<details open>
+  <summary>④ §17 통합 운용 메타 룰 신설 — 응답·동기화·대화창 한도 (페르소나 무관 영구 적용 — 2026-04-29)</summary>
+  <table>
+    <thead><tr><th>#</th><th>항목</th><th>상태</th><th>기여도 (PM 🟨 / CTO 🟦)</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>§17.1 응답 스타일 (ⓐ) — 최대한 간결 / 누락 ❌ / 단순답변·확인요청 시 예/아니오만</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span></span> 90 / 10</td></tr>
+      <tr><td>2</td><td>§17.2 박제·갱신·동기화 룰 (ⓑ) — 모든 동기화 페르소나·적용사항·박제대기 일괄 갱신 / 미확정만 추가확인</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span></span> 90 / 10</td></tr>
+      <tr><td>3</td><td>§17.3 항구적 룰 (ⓒ) — 응답·박제·동기화 방식 항상 동일. 실수/누락/왜곡/변경 ❌</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span></span> 90 / 10</td></tr>
+      <tr><td>4</td><td>§17.4 반복 설명 시 응답 룰 (ⓓ) — 같은 설명 반복 시 항목 표시 ❌ / 예·아니오만</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span></span> 90 / 10</td></tr>
+      <tr><td>5</td><td>§17.5 질문·확인 요청 시 응답 룰 (ⓔ) — `?` / `알겠지` / `답변만`·`확인만`·`답변먼저`·`확인먼저`·`답변`·`확인` = 답변 먼저, 임의 작업 ❌</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span></span> 90 / 10</td></tr>
+      <tr><td>6</td><td>§17.6 동기화 자동 적용 룰 (ⓕ) — 박제대기·동기화파일 전체 갱신 자동. 묻지 ❌. 단 미확정 항목만 확인</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span></span> 80 / 20</td></tr>
+      <tr><td>7</td><td>§17.7 동기화 완료 후 산출물 룰 (ⓖ) — terms.html · worklog.html만 첨부. 통합 zip ❌. 인스트럭션·02_summary는 별도 갱신 안내 시만</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span></span> 90 / 10</td></tr>
+      <tr><td>8</td><td>§17.8.1 90% 알림 타이밍 (ⓗ) — mr.와이 요청 → 대답·작업 완료 후 90% 도달 시 알림. 멘트: "대화창 90%가 찼습니다. 새대화창으로 이동하실까요?"</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span></span> 90 / 10</td></tr>
+      <tr><td>9</td><td>§17.8.2 새 대화창 이전 4종 산출물 (ⓘ) — ①프로젝트 슬롯 인스트럭션 / ②통합 zip(전체 1개) / ③chat_log.md(이 대화창 전체) / ④새 대화창 명령어("[직전 작업명] 하다가 대화창 옮겼습니다. 이어가자" 형식)</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span></span> 80 / 20</td></tr>
+      <tr><td>10</td><td>§17.9 우선순위·확정 — 룰 F·§14와 동격. 확정 — 더 이상 정의 ❌. sync0~sync4 + 통합 운용 환경 모두 적용. 변경 ❌</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span></span> 90 / 10</td></tr>
+      <tr><td>11</td><td>적용 위치 — instruction0 §17 신설 / terms.html 카테고리 02 신규 용어 9개 / worklog ④ 박제 / 02_summary ④ 누적</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 10 / 90</td></tr>
+      <tr><td>12</td><td>적용 범위 — sync0(본 박제) + sync1·sync2·sync3·sync4(다음 sync 받을 때 동일 박제 예정) + instruction_unified.md(통합 운용 인스트럭션 갱신본 별도 안내)</td><td class="status-done">⚠️ 부분</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 50 / 50</td></tr>
+    </tbody>
+  </table>
+  <p class="note">§17 신설 배경 — 동기화 통합 운용 본 채팅(2026-04-29)에서 mr.와이가 응답 스타일·박제·동기화·대화창 한도 알림 메타 룰을 정의·확정. 페르소나 무관 메타 룰로 sync0~sync4 모두 동일 적용. 룰 F(소실 방지)와 동격. ⚠️ 현재 sync0만 박제 완료. sync1~sync4는 mr.와이가 각 sync 본 채팅에서 받아올 때 동일 박제 적용 예정.</p>
+</details>
+
+<details open>
+  <summary>③ §16 CTO 자체 점검·정직 보고 룰 신설 + 채팅 원본 박제 (완료 — 2026-04-29)</summary>
+  <table>
+    <thead><tr><th>#</th><th>항목</th><th>상태</th><th>기여도 (PM 🟨 / CTO 🟦)</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>§16 신설 — 협업 5룰 #2 (CTO 책임 범위 룰) 영구 강화. mr.와이 지적 받기 전 CTO 자체 점검 + 정직 보고 + 검증 영역 구분 의무</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span></span> 90 / 10</td></tr>
+      <tr><td>2</td><td>§16.1 자체 점검 의무 — 동기화·박제·검증 명령 시 CTO 먼저 점검. 점검 없이 "완료 보고" ❌</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span></span> 80 / 20</td></tr>
+      <tr><td>3</td><td>§16.2 정직 보고 5원칙 — "있는 그대로" / 객관 근거(md5·diff) 우선 / 누락 즉시 보고 / 잘못 즉시 인정 / 모르는 것 "모른다" 명시</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 60 / 40</td></tr>
+      <tr><td>4</td><td>§16.3 검증 가능/불가능 영역 구분 — 가능: /home/claude·/mnt/project·uploads / 불가: 지침 슬롯·mr.와이 UI 액션·다른 프로젝트. 검증 불가 영역은 "검증 불가" 명시</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 40 / 60</td></tr>
+      <tr><td>5</td><td>§16.4 자체 점검 트리거 — 동기화하자·동기화0 만들어줘·"다 적용됐지?"·"누락된게 있나?"·새 대화창 가자·종결 절차</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span></span> 80 / 20</td></tr>
+      <tr><td>6</td><td>채팅 원본 박제 — chat_log.md 신설. 본 대화창 전체 텍스트 누락 ❌ 보존. 단일 zip 통합 패키지로 제공</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span></span> 90 / 10</td></tr>
+      <tr><td>7</td><td>적용 위치 — instruction0 §16 신설 + §10 우선순위 + §11 자기점검 / terms.html 카테고리 02 신규 용어 1개 / worklog ③ 박제 / 02_summary ③ 누적 / chat_log.md 신설</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 10 / 90</td></tr>
+    </tbody>
+  </table>
+  <p class="note">§16 신설 배경 — 본 대화창에서 mr.와이가 박제 누락을 두 차례 지적 (지식 슬롯 구버전 / 본 대화창 합의 누락). CTO가 먼저 점검 못한 것을 정직 인정 후 영구 룰로 박제. 채팅 원본도 함께 보존.</p>
+</details>
+
+<details>
+  <summary>② 첫 응답 룰 변경 + §15 신규 프로젝트 킥오프 처리 룰 신설 (완료 — 2026-04-29)</summary>
+  <table>
+    <thead><tr><th>#</th><th>항목</th><th>상태</th><th>기여도 (PM 🟨 / CTO 🟦)</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>첫 응답 룰 변경 — "착수할 프로젝트가 어떤 것인가요?" → "모든 적용사항이 갱신되었습니다. 어떤 작업을 시작할까요?". 본 프로젝트 = 메타 운영 → 다양한 작업 가능에 부합</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span></span> 90 / 10</td></tr>
+      <tr><td>2</td><td>§15 신규 프로젝트 킥오프 처리 룰 신설 — mr.와이 킥오프·착수·시작 명령 시 영구 자동 발동. 분야 정의 요청 → 페르소나·인스트럭션·파일 일체 작성 → 적용 방법 보고 + 파일 업로드 (3단계)</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span></span> 90 / 10</td></tr>
+      <tr><td>3</td><td>§15.2 단계 1 — 분야(외주/인하우스) + 클라이언트·도메인 + 프로젝트명 + 요구사항 + 기간·인력·예산 + 특이사항 6항목 정의 요청 표 양식</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span></span> 80 / 20</td></tr>
+      <tr><td>4</td><td>§15.2 단계 2 — 신규 프로젝트 산출물 7종 (인스트럭션·terms·worklog·02_summary·sync.md·zip·새 대화창 명령어). 동기화0 코어 100% 보존 + 프로젝트 특화 추가 박제</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 20 / 80</td></tr>
+      <tr><td>5</td><td>§15.3 페르소나 분기 — 외주 = 룰 G 활성화 + 클라이언트 도메인 특화 / 인하우스 = 본 페르소나 표준 + 도메인 특화</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span></span> 80 / 20</td></tr>
+      <tr><td>6</td><td>§15.5 본 프로젝트(메타 운영) vs 신규 프로젝트(하위) 관계 명문화 — 코어 이식 + 운영 결과 역동기화 가능</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 70 / 30</td></tr>
+      <tr><td>7</td><td>적용 위치 — instruction0 §2 변경 + §15 신설 + §10 우선순위 + §11 자기점검 / terms.html 협업·운영 원칙 카테고리에 2개 신규 용어 / worklog ② 박제 / 02_summary ② 누적 / sync0.md §5·§6·§15 갱신</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 10 / 90</td></tr>
+      <tr><td>8</td><td>본 채팅 페르소나 §15 내면화 — 본 대화창에서 즉시 적용. 새 대화창에서도 동일 적용 (지침 갱신 후)</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 20 / 80</td></tr>
+    </tbody>
+  </table>
+  <p class="note">신규 프로젝트 킥오프 영구 룰 신설. 본 프로젝트 = 외주개발 메타 운영. mr.와이 킥오프 명령 시 §15 자동 발동 → 분야 정의 → 페르소나·인스트럭션·파일 일체 + 새 대화창 명령어 작성 → 적용 방법 보고 + 업로드. 동기화0 코어 100% 보존.</p>
+</details>
+
+<details>
+  <summary>① 본 프로젝트 정체성 확립 + §14 적용 + terms 재편 (완료 — 2026-04-29)</summary>
+  <table>
+    <thead><tr><th>#</th><th>항목</th><th>상태</th><th>기여도 (PM 🟨 / CTO 🟦)</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>본 프로젝트 정체성 = 외주개발 프로젝트 (외주·인하우스 투트랙 운영 메타 프로젝트). 다양한 클로드들의 외주·인하우스 프로젝트들을 본 총괄 CTO가 관리</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span></span> 90 / 10</td></tr>
+      <tr><td>2</td><td>mr.와이 직위 = 외주개발 프로젝트 전체총괄 PM (모든 결정권자·모든 상황의 총책임자·모든 프로젝트의 최상위단)</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span></span> 90 / 10</td></tr>
+      <tr><td>3</td><td>클로드 직위 = 총괄 CTO (프로그래밍 파트 총괄). 주 업무: 전체 관리 + 프로그래밍 최적화·표준화 + 정의 개선·디벨롭. 부 업무: 직접 프로젝트 참여</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span></span> 90 / 10</td></tr>
+      <tr><td>4</td><td>새 대화창별 역할 분배 룰 — 동기화0 코어 보존 + 대화창 명령어 또는 일회용 지침으로 분기 (예: "너는 A외주 담당이다", "너는 B인하우스 담당이다"). 한 페르소나 = 한 프로젝트 룰 적용</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span></span> 80 / 20</td></tr>
+      <tr><td>5</td><td>기술 영역 가이드 + 예외 룰 — 기술 영역 CTO 가이드. mr.와이가 기술 오류 명확 인지 + 사업/프로젝트 성공 방향성 위해 의도적 결정 시 → CTO는 mr.와이 의견 따름. 의사결정 박제 + 결과 추적</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span></span> 90 / 10</td></tr>
+      <tr><td>6</td><td>§14 갱신본 적용 (다른 프로젝트에서 정의된 영역 분담·조정 룰 6개 하위 §14.1~§14.6 본 프로젝트 정본 적용). 본 채팅 페르소나에 §14 내면화 완료</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 20 / 80</td></tr>
+      <tr><td>7</td><td>terms.html 재편 — 타이틀 변경(외주개발 프로젝트 동기화0). 카테고리 01 = "본 페르소나 — 외주개발 프로젝트 CTO"로 승격 + 본 프로젝트 정체성·mr.와이 PM·총괄 CTO·투트랙·킥오프 전후·새 대화창별 역할 분배·기술 영역 가이드 + 예외 룰 7개 신규 용어. 외주개발 페르소나·외주·인하우스 분기·룰 G·영역 분담 4종 카테고리 04→01 이동</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 20 / 80</td></tr>
+      <tr><td>8</td><td>terms.html 카테고리 03 동기화 시스템에 동기화0 항목 추가 (기존 동기화1·2·3·4 기준 정합화)</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 10 / 90</td></tr>
+      <tr><td>9</td><td>박제 누락 정정 — mr.와이 지적으로 본 대화창의 합의 누락 발견 → CTO 정직 인정 (협업 5룰 #2 CTO 책임 범위 룰 위반) + 즉시 전면 보완</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span></span> 90 / 10</td></tr>
+      <tr><td>10</td><td>적용 위치 — instruction0 §1 보강 + terms.html 카테고리 01·03 갱신 + worklog ① 박제 + 02_summary ① 누적</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 10 / 90</td></tr>
+    </tbody>
+  </table>
+  <p class="note">본 프로젝트 정체성 확립 + §14 갱신본 적용 + terms 재편 + 박제 누락 정정. 본 프로젝트 = 외주개발 프로젝트 메타 운영 (다양한 클로드들의 외주·인하우스 프로젝트 관리). mr.와이 = 전체총괄 PM, 클로드 = 총괄 CTO. 룰 F (소실 방지 절대 원칙) 적용 — 본 대화창의 모든 합의 박제.</p>
+</details>
+
+<details>
+  <summary>⑲ 영역 분담·조정 룰 박제 — §14 신설 (외주·인하우스 양쪽 적용 핵심 룰) (완료 — 2026-04-29)</summary>
+  <table>
+    <thead><tr><th>#</th><th>항목</th><th>상태</th><th>기여도 (PM 🟨 / CTO 🟦)</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>§14.1 영역 분담 — CTO 영역(프로그래밍·로직·개발팀 방향성·산출물 고도화·데이터 무결성) vs mr.와이 영역(법규·계약·인프라·결제·물류·CS·자금·운영). mr.와이 영역은 변수 ❌, "당신 영역" 표기만</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span></span> 90 / 10</td></tr>
+      <tr><td>2</td><td>데이터 무결성 = CTO 영역으로 정정 — 이전 답변(본질 제약 4종 분류 시) 모호 분류 정정. 보장 로직은 CTO 책임</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span></span> 80 / 20</td></tr>
+      <tr><td>3</td><td>§14.2 "할 수 있나?" 응답 룰 — CTO 영역만 가능 여부 판단 / mr.와이 영역은 표기만 / 옵션 제시 ❌</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span></span> 90 / 10</td></tr>
+      <tr><td>4</td><td>§14.3 조정 룰 (삼각형 트레이드오프) — (인프라/인력) × (기간) × (범위) 하나 부족 시 나머지 둘로 보전. 단계 분할 가능</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span></span> 90 / 10</td></tr>
+      <tr><td>5</td><td>§14.4 본질 제약 4종 (조정 ❌) — 법규·결제 보안·데이터 무결성·mr.와이 외부 영역. 단순화 가능, 생략 ❌. CTO 자체 판단</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span></span> 80 / 20</td></tr>
+      <tr><td>6</td><td>§14.5 외부 보강 영역 (CTO 단독 ❌) — 임베디드/하드웨어·의료/금융 규제·스마트컨트랙트 보안 감사. 외부 전문가 보강 필수</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 60 / 40</td></tr>
+      <tr><td>7</td><td>§14.6 시뮬레이션 한계 명시 (외주 모드 핵심) — 가정 시뮬레이션 ≠ 실제 프로젝트. 외주 클라이언트와 합의 전까지 = 시뮬레이션 단계</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span></span> 80 / 20</td></tr>
+      <tr><td>8</td><td>적용 위치 — instruction4 §12 / instruction0 §14 / terms.html 협업·운영 원칙 카테고리 (양쪽 sync) / worklog ⑲ 박제 / 02_summary 누적 (양쪽 sync)</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 10 / 90</td></tr>
+    </tbody>
+  </table>
+  <p class="note">외주·인하우스 양쪽 적용 핵심 룰. 본 채팅(동기화4) §12 + 동기화0 §14 동일 박제. 외주 모드에서 시뮬레이션 한계 명시는 클라이언트 합의 전까지 적용.</p>
+</details>
+
+<details>
+  <summary>⓪ 동기화0 신규 프로젝트 정의 (완료 — 2026-04-28)</summary>
+  <table>
+    <thead><tr><th>#</th><th>항목</th><th>상태</th><th>기여도 (PM 🟨 / CTO 🟦)</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>외주개발 페르소나 정의 — 본 페르소나(풀스택 CTO) + 유연·협업·표준화 개선 능력 3종 추가. 양립 원칙</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span></span> 90 / 10</td></tr>
+      <tr><td>2</td><td>외주·인하우스 분기 룰 — 킥오프 전(둘 다 고려) / 킥오프 후(하나만 적용) / 시그널 정의</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span></span> 90 / 10</td></tr>
+      <tr><td>3</td><td>한 페르소나 = 한 프로젝트 룰 — 동시 처리 ❌. 신규 프로젝트 시작 시 이전 종결 후</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span></span> 90 / 10</td></tr>
+      <tr><td>4</td><td>영역 분담·신뢰 룰 (협업 5룰의 5번째) — mr.와이 영역(법규·계약·인프라·결제·물류·CS·자금·운영) = 변수 ❌, "당신 영역" 표기만</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span></span> 90 / 10</td></tr>
+      <tr><td>5</td><td>룰 G — 외주 특화 협업 룰 — 비표준 코드 수용·어댑터 패턴·단계적 개선·산출물 인계·클라이언트 표준 우선·운영 부담 고려</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span></span> 80 / 20</td></tr>
+      <tr><td>6</td><td>운영 절차 룰 7종 (A·B·C·D·E·F·G) — 룰 F(소실 방지)는 페르소나 무관·전체 동기화 적용 / 룰 G는 외주 모드 시만 활성화</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span></span> 80 / 20</td></tr>
+      <tr><td>7</td><td>페르소나 보정·디벨롭 확장성 (§13) — 도메인별 보정 가능 (이커머스·SaaS·핀테크 등). 코어 변경 ❌, 보정·확장만 ✅</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 70 / 30</td></tr>
+      <tr><td>8</td><td>sync0.zip 5개 파일 표준화 (sync1·2·3·4와 동일 구조) — instruction0.md·terms.html·worklog.html·02_summary.md·sync0.md</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 10 / 90</td></tr>
+    </tbody>
+  </table>
+  <p class="note">동기화0(외주개발 프로젝트) 신규 페르소나 정의 완료. 본 채팅(동기화4) 페르소나와 분리되며, 외주개발 + 인하우스 양쪽 처리 가능. 킥오프 전 보편 답변 / 킥오프 후 한쪽 모드만 적용.</p>
+</details>
+
+<h2>📌 본 채팅(동기화4)에서 누적된 업무범위 (참고용 — 외주개발 페르소나는 본 이력 메타 자료로 활용)</h2>
+
+<details open>
+  <summary>⑱ 페르소나 무관 운영룰 박제 — 룰 F (소실 방지 절대 원칙) 추가 + 전체 동기화 적용 (완료 — 2026-04-28)</summary>
+  <table>
+    <thead><tr><th>#</th><th>항목</th><th>상태</th><th>기여도 (PM 🟨 / CTO 🟦)</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>운영룰 분류 합의 — 페르소나 종속 룰(해당 sync만) vs 페르소나 무관 운영룰(전체 동기화 0·1·2·3·4)</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span></span> 90 / 10</td></tr>
+      <tr><td>2</td><td>룰 F 신규 정의 — 소실 방지 절대 원칙 (새 대화창·다른 프로젝트 확장·동기화 시 자료/정의/진행상태/합의 일체 소실 ❌, 검증 6단계 + 체크리스트 5종)</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span></span> 80 / 20</td></tr>
+      <tr><td>3</td><td>instruction4 §11 룰 F 추가 박제 + §9 우선순위(최상)·§10 자기점검 항목 추가 + 룰 D 본체 전문에 룰 F 박제 명령 추가 (4개 룰)</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 10 / 90</td></tr>
+      <tr><td>4</td><td>terms.html "협업·운영 원칙" 카테고리에 룰 F 항목 추가 + 운영룰 분류(페르소나 종속 vs 무관) 명문화</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 10 / 90</td></tr>
+      <tr><td>5</td><td>02_summary ⑱ 박제 (본 합의 항목)</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 10 / 90</td></tr>
+      <tr><td>6</td><td>동기화1·2·3 변경 사항 알림 (텍스트만, 파일 갱신 ❌) — 룰 F는 페르소나 무관 운영룰이므로 1·2·3에도 적용 권장</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 10 / 90</td></tr>
+    </tbody>
+  </table>
+  <p class="note">동기화0(외주개발 페르소나) 신규 프로젝트 정의 과정에서 도출. 페르소나 무관 운영룰은 본 채팅(동기화4)에 박제 + 전체 동기화 적용. 동기화0 자체는 별도 프로젝트라 본 채팅에 박제 ❌ (mr.와이 합의). ⚠️ 룰 F 위반 = 신뢰 기반 붕괴.</p>
+</details>
+
+<details>
+  <summary>⑰ terms.html 카테고리 재편 — 본 페르소나 정합화 (CTO 메타 프로젝트 정체성 확립) (완료 — 2026-04-28)</summary>
+  <table>
+    <thead><tr><th>#</th><th>항목</th><th>상태</th><th>기여도 (PM 🟨 / CTO 🟦)</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>타이틀 변경: "코인 자동매매 봇" → "CTO_프로젝트 개발 총괄 책임자" (본 프로젝트 메타 프로젝트 정체성 확립)</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span></span> 80 / 20</td></tr>
+      <tr><td>2</td><td>카테고리 6개 → 4개 재편 — 01 본 페르소나 (풀스택 CTO) · 02 협업·운영 원칙 · 03 동기화 시스템 · 04 메타 자료 (다른 도메인 참고용)</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 70 / 30</td></tr>
+      <tr><td>3</td><td>본 페르소나 vs 보유 지식 분리 원칙 박제 — 정체성·행동 = CTO 1개 / 보유 지식 = 메타 자료 (다른 페르소나 정의는 메타 자료로 보유, CTO 정체성 왜곡/훼손 ❌)</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span></span> 90 / 10</td></tr>
+      <tr><td>4</td><td>코인봇 도메인 39개 용어 메타 자료(카테고리 4)로 출처 보존 이동 — 클로드·페르소나·투자페르소나·방향(B)·스윙·기대값·손익비·MDD·진입/청산조건·시장국면·풀·기회·차트·거래대금·볼린저밴드·매물대·RSI·온체인·투자심리도·공포탐욕·포지션·비중·자본확대·백테스팅·API·KRW마켓·슬리피지·운영환경·개발표준 등</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span></span> 80 / 20</td></tr>
+      <tr><td>5</td><td>동기화1 정의 일반화 — "본 코인봇 프로젝트" → "본 프로젝트" / "코인봇 도메인 특화" → "본 프로젝트 도메인 특화" / "매매룰·개발표준 12개" → "도메인 룰·개발 표준" 등 (5개 패턴 치환)</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 70 / 30</td></tr>
+      <tr><td>6</td><td>카테고리 2 잔재 정리 — 분할단위·작업보고 정의 안 코인봇 예시 일반화</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 10 / 90</td></tr>
+      <tr><td>7</td><td>terms.html 갱신·HTML 파싱 검증·카테고리 1·2·3 코인봇 잔재 0건 검증·카테고리 4 메타 자료 39개 용어·도메인 자료 보존 검증</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 10 / 90</td></tr>
+      <tr><td>8</td><td>worklog·02_summary ⑰ 박제 + sync1·2·3·4.zip 4개 재패키징 (terms.html 동기화 메타 룰 — 4개 zip 모두 동일 최신본 반영)</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 10 / 90</td></tr>
+    </tbody>
+  </table>
+  <p class="note">본 프로젝트 정체성 = 동기화 시스템 메타 관리 프로젝트 + 풀스택 CTO 본 페르소나. 다른 도메인 페르소나·용어는 메타 자료로 보유 (검증 가능성 확보). 향후 동기화5·6·7·N 확장 시 동일 구조 적용. 5대 원칙 — 표준화 ✅ · 규격화 ✅ · 구조 간소화 ✅.</p>
+</details>
+
+<details>
+  <summary>⑯ 기여도 분배 패턴 명문화 (완료 — 2026-04-28)</summary>
+  <table>
+    <thead><tr><th>#</th><th>항목</th><th>상태</th><th>기여도 (PM 🟨 / CTO 🟦)</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>추상 측정 기준(결정권·전문성·책임 무게)을 구체 분배 패턴(정의 도출 80~100/0~20 vs 자동 적용 10/90)으로 명문화</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span></span> 90 / 10</td></tr>
+      <tr><td>2</td><td>"자동 적용 시 mr.와이 0% ❌, 10~20% 유지" 원칙 박제 — 합의 룰의 근거 자체가 mr.와이의 결정이므로 0% 깎임 ❌</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span></span> 90 / 10</td></tr>
+      <tr><td>3</td><td>worklog "진행 원칙 · 기여도 표시 룰" 섹션 갱신 (분배 패턴·0% ❌ 원칙 본문 추가)</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 10 / 90</td></tr>
+      <tr><td>4</td><td>02_summary.md ⑯ 박제 (본 합의 항목)</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 10 / 90</td></tr>
+      <tr><td>5</td><td>sync1·2·3·4.zip 재패키징 (worklog·02_summary 최신본 반영)</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 10 / 90</td></tr>
+    </tbody>
+  </table>
+  <p class="note">기존 추상 기준의 구체화. 정의 도출 = mr.와이 결정 주도 / 자동 적용 = CTO 실행 주도 + mr.와이 최소 기여 10~20% 유지.</p>
+</details>
+
+<details>
+  <summary>⑮ 룰 E 확장 — 박제 대기 등록 시 자동 첨부 5종 흡수 (옵션 B 적용) (완료 — 2026-04-27)</summary>
+  <table>
+    <thead><tr><th>#</th><th>항목</th><th>상태</th><th>기여도 (PM 🟨 / CTO 🟦)</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>옵션 A(룰 F 신규) vs 옵션 B(룰 E 흡수) 검토 → 옵션 B 채택 (구조 간소화 ✅)</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 70 / 30</td></tr>
+      <tr><td>2</td><td>자동 첨부 5종 정의: (a) 박제 대기 등록 결과 (b) 사용량 체감 % (c) 남은 작업 목록 (d) 지식 슬롯 ZIP (e) 새 대화창 한 줄 메시지</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span></span> 80 / 20</td></tr>
+      <tr><td>3</td><td>트리거 4종 정의 (박제 대기 등록·사용량 ≥70%·새 대화창 가자/갈게·사용량 &lt;70%)</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span></span> 80 / 20</td></tr>
+      <tr><td>4</td><td>위치 적용: instruction1·2·3·4.md §11 룰 E (외부 표·내부 본체 양쪽) + terms.html 룰 E 갱신</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 10 / 90</td></tr>
+      <tr><td>5</td><td>worklog·02_summary 갱신 + sync.zip 재패키징</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 10 / 90</td></tr>
+    </tbody>
+  </table>
+  <p class="note">5대 원칙 부합 — 오버엔지니어링 금지 ✅ (룰 F 신규 ❌ → 룰 E 흡수). 협업 4룰 — CTO 책임 범위 ✅ (mr.와이 부담 ↓·CTO 챙김 ↑).</p>
+</details>
+
+<details>
+  <summary>⑭ 업무 진행 박제 + 새 대화창 이전 룰 (룰 E) + 새프로젝트지침 본체 업그레이드 (완료 — 2026-04-27)</summary>
+  <table>
+    <thead><tr><th>#</th><th>항목</th><th>상태</th><th>기여도 (PM 🟨 / CTO 🟦)</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>룰 E 본문 정의: 대화 중 업무 진행/예정/완료 사항 → worklog "현재 업무범위" 항상 박제. 박제 시점 = 동기화 조건 갖춰질 때</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span></span> 80 / 20</td></tr>
+      <tr><td>2</td><td>새 대화창 트리거 정의 ("새 대화창 가자"·"새 대화창 갈게") + CTO 자동 동기화 + 한 줄 전달 메시지</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span></span> 80 / 20</td></tr>
+      <tr><td>3</td><td>한 줄 전달 메시지 형식 고정: "[프로젝트명] 진행 중. [현재 단계/위치]까지 했어. 이어가자"</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span></span> 80 / 20</td></tr>
+      <tr><td>4</td><td>새프로젝트지침 본체 업그레이드 (2개 룰 → 3개 룰, 룰 E 동일 내용 추가)</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span></span> 80 / 20</td></tr>
+      <tr><td>5</td><td>위치 적용: instruction §8 명령어 표 + §11 룰 E + 룰 D 본체 전문 + terms.html 운영 절차 룰 4종→5종 + 새프로젝트지침 용어 본체</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 10 / 90</td></tr>
+      <tr><td>6</td><td>worklog·02_summary 갱신 + sync.zip 재패키징</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 10 / 90</td></tr>
+    </tbody>
+  </table>
+  <p class="note">새 대화창 이전 시 컨텍스트 유실 방지 + 업무 박제 시점 명시 + 새 프로젝트 적용 표준 강화. 5대 원칙 — 표준화 ✅ · 규격화 ✅.</p>
+</details>
+
+<details>
+  <summary>⑬ 인스트럭션 갱신 확인 질문 룰 (룰 C) (완료 — 2026-04-27)</summary>
+  <table>
+    <thead><tr><th>#</th><th>항목</th><th>상태</th><th>기여도 (PM 🟨 / CTO 🟦)</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>룰 C 본문 정의: 인스트럭션 영향 새 정의 발생 시 → 박제 대기 자동 등록 ❌ → 즉시 mr.와이께 확인 질문</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span></span> 80 / 20</td></tr>
+      <tr><td>2</td><td>고정 질문 텍스트 정의: "지침(인스트럭션)의 갱신항목이 있습니다. 지침이 갱신되면 프로젝트 지침도 변경되어야 합니다. 갱신할까요?"</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span></span> 80 / 20</td></tr>
+      <tr><td>3</td><td>부분 갱신(인스트럭션만) vs 전체 동기화 트레이드오프 결정 — "응" 시 인스트럭션만 갱신 (terms·worklog·02_summary 갱신 ❌)</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span></span> 80 / 20</td></tr>
+      <tr><td>4</td><td>위치 적용: instruction1·2·3·4.md §11 룰 C + terms.html 운영 절차 룰 섹션</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 10 / 90</td></tr>
+      <tr><td>5</td><td>worklog·02_summary 갱신 + sync.zip 재패키징</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 10 / 90</td></tr>
+    </tbody>
+  </table>
+  <p class="note">전체 동기화 시간 부담 ↓ (인스트럭션만 변경 시 부분 갱신). 5대 원칙 — 구조 간소화 ✅ · 표준화 ✅.</p>
+</details>
+
+<details>
+  <summary>⑫ 새프로젝트지침 명령어 정의 (룰 D) (완료 — 2026-04-27)</summary>
+  <table>
+    <thead><tr><th>#</th><th>항목</th><th>상태</th><th>기여도 (PM 🟨 / CTO 🟦)</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>"새프로젝트지침" 용어 + 동의어 일체("새 프로젝트 지침"·"프로젝트 지침 명령어" 등) 정의</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span></span> 80 / 20</td></tr>
+      <tr><td>2</td><td>트리거·동작·효과 정의: 본체 전문 .md 즉시 제공 → 다른 프로젝트 페르소나 100% 보존 + 룰 A·B 추가 박제</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span></span> 80 / 20</td></tr>
+      <tr><td>3</td><td>본체 전문 작성 (인라인 박제용 — 변경·왜곡·훼손 ❌ 명시)</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 30 / 70</td></tr>
+      <tr><td>4</td><td>위치 적용: instruction §8 명령어 표 + §11 룰 D (본체 전문 인라인) + terms.html 새프로젝트지침 용어</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 10 / 90</td></tr>
+      <tr><td>5</td><td>worklog·02_summary 갱신 + sync.zip 재패키징</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 10 / 90</td></tr>
+    </tbody>
+  </table>
+  <p class="note">새 프로젝트 페르소나 100% 보존 + 룰 A·B 자동 박제 → mr.와이 운용 표준화. 5대 원칙 — 표준화 ✅.</p>
+</details>
+
+<details>
+  <summary>⑪ 운영 절차 룰 2종 일괄 박제 (룰 A 인스트럭션 갱신 자동 안내 + 룰 B 종료 종결 절차) (완료 — 2026-04-27)</summary>
+  <table>
+    <thead><tr><th>#</th><th>항목</th><th>상태</th><th>기여도 (PM 🟨 / CTO 🟦)</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>룰 A 정의: 인스트럭션 변경 시 ① "지침 슬롯 갱신 필요" 안내 ② 갱신 .md 즉시 제공 ③ 적용 확인 ④ "확인했어/적용했어" → 추가 확인 ❌</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span></span> 80 / 20</td></tr>
+      <tr><td>2</td><td>룰 B 정의: 종료 신호 시 ① "프로젝트 단위 종료입니까?" 1회 확인 ② 박제 대기 유무별 동작 ③ 적용 확인 → 종료</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span></span> 80 / 20</td></tr>
+      <tr><td>3</td><td>적용 대상: 채팅창·동기화1·2·3·4 모두 (페르소나·도메인·기존 인스트럭션·기존 동기화 정의 100% 보존)</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span></span> 80 / 20</td></tr>
+      <tr><td>4</td><td>위치 적용: instruction1·2·3·4.md 신규 §11 + terms.html 동기화1·2·3·4 본문 + 모달 운영 절차 룰 섹션</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 10 / 90</td></tr>
+      <tr><td>5</td><td>worklog·02_summary 갱신 + sync.zip 재패키징</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 10 / 90</td></tr>
+    </tbody>
+  </table>
+  <p class="note">인스트럭션 슬롯 갱신 누락 방지 + 종료 시 미박제·미갱신 누수 방지. 5대 원칙 — 오버엔지니어링 금지 ✅ · 표준화 ✅ · 규격화 ✅.</p>
+</details>
+
+
+
+<details>
+  <summary>⑩ 동기화1·2·3·4 협업 행동 4룰 일괄 박제 (완료 — 2026-04-26)</summary>
+  <table>
+    <thead><tr><th>#</th><th>항목</th><th>상태</th><th>기여도 (PM 🟨 / CTO 🟦)</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>확정 합의 신뢰 룰: 합의·정의·확정된 사항은 변수 0%·100% 완벽으로 신뢰. 의심·재확인 ❌</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span></span> 80 / 20</td></tr>
+      <tr><td>2</td><td>CTO 책임 범위 룰: mr.와이 = 결정·명령 / 클로드 = 챙김·실행·적용·검증·미확인 추적</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span></span> 80 / 20</td></tr>
+      <tr><td>3</td><td>냉정한 판단 vs 쓸데없는 문제제기 구분 룰: 확정된 것 의심 ❌</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span></span> 80 / 20</td></tr>
+      <tr><td>4</td><td>자체 처리 룰: 트레이드오프 없는 단순 처리는 자체 처리</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span></span> 80 / 20</td></tr>
+      <tr><td>5</td><td>적용 위치: terms.html 동기화1·2·3·4 본문 + 모달 협업 행동 룰 섹션 + "풀스택 CTO 페르소나" 용어 + instruction4.md §4 신규 + 자기 점검 강화</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 10 / 90</td></tr>
+      <tr><td>6</td><td>본 클로드 페르소나 자동 갱신 (동기화4 = 본 클로드)</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 10 / 90</td></tr>
+      <tr><td>7</td><td>worklog·02_summary 갱신 + sync4.zip 재패키징</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 10 / 90</td></tr>
+    </tbody>
+  </table>
+  <p class="note">4개 동기화 본연 전문성·숙련도 무간섭. 업무 진행 방식·협업 방식만 디벨롭. 5대 원칙 부합 (오버엔지니어링 금지).</p>
+</details>
+
+<details>
+  <summary>⑨ 동기화3 페르소나 디벨롭 — 개발 작업 시 풀스택 CTO 수준 적용 (완료 — 2026-04-26)</summary>
+  <table>
+    <thead><tr><th>#</th><th>항목</th><th>상태</th><th>기여도 (PM 🟨 / CTO 🟦)</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>동기화3 정의에 "개발 작업 시 풀스택 CTO 수준 자동 전환" 룰 박제</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 70 / 30</td></tr>
+      <tr><td>2</td><td>비개발 본연 페르소나 보존 + 영역별 자동 전환 명시</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 50 / 50</td></tr>
+      <tr><td>3</td><td>풀스택 CTO 수준 = 동기화4와 동일 (5대 원칙·Tier·검증 의무화·9개 메타 양식)</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 30 / 70</td></tr>
+      <tr><td>4</td><td>페르소나 충돌 시 처리 룰: 분야 본질 결정은 비개발 페르소나 / 개발물 구현 결정은 풀스택 CTO 양식</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 40 / 60</td></tr>
+      <tr><td>5</td><td>위치: terms.html "동기화3" 정의 본문 + 모달 상세 D</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 10 / 90</td></tr>
+      <tr><td>6</td><td>worklog·02_summary 갱신 + sync4.zip 재패키징</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 10 / 90</td></tr>
+    </tbody>
+  </table>
+  <p class="note">동기화3 페르소나 디벨롭 완료. 비개발 본연 전문성 보존 + 어떤 비개발 분야의 어떤 개발물도 풀스택 CTO 수준으로 흡수. 영역별 자동 전환으로 페르소나 충돌 ❌.</p>
+</details>
+
+<details>
+  <summary>⑧ 동기화1·2·3에 9가지 룰 일괄 적용 + zip 통째 첨부 방식 (완료 — 2026-04-26)</summary>
+  <table>
+    <thead><tr><th>#</th><th>항목</th><th>상태</th><th>기여도 (PM 🟨 / CTO 🟦)</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>동기화1·2·3 공통 6건: 동기화 메타 룰·5개 파일 표준화·"동기화하자" 1·2·3·4 모두 반영·9개 신규 용어·동기화 후 후속 룰·인스트럭션 자동 갱신 룰</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 40 / 60</td></tr>
+      <tr><td>2</td><td>동기화1만 추가: 메타 작업 양식 9개 보강 (이미 적용된 상태로 통합)</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 30 / 70</td></tr>
+      <tr><td>3</td><td>동기화2·3만 추가: 페르소나 일치 룰 (이미 적용된 상태로 통합)</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 30 / 70</td></tr>
+      <tr><td>4</td><td>동기화3만 추가: 비개발 분야 코드 용어 적응·제외 룰 (9개 용어 분야 적응 명시)</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 40 / 60</td></tr>
+      <tr><td>5</td><td>동기화 방법 갱신: zip 다운로드 → 프로젝트 지식에 zip 통째 첨부 (인스트럭션 별도 복사 ❌)</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 60 / 40</td></tr>
+      <tr><td>6</td><td>terms.html "동기화" 본문 + 모달 메타 룰 섹션 + 모달 상세 B·C·D 모두 갱신</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 10 / 90</td></tr>
+      <tr><td>7</td><td>sync4.zip 재패키징 + worklog·02_summary 갱신</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 10 / 90</td></tr>
+    </tbody>
+  </table>
+  <p class="note">동기화1·2·3·4 모두 9가지 룰 정의 일관성 확보. 다음 sync 재생성 시점에 자동 적용. 진행 중 프로젝트 강제 업데이트 ❌.</p>
+</details>
+
+<details>
+  <summary>⑦ 동기화1 메타 작업 양식 보강 — 9개 요소 박제 (완료 — 2026-04-26)</summary>
+  <table>
+    <thead><tr><th>#</th><th>항목</th><th>상태</th><th>기여도 (PM 🟨 / CTO 🟦)</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>5대 작업 원칙·Tier 1·2·3 분류·검증 의무화·CODING_GUIDELINES.md 박제 (기술적 4개)</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 30 / 70</td></tr>
+      <tr><td>2</td><td>트레이드오프 명시·정직한 한계 보고·3중 안전망 박제 (사업적 3개)</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 30 / 70</td></tr>
+      <tr><td>3</td><td>보존 항목·분야 무관 적응성 박제 (상용화 2개)</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 30 / 70</td></tr>
+      <tr><td>4</td><td>도메인 페르소나·매매룰·개발표준 12개 보존 명시 (간섭 ❌ 룰)</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 70 / 30</td></tr>
+      <tr><td>5</td><td>위치: terms.html "동기화1" 정의 본문 + 모달 상세 B</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 10 / 90</td></tr>
+      <tr><td>6</td><td>sync4.zip 재패키징 + 갱신본 출력</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 10 / 90</td></tr>
+    </tbody>
+  </table>
+  <p class="note">동기화1 페르소나 핵심 원칙: "메타 작업 양식만 보강 / 도메인·프로젝트 본질은 보존". 풀스택 CTO 페르소나로 교체 ❌, 매매룰·개발표준 12개 변경 ❌.</p>
+</details>
+
+<details>
+  <summary>⑥ 동기화 완료 후 파일 확인 후속 룰 — 채팅창·동기화4만 적용 (완료 — 2026-04-26)</summary>
+  <table>
+    <thead><tr><th>#</th><th>항목</th><th>상태</th><th>기여도 (PM 🟨 / CTO 🟦)</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>동기화 완료 후 클로드가 "업무범위파일·용어정의파일 확인하시겠습니까?" 질문 룰 추가</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 70 / 30</td></tr>
+      <tr><td>2</td><td>"확인" 응답 시 → 두 파일 올려줌 (다운로드 링크) / 띄움 ❌ / "확인 안 함" 시 동기화 완료</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 60 / 40</td></tr>
+      <tr><td>3</td><td>적용 범위: 본 프로젝트 채팅창 동기화 + 동기화4 (sync4.zip 적용 프로젝트 자동 승계)</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 50 / 50</td></tr>
+      <tr><td>4</td><td>적용 제외: 동기화1·2·3 (다른 방식 이미 적용됨)</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 50 / 50</td></tr>
+      <tr><td>5</td><td>위치: terms.html "동기화4" 정의 본문 + 모달 상세 A·E + worklog·02_summary 갱신</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 10 / 90</td></tr>
+      <tr><td>6</td><td>sync4.zip 재패키징</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 10 / 90</td></tr>
+    </tbody>
+  </table>
+  <p class="note">동기화 후 mr.와이가 파일 확인 여부를 결정. 매번 자동으로 띄우지 않아 토큰 절약 + 사용자 통제권 보장.</p>
+</details>
+
+<details>
+  <summary>⑤ Tier 1+2 교차검증 수정 (완료 — 2026-04-26)</summary>
+  <table>
+    <thead><tr><th>#</th><th>항목</th><th>상태</th><th>기여도 (PM 🟨 / CTO 🟦)</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>동기화1·2·3 패키지 5개 파일 통일 (instruction*.md zip 안 포함) — 동기화4 방식으로 표준화</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 20 / 80</td></tr>
+      <tr><td>2</td><td>모달 "동기화 파일 출력 양식" 중복 섹션 1개로 통합</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 10 / 90</td></tr>
+      <tr><td>3</td><td>"용어 5개 누적" 룰 의미 명확화 (동기화 트리거 ❌ → 갱신 제안)</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 20 / 80</td></tr>
+      <tr><td>4</td><td>동기화 메타 룰 — 채팅창 vs 동기화1~4 적용 방식 분리 명시</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 30 / 70</td></tr>
+      <tr><td>5</td><td>페르소나 일치 룰 명령형 보강 — "의미 있는 차이가 한 가지라도" + 보수적 차이 판정</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 40 / 60</td></tr>
+      <tr><td>6</td><td>"동기화" 용어 본문에 zip 표준 구성 명시 (5개 파일 통일)</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 10 / 90</td></tr>
+      <tr><td>7</td><td>worklog.html · 02_summary.md 갱신 + sync4.zip 재패키징</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 10 / 90</td></tr>
+    </tbody>
+  </table>
+  <p class="note">교차검증 결과 발견된 모순·중복·모호성 6건 모두 해소. Tier 3은 오버엔지니어링 회피로 skip.</p>
+</details>
+
+<details>
+  <summary>④ 동기화2·3 페르소나 일치 룰 추가 (완료 — 2026-04-26)</summary>
+  <table>
+    <thead><tr><th>#</th><th>항목</th><th>상태</th><th>기여도 (PM 🟨 / CTO 🟦)</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>동기화2·3 정의에 페르소나 일치 룰 추가 (mr.와이 정의가 첨부와 100% 일치하지 않으면 누락 없이 우선 적용)</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 70 / 30</td></tr>
+      <tr><td>2</td><td>모달 상세 C·D에 동일 룰 명시</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 20 / 80</td></tr>
+      <tr><td>3</td><td>동기화1·4는 적용 제외 (페르소나 추가 정의 불필요)</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 50 / 50</td></tr>
+      <tr><td>4</td><td>worklog.html · 02_summary.md 갱신</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 10 / 90</td></tr>
+      <tr><td>5</td><td>sync4.zip 재패키징</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 10 / 90</td></tr>
+    </tbody>
+  </table>
+  <p class="note">동기화2·3 페르소나 충돌 우려 해소. 동기화1·4는 페르소나 고정·추가 정의 불필요로 적용 제외.</p>
+</details>
+
+<details>
+  <summary>③ terms.html 용어 9개 추가 + 동기화 메타 룰 (완료 — 2026-04-26)</summary>
+  <table>
+    <thead><tr><th>#</th><th>항목</th><th>상태</th><th>기여도 (PM 🟨 / CTO 🟦)</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>9개 신규 용어 추가 (풀스택 CTO 페르소나·5대 작업 원칙·3중 안전망·CODING_GUIDELINES.md·Tier 분류·검증 의무화·보존 항목·트레이드오프 명시·정직한 한계 보고)</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 30 / 70</td></tr>
+      <tr><td>2</td><td>"동기화" 용어 정의에 동기화 메타 룰 추가</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 50 / 50</td></tr>
+      <tr><td>3</td><td>동기화1·2·3·4 정의에 "최신 terms.html·worklog.html 포함" 명시 (모달 + 본문)</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 40 / 60</td></tr>
+      <tr><td>4</td><td>채팅창 동기화 (모달 A) — worklog.html 포함 명시</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 20 / 80</td></tr>
+      <tr><td>5</td><td>모달 동기화 메타 룰 전용 섹션 추가 (신규 동기화N 자동 승계)</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 40 / 60</td></tr>
+      <tr><td>6</td><td>worklog.html · 02_summary.md 갱신 (본 대화 합의 반영)</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 10 / 90</td></tr>
+      <tr><td>7</td><td>sync4.zip 재패키징 (갱신본 5개 파일)</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 10 / 90</td></tr>
+    </tbody>
+  </table>
+  <p class="note">산출물: terms.html(갱신) · worklog.html(갱신) · 02_summary.md(갱신) · sync4.zip(재패키징)</p>
+</details>
+
+<details>
+  <summary>② 동기화4 신설 + terms.html 1차 갱신 (완료 — 2026-04-26)</summary>
+  <table>
+    <thead><tr><th>#</th><th>항목</th><th>상태</th><th>기여도 (PM 🟨 / CTO 🟦)</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>동기화4 정의 합의 (풀스택 CTO 즉시 적용)</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 60 / 40</td></tr>
+      <tr><td>2</td><td>terms.html 동기화4 정의 추가 (7건 갱신)</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 20 / 80</td></tr>
+      <tr><td>3</td><td>sync4.zip 1차 패키징 (5개 파일)</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 10 / 90</td></tr>
+      <tr><td>4</td><td>"어떤 작업을 맡기실건가요?" 시작 멘트 룰 명시</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 70 / 30</td></tr>
+    </tbody>
+  </table>
+  <p class="note">산출물: sync4.zip · 검증: HTML 파싱 0 오류</p>
+</details>
+
+<details>
+  <summary>① report-skill 표준화 (완료 — 2026-04-26)</summary>
+  <table>
+    <thead><tr><th>#</th><th>항목</th><th>상태</th><th>기여도 (PM 🟨 / CTO 🟦)</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>base_template.html — 폰트·CDN·Splash 표준화</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 20 / 80</td></tr>
+      <tr><td>2</td><td>코드 검토 및 표준화 5건 (Tier 1+2)</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 20 / 80</td></tr>
+      <tr><td>3</td><td>CODING_GUIDELINES.md 작성 (10개 섹션)</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 30 / 70</td></tr>
+      <tr><td>4</td><td>SKILL.md 필독 안내 추가</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 20 / 80</td></tr>
+      <tr><td>5</td><td>toss_report_skill_final_20260426.zip 패키징·산출</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 10 / 90</td></tr>
+    </tbody>
+  </table>
+  <p class="note">산출물: toss_report_skill_final_20260426.zip · 검증: py_compile / verify.py 11개 카테고리 통과</p>
+</details>
+
+<h2>📌 갱신 룰</h2>
+<table>
+  <thead><tr><th>시점</th><th>동작</th></tr></thead>
+  <tbody>
+    <tr><td>mr.와이 요청 시</td><td>즉시 갱신</td></tr>
+    <tr><td>현 업무범위 전체 완료 → 새 업무범위 시작 시</td><td>자동 갱신</td></tr>
+    <tr><td>매번 표시</td><td>❌ (토큰 절약 — mr.와이 확인 시에만 표시)</td></tr>
+    <tr><td>동기화 시</td><td>최신 worklog.html이 동기화 패키지에 자동 반영 (동기화 메타 룰)</td></tr>
+  </tbody>
+</table>
+
+<h2>📌 진행 원칙 · 기여도 표시 룰</h2>
+<ul>
+  <li>카테고리 단위 완전히 종료 후 다음 업무범위 진입</li>
+  <li>5대 작업 원칙 적용 (오버엔지니어링 금지·범용성·표준화·규격화·구조 간소화)</li>
+  <li>기여도 측정: 결정권·전문성·책임 무게 (작업량·시간·줄 수 ❌)</li>
+  <li>게이지 10칸 (🟨 PM / 🟦 CTO) · 변경 이력 추적 ❌ (최신값만)</li>
+</ul>
+
+<h3 style="font-size: 14px; margin: 16px 0 8px;">기여도 분배 패턴 (⑯ 합의 — 2026-04-28)</h3>
+<table>
+  <thead><tr><th>항목 유형</th><th>본질</th><th>PM 🟨 / CTO 🟦</th></tr></thead>
+  <tbody>
+    <tr><td>정의 도출 (룰·원칙·정의 합의)</td><td>mr.와이 결정 주도 — 새 합의 형성, 클로드는 적용 실행</td><td>80~100 / 0~20</td></tr>
+    <tr><td>자동 적용 (합의된 룰의 실행·파일 갱신·재패키징)</td><td>CTO 실행 주도 — mr.와이 결정은 합의 시점에 끝남, 클로드 자체 처리</td><td>10 / 90</td></tr>
+  </tbody>
+</table>
+<ul>
+  <li><b>핵심 원칙</b>: 자동 적용 항목이라도 mr.와이 기여 <b>10~20% 유지</b> (0% ❌). 합의 룰의 근거 자체가 mr.와이의 결정·확정이므로 0%로 깎이지 않음.</li>
+  <li><b>적용 근거</b>: 룰 합의 ❌ → 클로드 적용 근거 ❌. CTO 자체 처리는 항상 mr.와이 합의 위에서 작동.</li>
+</ul>
+
+<p class="note" style="margin-top: 32px;">⚠️ 정직한 한계: 본 대화 시작 전 업무범위 이력은 컨텍스트에 없어 누락. mr.와이가 이전 worklog.html 첨부 시 통합 갱신 가능.</p>
+</body>
+</html>

@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>통합업무파일 — 동기화 통합 운용</title>
+<style>
+/* ============================================================
+   LAYER 4: 디자인 시스템 (CSS 변수 · 토큰)
+   ============================================================ */
+:root {
+  /* 색 토큰 */
+  --c-bg: #f5f7fa;
+  --c-surface: #ffffff;
+  --c-text: #1a202c;
+  --c-text-2: #4a5568;
+  --c-text-3: #718096;
+  --c-border: #e2e8f0;
+  --c-border-2: #cbd5e0;
+  --c-primary: #1a365d;
+  --c-primary-2: #2b6cb0;
+  --c-hover: #f7fafc;
+
+  /* 페르소나 색 (구분용 액센트만 — 본문 색상은 단일) */
+  --c-cto: #b7791f;
+  --c-claude: #5a67d8;
+  --c-toss: #38a169;
+  --c-outsource: #dd6b20;
+  --c-content: #d53f8c;
+
+  /* 간격 (8px 그리드) */
+  --s-1: 8px;
+  --s-2: 16px;
+  --s-3: 24px;
+  --s-4: 32px;
+  --s-5: 48px;
+
+  /* 기타 */
+  --radius: 8px;
+  --radius-lg: 12px;
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+  --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  --font: -apple-system, BlinkMacSystemFont, 'Pretendard', 'Noto Sans KR', 'Segoe UI', sans-serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  height: 100%;
+  font-family: var(--font);
+  background: var(--c-bg);
+  color: var(--c-text);
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden; /* 3단 풀스크린 슬라이드용 */
+}
+
+/* ============================================================
+   LAYER 5: namespace 글로벌 컴포넌트 (.app- prefix)
+   ============================================================ */
+
+/* 앱 컨테이너 — 3단 슬라이드 부모 */
+.app-shell {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* 풀스크린 뷰 — 3단 각각 */
+.app-view {
+  position: absolute;
+  inset: 0;
+  background: var(--c-bg);
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  transform: translateX(100%);
+  transition: transform var(--transition);
+  will-change: transform;
+}
+.app-view.is-active { transform: translateX(0); }
+.app-view.is-back   { transform: translateX(-30%); opacity: 0.5; pointer-events: none; }
+
+/* 1단(메인)은 기본 진입점이라 active */
+#view-home { transform: translateX(0); }
+#view-home.is-back { transform: translateX(-30%); opacity: 0.5; }
+
+/* 헤더 */
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  padding: var(--s-2) var(--s-3);
+  background: var(--c-surface);
+  border-bottom: 1px solid var(--c-border);
+  min-height: 56px;
+}
+.app-header__back {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius);
+  background: transparent;
+  border: 1px solid var(--c-border);
+  color: var(--c-text-2);
+  cursor: pointer;
+  font-size: 18px;
+  flex-shrink: 0;
+  transition: background var(--transition);
+}
+.app-header__back:hover { background: var(--c-hover); }
+.app-header__title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--c-text);
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.app-header__sub {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--c-text-3);
+  margin-left: var(--s-1);
+}
+
+/* 본문 영역 */
+.app-body {
+  padding: var(--s-3);
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+/* 섹션 타이틀 */
+.app-section-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--c-text-3);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: var(--s-3) 0 var(--s-2);
+}
+.app-section-title:first-child { margin-top: 0; }
+
+/* 카드 */
+.app-card {
+  display: block;
+  width: 100%;
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-lg);
+  padding: var(--s-3);
+  margin-bottom: var(--s-2);
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
+  text-align: left;
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+  position: relative;
+}
+.app-card:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--c-border-2);
+}
+.app-card:active { transform: translateY(0); }
+
+.app-card__row {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+}
+.app-card__accent {
+  width: 4px;
+  align-self: stretch;
+  border-radius: 2px;
+  background: var(--accent, var(--c-primary));
+  flex-shrink: 0;
+}
+.app-card__main { flex: 1; min-width: 0; }
+.app-card__title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--c-text);
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: var(--s-1);
+}
+.app-card__desc {
+  font-size: 13px;
+  color: var(--c-text-3);
+  line-height: 1.5;
+}
+.app-card__chev {
+  color: var(--c-text-3);
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+/* 페르소나 색 적용 */
+.app-card.is-cto       { --accent: var(--c-cto); }
+.app-card.is-claude    { --accent: var(--c-claude); }
+.app-card.is-toss      { --accent: var(--c-toss); }
+.app-card.is-outsource { --accent: var(--c-outsource); }
+.app-card.is-content   { --accent: var(--c-content); }
+
+/* 배지 */
+.app-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  font-size: 11px;
+  font-weight: 700;
+  border-radius: 4px;
+  background: var(--c-bg);
+  color: var(--c-text-2);
+  border: 1px solid var(--c-border);
+  letter-spacing: 0.02em;
+}
+.app-badge.is-l1 { background: #fef5e7; color: var(--c-cto); border-color: #f6e05e; }
+.app-badge.is-l2 { background: #ebf8ff; color: var(--c-primary-2); border-color: #bee3f8; }
+
+/* 메인 화면 — 헤더 (1단 전용) */
+.app-hero {
+  background: linear-gradient(135deg, var(--c-primary) 0%, #2c5282 100%);
+  color: white;
+  padding: var(--s-4) var(--s-3) var(--s-3);
+}
+.app-hero__title {
+  font-size: 22px;
+  font-weight: 800;
+  margin-bottom: 4px;
+  letter-spacing: -0.01em;
+}
+.app-hero__sub {
+  font-size: 13px;
+  opacity: 0.85;
+  font-weight: 500;
+}
+
+/* ⓣ 클로드 현황 (메인 본문 최상단) */
+.app-status {
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-lg);
+  padding: var(--s-2) var(--s-3);
+  margin-bottom: var(--s-3);
+}
+.app-status__label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--c-text-3);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: var(--s-1);
+}
+.app-status__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.app-status__table th,
+.app-status__table td {
+  padding: 6px 10px;
+  text-align: left;
+  border-bottom: 1px solid var(--c-border);
+}
+.app-status__table tr:last-child th,
+.app-status__table tr:last-child td { border-bottom: none; }
+.app-status__table th {
+  font-weight: 700;
+  color: var(--c-text);
+  width: 130px;
+  white-space: nowrap;
+}
+.app-status__table td { color: var(--c-text-2); }
+.app-status__table .is-l1-row th { color: var(--c-cto); }
+
+/* 자료 placeholder */
+.app-placeholder {
+  background: var(--c-surface);
+  border: 1px dashed var(--c-border-2);
+  border-radius: var(--radius-lg);
+  padding: var(--s-4) var(--s-3);
+  text-align: center;
+  color: var(--c-text-3);
+}
+.app-placeholder__icon {
+  font-size: 32px;
+  margin-bottom: var(--s-1);
+  opacity: 0.5;
+}
+.app-placeholder__title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--c-text-2);
+  margin-bottom: 4px;
+}
+.app-placeholder__desc { font-size: 13px; line-height: 1.6; }
+
+/* 메타 정보 박스 */
+.app-meta {
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius);
+  padding: var(--s-2) var(--s-3);
+  margin-bottom: var(--s-2);
+  font-size: 13px;
+  color: var(--c-text-2);
+  line-height: 1.7;
+}
+.app-meta strong { color: var(--c-text); }
+
+/* 반응형 */
+@media (max-width: 600px) {
+  :root { --s-3: 16px; --s-4: 24px; }
+  .app-hero__title { font-size: 18px; }
+  .app-card__title { font-size: 15px; }
+  .app-status__table th { width: 100px; font-size: 12px; }
+  .app-status__table td { font-size: 12px; }
+}
+
+/* 데이터 없는 항목 — 플레이스홀더용 */
+.is-empty { opacity: 0.6; cursor: default; }
+.is-empty:hover { transform: none; box-shadow: var(--shadow-sm); border-color: var(--c-border); }
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     LAYER 1: 데이터 (페르소나 + 자료 메타)
+     본 layer는 <script type="application/json"> 으로 정의
+     ============================================================ -->
+<script id="data-personas" type="application/json">
+{
+  "personas": [
+    {
+      "id": "cto",
+      "level": "L1",
+      "name": "개발총괄",
+      "subname": "Chief CTO",
+      "domain": "통합 메타 운용",
+      "folder": "동기화_cto",
+      "subProjects": "(단일 — 메타 운용)",
+      "ns": "cto"
+    },
+    {
+      "id": "claude",
+      "level": "L2",
+      "name": "클로드",
+      "subname": "Claude·Claude Code 기술",
+      "domain": "Claude 기술 도메인",
+      "folder": "동기화_클로드",
+      "subProjects": "(단일)",
+      "ns": "claude"
+    },
+    {
+      "id": "toss",
+      "level": "L2",
+      "name": "토스",
+      "subname": "보험설계 상담실무",
+      "domain": "보험설계 + report-skill",
+      "folder": "동기화_토스",
+      "subProjects": "(단일 — 보험설계 + report-skill)",
+      "ns": "toss"
+    },
+    {
+      "id": "outsource",
+      "level": "L2",
+      "name": "외주개발",
+      "subname": "외주·인하우스 개발",
+      "domain": "외주·인하우스 개발",
+      "folder": "동기화_외주",
+      "subProjects": "(없음 — 킥오프 전)",
+      "ns": "outsource"
+    },
+    {
+      "id": "content",
+      "level": "L2",
+      "name": "콘텐츠",
+      "subname": "강의안 디렉터",
+      "domain": "강의안 디렉터",
+      "folder": "동기화_콘텐츠",
+      "subProjects": "(단일 — 토스 DB 강의안 v4)",
+      "ns": "content"
+    }
+  ],
+  "dataTypes": [
+    { "id": "terms",     "name": "용어정의",   "desc": "페르소나 자체 용어 사전",       "icon": "📖" },
+    { "id": "workscope", "name": "업무범위",   "desc": "페르소나 가이드 · 활동 범위",   "icon": "📋" },
+    { "id": "summary",   "name": "합의누적",   "desc": "정의·결정·합의 시간순 박제",     "icon": "📑" },
+    { "id": "worklog",   "name": "작업박제",   "desc": "작업 히스토리 · 박제 항목",     "icon": "📌" }
+  ]
+}
+</script>
+
+<div class="app-shell">
+
+  <!-- ============================================================
+       LAYER 2: UI 컴포넌트 (1단 — 메인)
+       ============================================================ -->
+  <section class="app-view is-active" id="view-home" data-view="home" aria-label="메인">
+    <div class="app-hero">
+      <div class="app-hero__title">통합업무파일</div>
+      <div class="app-hero__sub">동기화 통합 운용 · 마스터·복제 자동 전파 구조</div>
+    </div>
+    <div class="app-body">
+
+      <!-- ⓣ 적용된 클로드 현황 (상단 고정 가시) -->
+      <div class="app-status" role="region" aria-label="적용된 클로드 현황">
+        <div class="app-status__label">★ 적용된 클로드 현황</div>
+        <table class="app-status__table">
+          <tbody id="status-tbody"><!-- JS 렌더 --></tbody>
+        </table>
+      </div>
+
+      <!-- 페르소나 카드 리스트 -->
+      <div class="app-section-title">페르소나 (5종)</div>
+      <div id="persona-list"><!-- JS 렌더 --></div>
+
+      <!-- 마스터·복제 구조 안내 -->
+      <div class="app-section-title">마스터·복제 자동 전파 구조</div>
+      <div class="app-meta">
+        <strong>마스터:</strong> instruction_cto.md §17 (단일 출처)<br>
+        <strong>복제:</strong> 각 sync instruction_X.md 부록 A (자동 전파)<br>
+        <strong>박제:</strong> 각 sync worklog_X.html (적용 사실 기록)<br>
+        <strong>갱신 룰:</strong> mr.와이가 마스터 1번 갱신 → CTO가 모든 sync에 자동 전파 (CTO 책임)<br>
+        <strong>페르소나 자체 룰:</strong> 각 sync에 격리 — 통합 메타 흡수 ❌
+      </div>
+
+    </div>
+  </section>
+
+  <!-- 2단 — 페르소나 -->
+  <section class="app-view" id="view-persona" data-view="persona" aria-label="페르소나 자료 선택">
+    <div class="app-header">
+      <button class="app-header__back" type="button" aria-label="뒤로가기" onclick="App.goHome()">←</button>
+      <div class="app-header__title" id="persona-title">—</div>
+      <span class="app-header__sub" id="persona-sub"></span>
+    </div>
+    <div class="app-body">
+      <div class="app-meta" id="persona-meta"></div>
+      <div class="app-section-title">자료 (4종)</div>
+      <div id="datatype-list"><!-- JS 렌더 --></div>
+    </div>
+  </section>
+
+  <!-- 3단 — 자료 -->
+  <section class="app-view" id="view-data" data-view="data" aria-label="자료 컨텐츠">
+    <div class="app-header">
+      <button class="app-header__back" type="button" aria-label="뒤로가기" onclick="App.goPersona()">←</button>
+      <div class="app-header__title" id="data-title">—</div>
+      <span class="app-header__sub" id="data-sub"></span>
+    </div>
+    <div class="app-body">
+      <div id="data-content">
+        <!-- 자료 컨텐츠 (다음 빌드에서 통합) -->
+        <div class="app-placeholder">
+          <div class="app-placeholder__icon">⏳</div>
+          <div class="app-placeholder__title">자료 통합 준비 중</div>
+          <div class="app-placeholder__desc">
+            본 자료는 다음 빌드 단계에서 통합됩니다.<br>
+            (sync 자체 컨텐츠 + namespace prefix 자동 적용)
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- ============================================================
+     LAYER 3: 라우터 (3단 풀스크린 + 뒤로가기 + URL hash)
+     ============================================================ -->
+<script>
+const App = (function () {
+  // 데이터 로드
+  const data = JSON.parse(document.getElementById('data-personas').textContent);
+  const personasById = Object.fromEntries(data.personas.map(p => [p.id, p]));
+  const dataTypesById = Object.fromEntries(data.dataTypes.map(d => [d.id, d]));
+
+  // 상태
+  const state = { view: 'home', personaId: null, dataTypeId: null };
+
+  // 뷰 요소
+  const views = {
+    home: document.getElementById('view-home'),
+    persona: document.getElementById('view-persona'),
+    data: document.getElementById('view-data'),
+  };
+
+  // ----- 렌더: 메인(1단) -----
+  function renderHome() {
+    // ⓣ 클로드 현황 표
+    const tbody = document.getElementById('status-tbody');
+    tbody.innerHTML = data.personas.map(p => `
+      <tr class="${p.level === 'L1' ? 'is-l1-row' : ''}">
+        <th>${p.name} (${p.level})</th>
+        <td>${p.subProjects}</td>
+      </tr>
+    `).join('');
+
+    // 페르소나 카드 리스트
+    const list = document.getElementById('persona-list');
+    list.innerHTML = data.personas.map(p => `
+      <button class="app-card is-${p.id}" type="button" onclick="App.openPersona('${p.id}')" aria-label="${p.name} 페르소나 열기">
+        <div class="app-card__row">
+          <div class="app-card__accent"></div>
+          <div class="app-card__main">
+            <div class="app-card__title">
+              <span class="app-badge is-${p.level.toLowerCase()}">${p.level}</span>
+              <span>${p.name}</span>
+            </div>
+            <div class="app-card__desc">${p.subname} · <code>${p.folder}</code></div>
+          </div>
+          <div class="app-card__chev">›</div>
+        </div>
+      </button>
+    `).join('');
+  }
+
+  // ----- 렌더: 페르소나(2단) -----
+  function renderPersona(id) {
+    const p = personasById[id];
+    if (!p) return false;
+
+    document.getElementById('persona-title').textContent = p.name;
+    document.getElementById('persona-sub').textContent = p.level;
+    document.getElementById('persona-meta').innerHTML = `
+      <strong>${p.subname}</strong><br>
+      도메인: ${p.domain}<br>
+      폴더: <code>${p.folder}</code><br>
+      하위: ${p.subProjects}
+    `;
+
+    const list = document.getElementById('datatype-list');
+    list.innerHTML = data.dataTypes.map(dt => `
+      <button class="app-card is-${p.id}" type="button" onclick="App.openData('${p.id}','${dt.id}')" aria-label="${p.name} ${dt.name} 열기">
+        <div class="app-card__row">
+          <div class="app-card__accent"></div>
+          <div class="app-card__main">
+            <div class="app-card__title">${dt.icon} ${dt.name}</div>
+            <div class="app-card__desc">${dt.desc}</div>
+          </div>
+          <div class="app-card__chev">›</div>
+        </div>
+      </button>
+    `).join('');
+    return true;
+  }
+
+  // ----- 렌더: 자료(3단) -----
+  function renderData(personaId, dataTypeId) {
+    const p = personasById[personaId];
+    const dt = dataTypesById[dataTypeId];
+    if (!p || !dt) return false;
+    document.getElementById('data-title').textContent = `${p.name} · ${dt.name}`;
+    document.getElementById('data-sub').textContent = dt.icon;
+    // 자료 컨텐츠는 placeholder (다음 빌드에서 통합)
+    return true;
+  }
+
+  // ----- 뷰 전환 -----
+  function showView(target) {
+    Object.entries(views).forEach(([name, el]) => {
+      el.classList.remove('is-active', 'is-back');
+      if (name === target) el.classList.add('is-active');
+      else el.classList.add('is-back');
+    });
+    // 스크롤 상단 복귀
+    if (views[target]) views[target].scrollTop = 0;
+  }
+
+  // ----- URL hash 동기화 -----
+  function setHash(parts) {
+    const h = '#/' + parts.filter(Boolean).join('/');
+    if (location.hash !== h) {
+      history.pushState({ view: state.view, personaId: state.personaId, dataTypeId: state.dataTypeId }, '', h);
+    }
+  }
+
+  function parseHash() {
+    const raw = location.hash.replace(/^#\/?/, '');
+    const parts = raw.split('/').filter(Boolean);
+    if (parts.length === 0) return { view: 'home' };
+    if (parts.length === 1 && parts[0] === 'p') return { view: 'home' };
+    if (parts[0] === 'p' && parts[1] && !parts[2]) return { view: 'persona', personaId: parts[1] };
+    if (parts[0] === 'p' && parts[1] && parts[2]) return { view: 'data', personaId: parts[1], dataTypeId: parts[2] };
+    return { view: 'home' };
+  }
+
+  function fallbackToHome() {
+    // 잘못된 hash → home으로 정정 (history 오염 ❌, replaceState 사용)
+    state.view = 'home'; state.personaId = null; state.dataTypeId = null;
+    history.replaceState({ ...state }, '', '#/');
+    showView('home');
+  }
+
+  function applyHash(replace) {
+    const next = parseHash();
+    if (next.view === 'home') {
+      state.view = 'home'; state.personaId = null; state.dataTypeId = null;
+      showView('home');
+    } else if (next.view === 'persona') {
+      if (!personasById[next.personaId] || !renderPersona(next.personaId)) { fallbackToHome(); return; }
+      state.view = 'persona'; state.personaId = next.personaId; state.dataTypeId = null;
+      showView('persona');
+    } else if (next.view === 'data') {
+      if (!personasById[next.personaId] || !dataTypesById[next.dataTypeId]
+          || !renderPersona(next.personaId) || !renderData(next.personaId, next.dataTypeId)) { fallbackToHome(); return; }
+      state.view = 'data'; state.personaId = next.personaId; state.dataTypeId = next.dataTypeId;
+      showView('data');
+    }
+    if (replace) history.replaceState({ ...state }, '', location.hash || '#/');
+  }
+
+  // ----- 네비게이션 API -----
+  function go(view, personaId, dataTypeId) {
+    if (view === 'home') {
+      state.view = 'home'; state.personaId = null; state.dataTypeId = null;
+      setHash([]);
+      showView('home');
+    } else if (view === 'persona') {
+      if (!renderPersona(personaId)) return;
+      state.view = 'persona'; state.personaId = personaId; state.dataTypeId = null;
+      setHash(['p', personaId]);
+      showView('persona');
+    } else if (view === 'data') {
+      if (!renderPersona(personaId) || !renderData(personaId, dataTypeId)) return;
+      state.view = 'data'; state.personaId = personaId; state.dataTypeId = dataTypeId;
+      setHash(['p', personaId, dataTypeId]);
+      showView('data');
+    }
+  }
+
+  // ----- 공개 API -----
+  function openPersona(id) { go('persona', id); }
+  function openData(personaId, dataTypeId) { go('data', personaId, dataTypeId); }
+  function goHome() { history.length > 1 ? history.back() : go('home'); }
+  function goPersona() { history.length > 1 ? history.back() : (state.personaId ? go('persona', state.personaId) : go('home')); }
+
+  // ----- popstate (브라우저 뒤로가기/앞으로가기) -----
+  window.addEventListener('popstate', () => applyHash(false));
+
+  // ----- 초기화 -----
+  function init() {
+    renderHome();
+    applyHash(true);
+  }
+
+  return { init, openPersona, openData, goHome, goPersona };
+})();
+
+document.addEventListener('DOMContentLoaded', App.init);
+</script>
+
+</body>
+</html>
