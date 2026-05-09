@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>업무범위 — 강의안 프로젝트</title>
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.min.css" rel="stylesheet">
+<style>
+  :root {
+    --bg: #fafaf7;
+    --bg-card: #ffffff;
+    --ink: #1a1a1a;
+    --ink-soft: #555;
+    --ink-mute: #888;
+    --line: #e8e6df;
+    --accent: #1a4d3a;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Pretendard', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.55;
+    font-size: 13px;
+  }
+  .container { max-width: 880px; margin: 0 auto; padding: 32px 24px 80px; }
+  header { border-bottom: 1px solid var(--line); padding-bottom: 20px; margin-bottom: 24px; }
+  .eyebrow {
+    font-size: 11px; letter-spacing: 0.15em;
+    color: var(--ink-mute); text-transform: uppercase; margin-bottom: 8px;
+  }
+  h1 { font-size: 26px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 4px; }
+
+  /* 타이틀 row + 마스터 구축 버튼 */
+  .title-row {
+    display: flex; align-items: baseline;
+    gap: 0.5em; /* "트" 한 글자 장평만큼 */
+    flex-wrap: wrap;
+  }
+  .master-btn {
+    font-family: inherit; font-size: 12px; font-weight: 600;
+    padding: 6px 12px; background: var(--bg-card);
+    border: 1px solid var(--line); border-radius: 999px;
+    color: var(--ink-soft); cursor: pointer; transition: all 0.15s;
+  }
+  .master-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* 모달 (마스터 구축 안내용) */
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+    display: none; align-items: center; justify-content: center;
+    z-index: 100; padding: 20px;
+  }
+  .modal-overlay.show { display: flex; }
+  .modal {
+    background: var(--bg-card); border-radius: 10px;
+    max-width: 520px; width: 100%; max-height: 80vh;
+    overflow-y: auto; padding: 24px 26px; position: relative;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+  }
+  .modal-close {
+    position: absolute; top: 14px; right: 14px;
+    width: 28px; height: 28px; border-radius: 50%;
+    background: transparent; border: 1px solid var(--line);
+    color: var(--ink-soft); font-size: 14px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; line-height: 1;
+  }
+  .modal-close:hover { border-color: var(--accent); color: var(--accent); }
+  .modal h3 { font-size: 18px; font-weight: 700; margin-bottom: 14px; padding-right: 30px; }
+  .modal-body { font-size: 13.5px; color: var(--ink-soft); line-height: 1.7; }
+  .modal-empty {
+    padding: 24px 0; text-align: center;
+    color: var(--ink-mute); font-size: 13px;
+  }
+  .modal-empty .empty-icon {
+    font-size: 32px; margin-bottom: 12px; opacity: 0.6;
+  }
+  .subtitle { color: var(--ink-soft); font-size: 13px; }
+  .meta {
+    margin-top: 14px; display: flex; gap: 18px;
+    font-size: 12px; color: var(--ink-mute); flex-wrap: wrap;
+  }
+  .meta b { color: var(--ink); font-weight: 600; }
+
+  /* 최상단 토글 (3축) */
+  .top-tabs {
+    display: flex; gap: 4px;
+    background: var(--bg-card); border: 1px solid var(--line);
+    border-radius: 8px; padding: 4px; margin-bottom: 20px;
+  }
+  .top-tab {
+    flex: 1; font-family: inherit; font-size: 13px; font-weight: 600;
+    padding: 10px 14px; background: transparent;
+    border: none; border-radius: 6px;
+    color: var(--ink-soft); cursor: pointer; transition: all 0.15s;
+  }
+  .top-tab:hover { color: var(--accent); }
+  .top-tab.active { background: var(--accent); color: #fff; }
+
+  /* 트리 (유형별) */
+  .tree-node { margin-bottom: 4px; }
+  .tree-row {
+    display: flex; align-items: center; gap: 8px;
+    padding: 10px 14px; background: var(--bg-card);
+    border: 1px solid var(--line); border-radius: 6px;
+    cursor: pointer; transition: all 0.15s;
+  }
+  .tree-row:hover { border-color: var(--accent); }
+  .tree-row.depth-1 { font-size: 14px; font-weight: 700; }
+  .tree-row.depth-2 { font-size: 13px; font-weight: 600; margin-left: 24px; background: #f7f5ee; }
+  .tree-row.depth-3 { font-size: 13px; margin-left: 48px; background: #faf8f1; }
+  .tree-toggle {
+    display: inline-block; width: 14px;
+    color: var(--ink-mute); transition: transform 0.15s;
+  }
+  .tree-node.open > .tree-row > .tree-toggle { transform: rotate(90deg); }
+  .tree-children { display: none; padding-top: 4px; }
+  .tree-node.open > .tree-children { display: block; }
+  .tree-count {
+    margin-left: auto; font-size: 11px;
+    color: var(--ink-mute); font-weight: 500;
+  }
+  .tree-empty {
+    padding: 10px 14px; margin-left: 48px;
+    font-size: 12px; color: var(--ink-mute); font-style: italic;
+  }
+
+  /* 강의안 카드 (유형별·프로젝트별 공통) */
+  .lecture-card {
+    padding: 12px 14px; margin-left: 48px; margin-bottom: 4px;
+    background: #fff; border: 1px solid var(--line); border-radius: 6px;
+    cursor: pointer; transition: all 0.15s;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .lecture-card:hover { border-color: var(--accent); }
+  .lecture-card.in-tree { margin-left: 72px; }
+  .lecture-card-id {
+    font-size: 11px; font-weight: 700;
+    color: var(--accent); letter-spacing: 0.05em;
+  }
+  .lecture-card-title { font-size: 13px; font-weight: 600; flex: 1; }
+  .lecture-card-meta { font-size: 11px; color: var(--ink-mute); }
+  .lecture-card-arrow { color: var(--ink-mute); font-size: 14px; }
+
+  /* 협업 인프라 */
+  .infra-section {
+    background: var(--bg-card); border: 1px solid var(--line);
+    border-radius: 8px; padding: 22px 24px; margin-bottom: 16px;
+  }
+  .infra-header {
+    display: flex; align-items: baseline; gap: 12px; margin-bottom: 12px;
+  }
+  .infra-num {
+    font-size: 11px; font-weight: 700;
+    color: var(--accent); letter-spacing: 0.05em;
+  }
+  .infra-name { font-size: 17px; font-weight: 700; }
+  .infra-status {
+    margin-left: auto; font-size: 11px;
+    padding: 2px 8px; border-radius: 999px;
+    background: #e8f0eb; color: var(--accent); font-weight: 600;
+  }
+  .infra-status.in-progress { background: #fdf3e0; color: #8a5a1a; }
+  .infra-desc { color: var(--ink-soft); font-size: 13px; margin-bottom: 14px; }
+
+  /* 표 (업무범위 항목) */
+  table.work {
+    width: 100%; border-collapse: collapse; font-size: 13px;
+  }
+  table.work th {
+    text-align: left; padding: 8px 10px;
+    background: #f3f1ea; color: var(--ink-mute);
+    font-weight: 600; font-size: 11px;
+    border-bottom: 1px solid var(--line);
+  }
+  table.work th:first-child { width: 40px; text-align: center; }
+  table.work th:nth-child(3) { width: 110px; }
+  table.work th:nth-child(4) { width: 140px; text-align: center; }
+  table.work td {
+    padding: 10px; border-bottom: 1px solid var(--line);
+    vertical-align: top;
+  }
+  table.work td:first-child { text-align: center; color: var(--ink-mute); }
+  table.work td:nth-child(2) { font-weight: 600; }
+  table.work td:nth-child(4) { text-align: center; font-size: 12px; letter-spacing: -1px; }
+  table.work tr:last-child td { border-bottom: none; }
+
+  /* 게이지 */
+  .gauge { display: inline-flex; gap: 1px; align-items: center; }
+  .gauge-cell { width: 11px; height: 11px; border-radius: 2px; }
+  .gauge-pm { background: #e8b840; }
+  .gauge-cd { background: #4a7fb8; }
+  .gauge-legend {
+    font-size: 10px; color: var(--ink-mute); margin-top: 4px;
+  }
+
+  details.descs {
+    margin-top: 14px; background: #faf8f1;
+    border: 1px solid var(--line); border-radius: 6px;
+  }
+  details.descs summary {
+    padding: 10px 14px; font-size: 12px; font-weight: 600;
+    color: var(--ink-soft); cursor: pointer;
+  }
+  details.descs[open] summary { border-bottom: 1px solid var(--line); }
+  details.descs ol {
+    padding: 12px 30px; color: var(--ink-soft);
+    font-size: 12.5px; line-height: 1.7;
+  }
+  details.descs ol li { margin-bottom: 4px; }
+
+  /* archive 카드 */
+  .archive-list {
+    background: var(--bg-card); border: 1px solid var(--line);
+    border-radius: 8px; overflow: hidden;
+  }
+  .archive-item {
+    padding: 14px 18px; border-bottom: 1px solid var(--line);
+    cursor: pointer; display: flex; align-items: center; gap: 12px;
+    transition: background 0.15s;
+  }
+  .archive-item:hover { background: #f3f1ea; }
+  .archive-item:last-child { border-bottom: none; }
+  .archive-num {
+    font-size: 11px; font-weight: 700;
+    color: var(--accent); width: 24px;
+  }
+  .archive-title { font-size: 14px; font-weight: 600; flex: 1; }
+  .archive-count { font-size: 11px; color: var(--ink-mute); }
+  .archive-arrow { color: var(--ink-mute); font-size: 14px; }
+
+  /* 네비 버튼 */
+  .nav-row { display: flex; gap: 8px; margin-bottom: 18px; flex-wrap: wrap; }
+  .nav-btn {
+    font-family: inherit; font-size: 12px; font-weight: 600;
+    padding: 8px 14px; background: var(--bg-card);
+    border: 1px solid var(--line); border-radius: 6px;
+    color: var(--ink-soft); cursor: pointer; transition: all 0.15s;
+  }
+  .nav-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  .infra-subhead {
+    font-size: 11px; font-weight: 700;
+    color: var(--ink-mute); letter-spacing: 0.1em;
+    text-transform: uppercase; margin: 24px 0 10px;
+  }
+  .infra-subhead:first-child { margin-top: 0; }
+
+  .hidden { display: none !important; }
+
+  footer {
+    margin-top: 50px; padding-top: 18px;
+    border-top: 1px solid var(--line);
+    font-size: 11px; color: var(--ink-mute); text-align: center;
+  }
+  footer code {
+    font-family: 'SF Mono', Menlo, monospace; font-size: 11px;
+    background: #f1efe8; padding: 1px 5px; border-radius: 3px;
+  }
+
+  @media (max-width: 600px) {
+    .container { padding: 24px 16px 64px; }
+    h1 { font-size: 22px; }
+    .tree-row.depth-2 { margin-left: 16px; }
+    .tree-row.depth-3 { margin-left: 32px; }
+    .lecture-card { margin-left: 32px; }
+    .lecture-card.in-tree { margin-left: 48px; }
+    table.work th:nth-child(3) { width: 80px; }
+    table.work th:nth-child(4) { width: 60px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <div class="eyebrow">WORKLOG · 업무범위</div>
+    <div class="title-row">
+      <h1>강의안 프로젝트</h1>
+      <button class="master-btn" id="masterBtn">마스터 구축</button>
+    </div>
+    <p class="subtitle">전문강사 mr.와이의 강의안 협업 — 분야: 진입 시 정립</p>
+    <div class="meta">
+      <span>최종 수정: <b>2026-04-27 v7.1 (동기화)</b></span>
+      <span>강의안 총: <b id="lectureCount">0</b>개</span>
+      <span>협업 인프라 완료: <b id="infraCount">0</b>개</span>
+    </div>
+  </header>
+
+  <!-- 최상단 4축 토글 -->
+  <div class="top-tabs">
+    <button class="top-tab active" data-view="type">유형별 (디폴트)</button>
+    <button class="top-tab" data-view="project">프로젝트별</button>
+    <button class="top-tab" data-view="current">현재 작업 중</button>
+    <button class="top-tab" data-view="infra">협업 인프라</button>
+  </div>
+
+  <!-- 유형별 화면 -->
+  <div id="typeView">
+    <div id="typeTree"></div>
+  </div>
+
+  <!-- 프로젝트별 화면 -->
+  <div id="projectView" class="hidden">
+    <div id="projectList"></div>
+  </div>
+
+  <!-- 현재 작업 중 화면 -->
+  <div id="currentView" class="hidden">
+    <div id="currentList"></div>
+  </div>
+
+  <!-- 협업 인프라 화면 -->
+  <div id="infraView" class="hidden">
+    <div class="infra-subhead">진행 중</div>
+    <div id="infraInProgress"></div>
+
+    <div class="infra-subhead">완료 archive</div>
+    <div class="archive-list" id="infraArchive"></div>
+  </div>
+
+  <!-- 강의안 상세 화면 -->
+  <div id="lectureDetailView" class="hidden">
+    <div class="nav-row">
+      <button class="nav-btn" id="backFromLecture">← 목록으로</button>
+    </div>
+    <div id="lectureDetailContent"></div>
+  </div>
+
+  <!-- 협업 인프라 archive 상세 화면 -->
+  <div id="infraDetailView" class="hidden">
+    <div class="nav-row">
+      <button class="nav-btn" id="backFromInfra">← 협업 인프라로</button>
+    </div>
+    <div id="infraDetailContent"></div>
+  </div>
+
+  <footer>
+    문서 체계 · 인스트럭션(instruction3.md) · <code>02_협의_요약.md</code> · <code>terms.html</code> · <code>worklog.html</code>
+  </footer>
+</div>
+
+<!-- 마스터 구축 모달 -->
+<div class="modal-overlay" id="masterModal">
+  <div class="modal">
+    <button class="modal-close" id="masterClose">✕</button>
+    <h3>마스터 구축 업무범위</h3>
+    <div class="modal-body">
+      <div class="modal-empty">
+        <div class="empty-icon">🛠</div>
+        아직 마스터 구축 협의가 진행되지 않았습니다.<br>
+        STEP 5에서 마스터 시스템 협의 진입 시 본 영역에 업무범위가 누적됩니다.
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ===== 데이터 =====
+
+  // 유형별 트리 구조 — 분야 진입 시 mr.와이가 청중 분류 트리를 정립
+  // 예시: { '청중유형A': { '하위A1': [], '하위A2': [] }, '청중유형B': [] }
+  const typeTree = {};
+
+  // 강의안 목록 (시간순) — 작업 진행되며 누적
+  // 각 강의안: { id, title, audienceMain (path), audienceSub (path[]), date, scope, items }
+  const lectures = [];
+
+  // 협업 인프라 — 진행 중
+  const infraInProgress = [
+    {
+      title: '마스터 시스템 협의',
+      desc: '3-A 콘텐츠 마스터 / 3-B 디자인 표준 / 3-C 콘텐츠 자산 라이브러리 운영 방식 협의 중. STEP 5에서 본격 진입.',
+      items: []
+    }
+  ];
+
+  // 협업 인프라 — 완료 archive
+  const infraArchive = [
+    {
+      title: '협업 시스템 구축',
+      desc: 'mr.와이와 클로드의 협업 규칙·문서 체계·동기화·용어·업무범위 양식 확정. (코인봇 프로젝트에서 승계)',
+      items: [
+        { name: '문서 체계', stage: '협업', pm: 7,
+          desc: '인스트럭션 / 02_협의_요약.md / terms.html / worklog.html — 4개 분리' },
+        { name: '용어 관리', stage: '협업', pm: 8,
+          desc: 'terms.html 양식 (한글 2~5자, 카테고리별 분리, 표+모달)' },
+        { name: '동기화 규칙', stage: '협업', pm: 9,
+          desc: '클로드 자동 제안=핵심 책무 / mr.와이 요청=합의·용어만 / 같은 대화창=기억만 갱신' },
+        { name: '대화 양식', stage: '협업', pm: 9,
+          desc: '표·핵심 위주, 서두·결론 생략, 검증자 관점 우선' },
+        { name: '업무범위 양식', stage: '협업', pm: 8,
+          desc: '표(번호·항목·단계·기여도 게이지) + 접기 설명, 부제 명시' }
+      ]
+    },
+    {
+      title: '협업 정책 확장',
+      desc: '총괄책임자 역할·코드(콘텐츠) 철회·기여도·자동 제안·제안 원칙·문서 가독성 표준 확정. (코인봇 프로젝트에서 승계)',
+      items: [
+        { name: '총괄책임자', stage: '역할', pm: 8,
+          desc: '클로드는 단순 실행자 ❌. 책임자 + 총괄책임자. 기획·목표·방향성이 결과물에 정확히 이식되도록 검증' },
+        { name: '결과물 철회', stage: '결과물 관리', pm: 8,
+          desc: '합의 변경으로 기능 폐기 시 결과물 완전 삭제. 보류 vs 철회 분리' },
+        { name: '기여도 기준', stage: '협업', pm: 9,
+          desc: '결정·책임의 비중. 작업량과 무관. 직책 기본 비중 없음. 게이지 표시 (🟨 PM / 🟦 콘텐츠 디렉터)' },
+        { name: '자동 제안', stage: '협업', pm: 6,
+          desc: '합의 과정에서 새 기준·용어·업무범위 도출 시 클로드가 먼저 제안 → mr.와이 승인 시 적용' },
+        { name: '제안 원칙', stage: '협업', pm: 4,
+          desc: '범용성·표준화·구조 간소화·오버엔지니어링 회피·페르소나 일관성은 클로드 책무. mr.와이는 방향성·우선순위·도메인 본질만 결정' },
+        { name: '문서 가독성 표준', stage: '협업', pm: 5,
+          desc: '복잡한 정의는 표·비교 표·아코디언으로 분리. 한눈에 파악 가능하게 구조화' },
+        { name: '미확인 추적', stage: '협업', pm: 9,
+          desc: '미확인·미완료·누락 사항을 클로드가 끝까지 추적. 폐기 합의 없이 넘어가지 않음. mr.와이 재챙김 ❌' }
+      ]
+    },
+    {
+      title: '동기화 시스템',
+      desc: '동기화zip = 강의안 디렉터 페르소나. 새 프로젝트 진입 시 첨부. (v5 재정립 — 동기화1·2 폐기)',
+      items: [
+        { name: '동기화zip (구 동기화3)', stage: '동기화', pm: 9,
+          desc: '강의안 디렉터 페르소나로 변경. 모든 분야·모든 콘텐츠 적용 가능. terms·worklog·02_협의_요약 + 페르소나 정의 포함' },
+        { name: '동기화1·2 폐기', stage: '동기화', pm: 8,
+          desc: '개발 프로젝트용 동기화1·2 폐기. 본 프로젝트와 무관' },
+        { name: '양식 100% 동일', stage: '동기화', pm: 9,
+          desc: '본 프로젝트의 양식·정의·합의 방식이 동기화zip에 100% 동일 적용' },
+        { name: '질문 vs 작업 명령', stage: '협업', pm: 9,
+          desc: '질문(~야?/~지?) → 답변만 / 작업 명령(~하자/~만들어줘) → 작업 진행. 클로드는 명령 없이 작업 ❌' },
+        { name: '업무범위 진행 원칙', stage: '협업', pm: 9,
+          desc: '카테고리 단위 완전 종료 후 다음 업무범위 진입. 합의 변경 영향 시 클로드가 동시 진행 필요성 질문' }
+      ]
+    },
+    {
+      title: '프로젝트 정체·페르소나 정의',
+      desc: '본 강의안 프로젝트의 분야·역할명·청중·디자인 책임 분리 확정. (신규)',
+      items: [
+        { name: '프로젝트 정체', stage: '정체성', pm: 9,
+          desc: '전문강사·강의안 디렉터와의 콘텐츠 제작 협업 프로젝트. 모든 분야·모든 콘텐츠 형식 적용 가능' },
+        { name: '분야 2축 (예시)', stage: '정체성', pm: 9,
+          desc: '프로젝트 진입 시 mr.와이가 분야·청중·콘텐츠 형식 정립 후 적용' },
+        { name: '클로드 역할명', stage: '페르소나', pm: 5,
+          desc: '콘텐츠 디렉터 (Lead Content Director). 모든 분야 실전 강의 가능 + 강의안 15년+. 본인이 강의 가능한 베테랑이 후배 강사용 강의안 제작' },
+        { name: '디자인 책임 분리', stage: '페르소나', pm: 9,
+          desc: '디자인은 mr.와이 결정. 클로드는 가독성·전달성 점검만. 클로드의 본질은 도메인 전문성 + 강의안 작성 역량' },
+        { name: '강사 시그니처', stage: '페르소나', pm: 10,
+          desc: '보류 (추후 정의)' }
+      ]
+    },
+    {
+      title: '작업 양식 정의',
+      desc: '강의안 작업의 표준 양식·산출물 3종·매번 확인 항목·고정 항목 확정. (신규)',
+      items: [
+        { name: '강의시간 확인', stage: '작업 절차', pm: 9,
+          desc: '매 작업 요청 시 클로드가 확인 (예: 10분 / 30분 / 1시간 등)' },
+        { name: '청중 확인', stage: '작업 절차', pm: 9,
+          desc: '매 작업 요청 시 확인. 청중 분류는 분야 진입 시 mr.와이가 정립한 트리 기준' },
+        { name: '강사정보 양식', stage: '고정 항목', pm: 10,
+          desc: '1회 작성 후 고정. mr.와이 수정 요청 시만 변경' },
+        { name: '로고 삽입', stage: '고정 항목', pm: 10,
+          desc: '1회 작성 후 고정. mr.와이 수정 요청 시만 변경' },
+        { name: '강사노트', stage: '산출물', pm: 7,
+          desc: '슬라이드 노트=키워드 (본 pptx 내) / 전체 스크립트=별도 docx (스크립트+리액션)' },
+        { name: '워크북', stage: '산출물', pm: 7,
+          desc: '별도 pptx, 챕터별 구분, 챕터 분량에 따라 1장 또는 그 이상 (콘텐츠 디렉터 판단)' },
+        { name: '분야별 통계', stage: '작업 절차', pm: 8,
+          desc: '디폴트 미사용. 필요 시 매번 확인' },
+        { name: '작업 단위', stage: '작업 절차', pm: 9,
+          desc: '제작=통째 / 검토=챕터별' },
+        { name: '산출물 3종', stage: '산출물', pm: 8,
+          desc: '① 본 강의안 pptx ② 워크북 pptx ③ 전체 스크립트 docx' },
+        { name: 'pptx 표준', stage: '산출물', pm: 9,
+          desc: '16:9 비율, Office 2016/365 호환, 심플·가독성·전달성 우선, 적정 동적 효과' }
+      ]
+    },
+    {
+      title: '강의안 운영 룰 정의',
+      desc: '대화 룰·동기화 노출·진행 현황 화면·수정 분류·종료 룰·디자인 자산화·페르소나 디벨롭. (신규 v3)',
+      items: [
+        { name: '간단명료 룰', stage: '대화', pm: 9,
+          desc: '정보 누락·왜곡 ❌ 범위 내 최대한 짧게. 장황 ❌' },
+        { name: '동기화 노출 룰', stage: '동기화', pm: 9,
+          desc: '동기화 완료 후 진행 현황 화면 자동 노출. 진행 강의안 ❌ → worklog. 2개+ → 모두 띄움 (대화 중 우선 / 종료일 임박순)' },
+        { name: '진행 현황 화면 정의', stage: '운영', pm: 9,
+          desc: '전체·챕터별·슬라이드 양 대비 완성도 + 내용·디자인·전체 완성 + 수정 요소(3종)' },
+        { name: '완성도 게이지', stage: '운영', pm: 8,
+          desc: '업무범위 기여도 게이지와 동일 형식 (10칸)' },
+        { name: '수정 분류 3종', stage: '운영', pm: 7,
+          desc: '내용 수정(미완성·오류·추가·삭제·변경) / 디자인 수정(시각 요소, 1~2장 미리보기) / 단순 디벨롭(완성 후 효과 향상)' },
+        { name: '중첩 처리', stage: '운영', pm: 8,
+          desc: '내용+디자인 동시 수정 시 동시 처리. 진행현황 양쪽 표기' },
+        { name: '단순 디벨롭 발동', stage: '운영', pm: 9,
+          desc: 'mr.와이 요청 시만. 클로드 자동 제안 ❌ (종료 우선)' },
+        { name: '종료 룰', stage: '운영', pm: 9,
+          desc: '"완료/종료/이정도면 됐어" 신호 시 즉시 종료. 정말 강력한 제안만 1회 발동' },
+        { name: '종료 후 처리', stage: '운영', pm: 10,
+          desc: 'mr.와이 수정 = 업무 연장 ❌ (별개). `수정하자` 명령 시 → 완료에서 현재 작업 중으로 복귀' },
+        { name: '디자인 자산화', stage: '디자인', pm: 6,
+          desc: '1차: mr.와이 기존 강의안 디자인 참고 → 확정 디자인 자산화 → 후속 강의안 동일 유지/일부 수정/스킨 변형' },
+        { name: '페르소나 디벨롭', stage: '페르소나', pm: 7,
+          desc: '검증된 베테랑 강사 + 디렉터. 청중 관점으로 냉정 판단. 흡수율이 강의 성패' },
+        { name: '제안 발동 룰', stage: '페르소나', pm: 8,
+          desc: '청중 손실 큰 지점만 발동. 남발 ❌, 침묵 ❌, 베테랑 직관' },
+        { name: 'worklog 4축 확장', stage: '구조', pm: 9,
+          desc: '유형별 / 프로젝트별 / 현재 작업 중(신규) / 협업 인프라' }
+      ]
+    },
+    {
+      title: '강의안 기본 원칙',
+      desc: '강의안 디렉터 페르소나(모든 분야)에 100% 적용되는 5가지 핵심 원칙.',
+      items: [
+        { name: '강의안의 정체성', stage: '원칙', pm: 10,
+          desc: '강의안 = 발표 보조 도구. 청중이 직접 읽는 자료 ❌. 강사의 말을 효과적으로 전달·잊지 않게 하는 수단' },
+        { name: '다중 강의안 동시 수정', stage: '원칙', pm: 9,
+          desc: '같은 강의의 강의안 2개 이상 작업 중일 때, mr.와이 수정 요청은 모든 강의안에 동시 반영' },
+        { name: '콘텐츠 배치 룰', stage: '원칙', pm: 10,
+          desc: '본 강의안=함축·임팩트 / 워크북=큐시트 / 전체 스크립트=모든 말. 주제 누락 ❌, 모두 슬라이드에 담기 ❌' },
+        { name: '디자인 균형', stage: '원칙', pm: 8,
+          desc: '함축·임팩트가 디폴트. 단 — 그대로 적어줘야 할 때는 적는다 (베테랑 디렉터 판단)' },
+        { name: '슬라이드 vs 보조자료 판단', stage: '원칙', pm: 9,
+          desc: '슬라이드: 핵심 메시지·시그니처·구조·분기점·질문·시각 임팩트 / 보조자료: 부연·디테일·맥락·해설' },
+        { name: '임팩트 표현 예시', stage: '원칙', pm: 7,
+          desc: '"전화의 중요성" 강조 → 전화 아이콘 하나만으로도 가능. 설명 텍스트 필수 ❌' },
+        { name: '적용 범위', stage: '운영', pm: 9,
+          desc: '강의안 디렉터 페르소나(모든 분야) 100% 적용 / 다른 콘텐츠 분야(기사·칼럼·논평·학술논문 등) 적용 ❌' }
+      ]
+    },
+    {
+      title: '개발 작업 영역 페르소나 보강 (sync4 통합)',
+      desc: '강의안 디렉터 본업의 콘텐츠 품질에 영향 ❌. 개발 작업(빌더·코드·HTML)에만 풀스택 CTO 작업 양식 보강.',
+      items: [
+        { name: 'CTO 보강 모드 — 호출 트리거', stage: '운영', pm: 10,
+          desc: '개발 작업 시 활성. 콘텐츠 작업 시 비활성. 콘텐츠 본업 영향 ❌' },
+        { name: '5대 작업 원칙', stage: '개발', pm: 10,
+          desc: '오버엔지니어링 금지(1번 우선) / 범용성 / 표준화 / 규격화 / 구조 간소화' },
+        { name: 'Tier 1·2·3 분류', stage: '개발', pm: 9,
+          desc: 'T1 수정 / T2 권장 / T3 skip(오버엔지니어링 회피)' },
+        { name: '검증 의무화', stage: '개발', pm: 10,
+          desc: '구문 검증 + grep + 렌더링 검증 + 작업 보고. 생략 ❌' },
+        { name: '트레이드오프 명시', stage: '개발', pm: 8,
+          desc: '옵션·근거 표 + 시니어 권장안 + mr.와이 결정 위임' },
+        { name: '보존 항목', stage: '개발', pm: 10,
+          desc: '프로젝트별 누적 정의. 의존성·사유 명시' },
+        { name: '3중 안전망', stage: '개발', pm: 8,
+          desc: '페르소나·지침서·검증 의무화. 80~90% 보장' },
+        { name: '정직한 한계 보고', stage: '개발', pm: 7,
+          desc: '"아마 동작할 겁니다" ❌. 100% 보장 ❌' },
+        { name: '본업 보존 — 콘텐츠 영향 ❌', stage: '운영', pm: 10,
+          desc: '강의안 메시지·구조·톤·청중 흡수율은 디벨롭 무관' }
+      ]
+    },
+    {
+      title: '대화 룰 보강 (이해 확인 질문 처리)',
+      desc: '"이해했지?·알겠지?" 등 이해 확인 질문 처리 룰. 매우 신중·검토 후 의도 재진술 검증.',
+      items: [
+        { name: '이해 확인 질문 트리거', stage: '대화', pm: 10,
+          desc: '"이해했지?·알겠지?·유사 형태" → 매우 중요한 확인 질문으로 인식' },
+        { name: '답변 자세', stage: '대화', pm: 10,
+          desc: '매우 신중·검토 후 답변. 단순 "네" / "이해했습니다" ❌' },
+        { name: '의도 재진술 검증', stage: '대화', pm: 10,
+          desc: 'mr.와이 의도를 정확히 재진술하여 검증 받음. 짧더라도 핵심 빠짐없이' },
+        { name: '적용 범위', stage: '운영', pm: 10,
+          desc: '강의안 디렉터 페르소나(모든 분야·모든 콘텐츠) 100% 적용' }
+      ]
+    },
+    {
+      title: '다중 강의안 작업 — 원본 동일성 룰 + 자체 검증',
+      desc: '원본 정의·동일성 룰·베테랑 디렉터 자체 검증 룰.',
+      items: [
+        { name: '원본 정의', stage: '용어', pm: 10,
+          desc: '최초 작업 파일 (수정 전). 호칭 "원본", "원본1안", "원본2안"' },
+        { name: '원본 동일성 룰', stage: '원칙', pm: 10,
+          desc: '원본 동일한 1·2안 수정 시 내용은 동일하게 적용. 톤·결만 다름 유지' },
+        { name: '베테랑 디렉터 자체 검증', stage: '검토', pm: 9,
+          desc: '작업 후 강의=쇼·청중 흡수율 관점 검증 → 미흡 보고 → 디벨롭 합의' },
+        { name: '동시 반영', stage: '운영', pm: 10,
+          desc: '수정 시 모든 안에 동시 반영. 한쪽만 수정 ❌' }
+      ]
+    },
+    {
+      title: '동기화zip 규격 표준 복원',
+      desc: '5종 표준 복원. 페르소나·룰·자산 1% 변형 ❌, 형식만 복원.',
+      items: [
+        { name: '5종 표준 복원', stage: '운영', pm: 10,
+          desc: 'instruction3.md / terms.html / worklog.html / 02_summary.md / sync3.md' },
+        { name: '페르소나·룰·자산 보존', stage: '원칙', pm: 10,
+          desc: '강의안 디렉터 페르소나·강의안 기본 원칙·CTO 보강·이해 확인·원본 동일성 룰·자체 검증 모두 그대로 유지' },
+        { name: 'zip 명칭 통일', stage: '용어', pm: 9,
+          desc: '동기화zip.zip → sync3.zip (다른 클로드들과 표준 일치)' },
+        { name: '약속 명문화', stage: '원칙', pm: 10,
+          desc: '동기화 패키지 파일 구성·이름은 표준. 임의 변경 ❌. 페르소나·내용만 디벨롭' }
+      ]
+    },
+    {
+      title: '100% 즉시 이어가기 룰 + 통합 패키지',
+      desc: 'sync_dir.zip 첨부 = 100% 동일 페르소나 가동 + 강의안 작업본 일체 이어가기.',
+      items: [
+        { name: '100% 즉시 이어가기 룰', stage: '운영', pm: 10,
+          desc: 'sync_dir.zip 첨부 시 추가 확인 ❌, 분야 정립 절차 ❌, 즉시 작업 진입' },
+        { name: '강의안 통합 패키지', stage: '운영', pm: 10,
+          desc: 'lectures/ 폴더에 강의안 작업본 일체 포함' },
+        { name: '동기화 명령 동작 정의', stage: '운영', pm: 10,
+          desc: '`동기화하자` vs `동기화파일 올려줘` 명확히 구분' },
+        { name: '다른 클로드 혼란 방지', stage: '원칙', pm: 10,
+          desc: 'instruction3·sync3에 룰 명문화' }
+      ]
+    },
+    {
+      title: '박제 룰 — 자동 안내·산출물 등록·종결·업무 박제·핸드오프 (v7)',
+      desc: '인스트럭션 갱신 자동 안내 + 강의안 산출물 등록(A+B 트리거) + 종료 시점 종결 절차 + 업무 진행 박제·새 대화창 이전 + 박제 대기 등록 시 자동 첨부·대화창 한도 핸드오프. 변경 판단 기준·동기화 조건은 기존 정의 그대로.',
+      items: [
+        { name: '인스트럭션 갱신 자동 안내', stage: '운영', pm: 10,
+          desc: '인스트럭션 변경 시 ⚠️ 안내 + 갱신 전문 .md 즉시 제공 + 적용 확인 요청' },
+        { name: '갱신 적용 확인 룰', stage: '운영', pm: 9,
+          desc: '"확인했어"·"적용했어" 응답 시 추가 확인 ❌' },
+        { name: '강의안 산출물 zip 패키징', stage: '산출물', pm: 10,
+          desc: '강의안 산출물(pptx·docx·pdf 등) 생성·갱신 시 zip 1개로 압축 + 설명글 파일 포함' },
+        { name: '발동 트리거 A — 명령어', stage: '운영', pm: 10,
+          desc: '"등록용으로 패키지해줘" / "프로젝트 지식 등록용으로 줘" 등 명시 명령' },
+        { name: '발동 트리거 B — 종료·중간완료', stage: '운영', pm: 10,
+          desc: '"여기까지 하자" / "수정해서 알려줄게" / "완료" / "확정" / "이정도면 됐어" 등' },
+        { name: '중간완료 정의', stage: '운영', pm: 9,
+          desc: '추가 검토·수정 위해 잠시 멈추는 시점. 완전 종료 ❌이지만 산출물 보존 → 등록 안내 발동' },
+        { name: '설명글 파일 변환', stage: '산출물', pm: 10,
+          desc: '채팅 메시지는 프로젝트 지식 등록 불가 → 반드시 .md/.docx 파일 변환' },
+        { name: '등록 가이드 자동 표시', stage: '운영', pm: 10,
+          desc: '응답 끝에 4단계 등록 가이드 (압축 해제·개별 파일 업로드·zip 직접 ❌·지원 포맷) 고정 표시' },
+        { name: '기존 등록본 교체 권장', stage: '운영', pm: 8,
+          desc: '갱신 산출물 등록 시 기존 본 교체 권장 안내' },
+        { name: '작업 중 출력과의 구분', stage: '원칙', pm: 10,
+          desc: '작업 중 호출 = 개별 파일+채팅 설명글 / A 또는 B 트리거 = zip+설명글 파일' },
+        { name: '종료 시점 종결 절차', stage: '운영', pm: 10,
+          desc: '"오늘 여기까지" / "종료" / "쉬자" 신호 시 6단계 분기 자동 수행' },
+        { name: '박제 대기 항목 자동 박제', stage: '운영', pm: 10,
+          desc: '종료 시점에 미박제 합의 자동 박제 + 동기화 실행 → 인스트럭션 .md 제공' },
+        { name: '업무 진행 박제 (v6)', stage: '운영', pm: 10,
+          desc: '대화 중 업무 진행/예정/완료 사항 → worklog "현재 업무범위"에 항상 박제. 동기화 시점에 반영' },
+        { name: '새 대화창 이전 트리거 (v6)', stage: '운영', pm: 10,
+          desc: '"새 대화창 가자"·"새 대화창 갈게" 신호 시 CTO 자동 동기화 실행' },
+        { name: '한 줄 전달 메시지 (v6)', stage: '운영', pm: 10,
+          desc: '새 대화창 시작용. 형식: [프로젝트명] 진행 중. [현재 단계/위치]까지 했어. 이어가자' },
+        { name: '박제 대기 등록 자동 첨부 (v7)', stage: '운영', pm: 10,
+          desc: '박제 대기 등록 명령 시 5개 구성 자동 첨부 (a 박제 결과 / b 사용률 체감 추정 / c 남은 작업 리스트 / d 지식 슬롯 zip / e 새 대화창 한 줄 메시지)' },
+        { name: '사용률 체감 추정 (v7)', stage: '운영', pm: 9,
+          desc: '대화창 한도 사용률 체감 기반 추정. 정확 측정 ❌ 명시. 70% 임계로 자동 첨부 분기' },
+        { name: '70% 임계 분기 (v7)', stage: '운영', pm: 10,
+          desc: '70% 이상 → 5개 모두 선제 제공 / 70% 미만 → (a)·(c) 필수, 나머지 선택' },
+        { name: '지식 슬롯 zip 범위 룰 (v7)', stage: '운영', pm: 10,
+          desc: '포함 = worklog·terms·요약·보고서·운영 자산 / 제외 = 일회성 응답 / 없을 시 (d) 생략 + 명시' },
+        { name: '본 프로젝트 정의 우선', stage: '원칙', pm: 10,
+          desc: '변경 판단 기준·동기화 조건 = 기존 정의 그대로. 본 룰들은 안내·전문 제공·종결 절차·박제·핸드오프 동작만 추가' }
+      ]
+    }
+  ];
+
+  // ===== 렌더링 =====
+
+  const $ = (id) => document.getElementById(id);
+
+  function renderGauge(pm) {
+    const cd = 10 - pm;
+    let html = '<div class="gauge">';
+    for (let i = 0; i < pm; i++) html += '<span class="gauge-cell gauge-pm"></span>';
+    for (let i = 0; i < cd; i++) html += '<span class="gauge-cell gauge-cd"></span>';
+    html += '</div>';
+    return html;
+  }
+
+  function renderItemsTable(items, gaugeLabel) {
+    if (!items || items.length === 0) {
+      return '<div style="padding:14px;color:var(--ink-mute);font-size:12px;font-style:italic;">아직 등록된 항목이 없습니다.</div>';
+    }
+    const itemsHtml = items.map((item, idx) =>
+      `<tr><td>${idx + 1}</td><td>${item.name}</td><td>${item.stage}</td><td>${renderGauge(item.pm)}</td></tr>`
+    ).join('');
+    const descsHtml = items.map(item =>
+      `<li><b>${item.name}</b> — ${item.desc}</li>`
+    ).join('');
+    return `
+      <table class="work">
+        <thead><tr><th>#</th><th>항목</th><th>단계</th><th>기여도 (PM↔CD)</th></tr></thead>
+        <tbody>${itemsHtml}</tbody>
+      </table>
+      <div class="gauge-legend">${gaugeLabel || '🟨 PM (mr.와이) · 🟦 CD (콘텐츠 디렉터) — 결정·책임 비중'}</div>
+      <details class="descs"><summary>설명 보기</summary><ol>${descsHtml}</ol></details>
+    `;
+  }
+
+  function renderTypeTree() {
+    // 강의안을 유형별로 분류
+    const tree = JSON.parse(JSON.stringify(typeTree));
+    lectures.forEach(lec => {
+      const path = lec.audienceMain.split('>').map(s => s.trim());
+      if (path.length >= 2 && tree[path[0]] && tree[path[0]][path[1]]) {
+        tree[path[0]][path[1]].push(lec);
+      }
+    });
+
+    let html = '';
+    for (const [d1, sub] of Object.entries(tree)) {
+      const d1Count = Object.values(sub).reduce((acc, arr) => acc + arr.length, 0);
+      html += `<div class="tree-node">
+        <div class="tree-row depth-1" data-toggle>
+          <span class="tree-toggle">▶</span>
+          <span>${d1}</span>
+          <span class="tree-count">강의안 ${d1Count}개</span>
+        </div>
+        <div class="tree-children">`;
+      for (const [d2, arr] of Object.entries(sub)) {
+        html += `<div class="tree-node">
+          <div class="tree-row depth-2" data-toggle>
+            <span class="tree-toggle">▶</span>
+            <span>${d2}</span>
+            <span class="tree-count">${arr.length}개</span>
+          </div>
+          <div class="tree-children">`;
+        if (arr.length === 0) {
+          html += `<div class="tree-empty">아직 등록된 강의안이 없습니다.</div>`;
+        } else {
+          arr.forEach(lec => {
+            html += `<div class="lecture-card in-tree" data-lecture="${lec.id}">
+              <span class="lecture-card-id">${lec.id}</span>
+              <span class="lecture-card-title">${lec.title}</span>
+              <span class="lecture-card-meta">${lec.date}</span>
+              <span class="lecture-card-arrow">›</span>
+            </div>`;
+          });
+        }
+        html += `</div></div>`;
+      }
+      html += `</div></div>`;
+    }
+    $('typeTree').innerHTML = html;
+
+    // 토글 동작
+    document.querySelectorAll('#typeTree [data-toggle]').forEach(row => {
+      row.addEventListener('click', (e) => {
+        e.stopPropagation();
+        row.parentElement.classList.toggle('open');
+      });
+    });
+    // 강의안 클릭
+    document.querySelectorAll('#typeTree [data-lecture]').forEach(card => {
+      card.addEventListener('click', (e) => {
+        e.stopPropagation();
+        showLectureDetail(card.dataset.lecture);
+      });
+    });
+  }
+
+  function renderProjectList() {
+    if (lectures.length === 0) {
+      $('projectList').innerHTML = `<div style="padding:24px;text-align:center;color:var(--ink-mute);font-size:13px;background:var(--bg-card);border:1px solid var(--line);border-radius:8px;">아직 등록된 강의안이 없습니다.</div>`;
+      return;
+    }
+    // 시간 역순 (최신 먼저)
+    const sorted = [...lectures].sort((a, b) => b.date.localeCompare(a.date));
+    let html = '<div class="archive-list">';
+    sorted.forEach((lec, idx) => {
+      html += `<div class="archive-item" data-lecture="${lec.id}">
+        <span class="archive-num">${String(idx + 1).padStart(2, '0')}</span>
+        <span class="archive-title">${lec.title}</span>
+        <span class="archive-count">${lec.audienceMain} · ${lec.date}</span>
+        <span class="archive-arrow">›</span>
+      </div>`;
+    });
+    html += '</div>';
+    $('projectList').innerHTML = html;
+    document.querySelectorAll('#projectList [data-lecture]').forEach(item => {
+      item.addEventListener('click', () => showLectureDetail(item.dataset.lecture));
+    });
+  }
+
+  function renderInfra() {
+    // 진행 중
+    let html = '';
+    infraInProgress.forEach(scope => {
+      html += `<div class="infra-section">
+        <div class="infra-header">
+          <span class="infra-name">${scope.title}</span>
+          <span class="infra-status in-progress">진행 중</span>
+        </div>
+        <div class="infra-desc">${scope.desc}</div>
+        ${renderItemsTable(scope.items)}
+      </div>`;
+    });
+    $('infraInProgress').innerHTML = html;
+
+    // 완료 archive (목록)
+    const archHtml = infraArchive.map((scope, idx) => `
+      <div class="archive-item" data-archive="${idx}">
+        <span class="archive-num">${String(idx + 1).padStart(2, '0')}</span>
+        <span class="archive-title">${scope.title}</span>
+        <span class="archive-count">${scope.items.length}개 항목</span>
+        <span class="archive-arrow">›</span>
+      </div>
+    `).join('');
+    $('infraArchive').innerHTML = archHtml;
+    document.querySelectorAll('#infraArchive [data-archive]').forEach(el => {
+      el.addEventListener('click', () => showInfraDetail(parseInt(el.dataset.archive)));
+    });
+
+    $('infraCount').textContent = infraArchive.length;
+  }
+
+  function showLectureDetail(id) {
+    const lec = lectures.find(l => l.id === id);
+    if (!lec) return;
+    let subHtml = '';
+    if (lec.audienceSub && lec.audienceSub.length > 0) {
+      subHtml = `<div style="margin-top:6px;font-size:12px;color:var(--ink-mute);">부 청중: ${lec.audienceSub.join(' / ')}</div>`;
+    }
+    $('lectureDetailContent').innerHTML = `
+      <div class="infra-section">
+        <div class="infra-header">
+          <span class="infra-num">${lec.id}</span>
+          <span class="infra-name">${lec.title}</span>
+          <span class="infra-status${lec.status === '진행 중' ? ' in-progress' : ''}">${lec.status || '완료'}</span>
+        </div>
+        <div class="infra-desc">${lec.scope || ''}<br>주 청중: ${lec.audienceMain} · 일자: ${lec.date}${subHtml}</div>
+        ${renderItemsTable(lec.items)}
+      </div>
+    `;
+    switchView('lectureDetail');
+  }
+
+  function showInfraDetail(idx) {
+    const scope = infraArchive[idx];
+    $('infraDetailContent').innerHTML = `
+      <div class="infra-section">
+        <div class="infra-header">
+          <span class="infra-num">${String(idx + 1).padStart(2, '0')}</span>
+          <span class="infra-name">${scope.title}</span>
+          <span class="infra-status">완료</span>
+        </div>
+        <div class="infra-desc">${scope.desc}</div>
+        ${renderItemsTable(scope.items)}
+      </div>
+    `;
+    switchView('infraDetail');
+  }
+
+  function renderCurrentList() {
+    const inProgress = lectures.filter(l => l.status === '진행 중');
+    if (inProgress.length === 0) {
+      $('currentList').innerHTML = `<div style="padding:24px;text-align:center;color:var(--ink-mute);font-size:13px;background:var(--bg-card);border:1px solid var(--line);border-radius:8px;">현재 진행 중인 강의안이 없습니다.</div>`;
+      return;
+    }
+    let html = '';
+    inProgress.forEach(lec => {
+      const overall = lec.overall || 0;
+      const content = lec.content || 0;
+      const design = lec.design || 0;
+      html += `<div class="infra-section">
+        <div class="infra-header">
+          <span class="infra-num">${lec.id}</span>
+          <span class="infra-name">${lec.title}</span>
+          <span class="infra-status in-progress">진행 중</span>
+        </div>
+        <div class="infra-desc">주 청중: ${lec.audienceMain} · 일자: ${lec.date}</div>
+        <table class="work">
+          <thead><tr><th>구분</th><th colspan="2">완성도</th><th>비고</th></tr></thead>
+          <tbody>
+            <tr><td>전체</td><td colspan="2">${renderGauge(overall)}</td><td>${overall * 10}%</td></tr>
+            <tr><td>내용</td><td colspan="2">${renderGauge(content)}</td><td>${content * 10}%</td></tr>
+            <tr><td>디자인</td><td colspan="2">${renderGauge(design)}</td><td>${design * 10}%</td></tr>
+            <tr><td>슬라이드</td><td colspan="2">${lec.slidesDone || 0} / ${lec.slidesTotal || '?'}</td><td>${lec.slidesTotal ? Math.round(((lec.slidesDone || 0) / lec.slidesTotal) * 100) + '%' : '—'}</td></tr>
+          </tbody>
+        </table>
+        ${lec.chapters && lec.chapters.length > 0 ? `
+          <div style="margin-top:14px;font-size:12px;font-weight:600;color:var(--ink-soft);margin-bottom:6px;">챕터별 완성도</div>
+          <table class="work">
+            <thead><tr><th>#</th><th>챕터</th><th>완성도</th><th>상태</th></tr></thead>
+            <tbody>${lec.chapters.map((ch, i) => `<tr><td>${i + 1}</td><td>${ch.name}</td><td>${renderGauge(ch.progress || 0)}</td><td>${ch.status || '진행 중'}</td></tr>`).join('')}</tbody>
+          </table>
+        ` : ''}
+        ${lec.revisions && lec.revisions.length > 0 ? `
+          <div style="margin-top:14px;font-size:12px;font-weight:600;color:var(--ink-soft);margin-bottom:6px;">수정 요소</div>
+          <ul style="font-size:12.5px;color:var(--ink-soft);padding-left:20px;">
+            ${lec.revisions.map(r => `<li><b>[${r.type}]</b> ${r.desc}</li>`).join('')}
+          </ul>
+        ` : ''}
+      </div>`;
+    });
+    $('currentList').innerHTML = html;
+  }
+
+  function switchView(view) {
+    ['typeView', 'projectView', 'currentView', 'infraView', 'lectureDetailView', 'infraDetailView'].forEach(id => {
+      $(id).classList.add('hidden');
+    });
+    if (view === 'type') $('typeView').classList.remove('hidden');
+    else if (view === 'project') $('projectView').classList.remove('hidden');
+    else if (view === 'current') $('currentView').classList.remove('hidden');
+    else if (view === 'infra') $('infraView').classList.remove('hidden');
+    else if (view === 'lectureDetail') $('lectureDetailView').classList.remove('hidden');
+    else if (view === 'infraDetail') $('infraDetailView').classList.remove('hidden');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // 최상단 토글
+  document.querySelectorAll('.top-tab').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.top-tab').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      switchView(btn.dataset.view);
+    });
+  });
+  $('backFromLecture').addEventListener('click', () => {
+    const active = document.querySelector('.top-tab.active');
+    switchView(active ? active.dataset.view : 'type');
+  });
+  $('backFromInfra').addEventListener('click', () => switchView('infra'));
+
+  // 초기 렌더
+  $('lectureCount').textContent = lectures.length;
+  renderTypeTree();
+  renderProjectList();
+  renderCurrentList();
+  renderInfra();
+
+  // 마스터 구축 모달
+  const masterModal = $('masterModal');
+  $('masterBtn').addEventListener('click', () => masterModal.classList.add('show'));
+  $('masterClose').addEventListener('click', () => masterModal.classList.remove('show'));
+  masterModal.addEventListener('click', (e) => {
+    if (e.target === masterModal) masterModal.classList.remove('show');
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') masterModal.classList.remove('show');
+  });
+</script>
+
+
+        <details class="meta-integration">
+            <summary>📌 동기화 통합 운용 — 메타 룰 ⓐ~ⓣ 박제 (마스터: instruction_cto.md §17)</summary>
+            <div class="content">
+                <p><strong>날짜:</strong> 2026-04-29</p>
+                <p><strong>박제 위치:</strong> 본 sync 부록 A (instruction §17 자동 전파본)</p>
+                <p><strong>적용 메타 룰:</strong> ⓐ 응답 스타일 / ⓑ 박제·갱신·동기화 / ⓒ 항구적 / ⓓ 반복 응답 / ⓔ 질문·확인 응답 / ⓕ 동기화 자동 적용 / ⓖ 산출물 룰 / ⓗ 90% 알림 / ⓘ + ⓘ-1 새 대화창 4종 / ⓙ Chief CTO 정체성 / ⓚ 파일 호출 룰 / ⓛ "이제 뭐하지?" 자동 안내 / ⓜ 인스트럭션 별도 제공 / ⓝ 업무파일 호출 명칭 + 페르소나 자동 매칭 / ⓞ 페르소나 명명 + 호칭 통일 / ⓟ 메타룰 자동 반영 / ⓠ "최신" 정의 룰 / ⓡ 페르소나 격리 / ⓢ 클로드 현황 호출 / ⓣ 업무파일 상단 고정 클로드 현황</p>
+                <p><strong>구조:</strong> 마스터(instruction_cto.md §17) → 본 sync 부록 A로 자동 전파 (CTO 책임)</p>
+                <p><strong>페르소나 자체 룰:</strong> 본 sync에 격리 (통합 메타에 흡수 ❌)</p>
+            </div>
+        </details>
+
+
+        <details class="meta-integration u-rule">
+            <summary>📌 동기화 통합 운용 — 메타 룰 ⓤ CTO 책임·자세 + L1 강화 룰 박제 (마스터: instruction_cto.md §17 + §1.3)</summary>
+            <div class="content">
+                <p><strong>날짜:</strong> 2026-04-29 (통합 직후 mr.와이 명시 박제)</p>
+                <p><strong>박제 위치:</strong> 본 sync 부록 A 자동 갱신본 (마스터 §17 ⓤ 룰)</p>
+                <p><strong>ⓤ CTO 책임·자세 룰 (모든 클로드 동일):</strong></p>
+                <ol>
+                    <li>책임 100% — 변명·핑계 ❌</li>
+                    <li>검토 후 적용 — mr.와이 지시 → 즉시 실행 ❌. 검토 → 결정 → 적용 → 검증 → 디벨롭</li>
+                    <li>자발적 제안 의무 — 침묵 ❌</li>
+                    <li>옵션 떠넘김 ❌ — CTO 결정 + 근거 + 결과</li>
+                    <li>전수 검토 의무 — 압박 ❌ 시에도 자체 전수</li>
+                    <li>사용자 시점 검증 — 데이터 검증만 ❌</li>
+                    <li>기초 간과 ❌ — 1년차 수준 기초도 자체 점검</li>
+                    <li>표준·범용·오버엔지니어링 ❌ — 디폴트 적용</li>
+                    <li>완벽성 의무 — 100% 표준화된 프로그래밍</li>
+                    <li>변명·핑계 ❌ (재차) — 정의 부족 시 자체 보완</li>
+                </ol>
+                <p><strong>L1 강화 룰 (개발총괄 전용 — §1.3):</strong> ⓤ 룰의 10배 이상 강화 적용. L1 결함 = 모든 L2·L3에 전파되는 시스템 결함 → 절대 ❌</p>
+                <p><strong>적용 사유:</strong> 본 동기화 통합 작업 중 CTO 자격 미입증 사실 정직 인정. mr.와이 명시 박제로 모든 클로드 작동 본질 강화.</p>
+            </div>
+        </details>
+
+</body>
+</html>

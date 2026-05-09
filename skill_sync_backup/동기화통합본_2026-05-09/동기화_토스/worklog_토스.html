@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>worklog — 업무범위 + 트리거 구동 기록 (insu)</title>
+<style>
+  :root {
+    --ink: #1a1a1a;
+    --ink-mute: #6b7280;
+    --line: #e5e7eb;
+    --bg: #fafafa;
+    --bg-card: #ffffff;
+    --done: #10b981;
+    --progress: #f59e0b;
+    --accent: #1a4d3a;
+    --replace: #2a5a8a;
+    --analyze: #8a4a2a;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, "Segoe UI", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+    color: var(--ink);
+    background: var(--bg);
+    margin: 0;
+    padding: 24px;
+    line-height: 1.55;
+  }
+  .container { max-width: 960px; margin: 0 auto; }
+  h1 { font-size: 22px; margin: 0 0 6px; }
+  h2 {
+    font-size: 16px;
+    margin: 32px 0 12px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--line);
+  }
+  h3 { font-size: 14px; margin: 16px 0 8px; color: var(--ink-mute); }
+  .note { font-size: 12px; color: var(--ink-mute); margin-bottom: 16px; }
+  .tabs {
+    display: flex;
+    gap: 4px;
+    margin: 20px 0 16px;
+    border-bottom: 2px solid var(--line);
+  }
+  .tab {
+    padding: 10px 18px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink-mute);
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    transition: all 0.15s;
+  }
+  .tab:hover { color: var(--ink); }
+  .tab.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 13px;
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    overflow: hidden;
+    margin-bottom: 16px;
+  }
+  th, td {
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--line);
+    text-align: left;
+    vertical-align: top;
+  }
+  th { background: #f3f4f6; font-weight: 600; }
+  tr:last-child td { border-bottom: none; }
+  .placeholder {
+    color: var(--ink-mute);
+    font-style: italic;
+    padding: 20px;
+    text-align: center;
+    background: var(--bg-card);
+    border: 1px dashed var(--line);
+    border-radius: 6px;
+  }
+
+  /* 트리거 구동 기록 */
+  .search-box {
+    margin-bottom: 16px;
+    position: relative;
+  }
+  .search-box input {
+    width: 100%;
+    padding: 10px 16px 10px 38px;
+    font-size: 13px;
+    font-family: inherit;
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    outline: none;
+  }
+  .search-box input:focus { border-color: var(--accent); }
+  .search-box::before {
+    content: "⌕";
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--ink-mute);
+    font-size: 16px;
+  }
+
+  .year-block { margin-bottom: 20px; }
+  .year-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--ink);
+    margin: 16px 0 10px;
+  }
+  .month-block {
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    margin-bottom: 8px;
+    overflow: hidden;
+  }
+  .month-block summary {
+    padding: 10px 14px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink);
+    list-style: none;
+  }
+  .month-block summary::-webkit-details-marker { display: none; }
+  .month-block summary::before {
+    content: "▶";
+    font-size: 9px;
+    margin-right: 8px;
+    color: var(--ink-mute);
+    transition: transform 0.15s;
+    display: inline-block;
+  }
+  .month-block[open] summary::before { transform: rotate(90deg); }
+  .month-block[open] summary { border-bottom: 1px solid var(--line); }
+  .month-count {
+    color: var(--ink-mute);
+    font-weight: 400;
+    font-size: 11px;
+    margin-left: 6px;
+  }
+  .record-list {
+    padding: 8px 14px 12px;
+    list-style: none;
+    margin: 0;
+  }
+  .record-list li {
+    padding: 6px 0;
+    border-bottom: 1px dashed var(--line);
+    font-size: 13px;
+  }
+  .record-list li:last-child { border-bottom: none; }
+  .record-list a {
+    color: var(--replace);
+    text-decoration: none;
+    font-weight: 500;
+  }
+  .record-list a:hover { text-decoration: underline; }
+  .record-list .error-tag {
+    color: #dc2626;
+    font-weight: 600;
+    font-size: 11px;
+    margin-left: 6px;
+  }
+  .record-list .error-detail {
+    margin-top: 6px;
+    padding: 8px 10px;
+    background: #fef2f2;
+    border-left: 3px solid #dc2626;
+    border-radius: 3px;
+    color: #555;
+    font-size: 12px;
+    line-height: 1.6;
+    display: none;
+  }
+  .record-list li.expanded .error-detail { display: block; }
+  .record-list .error-link {
+    color: #dc2626 !important;
+    cursor: pointer;
+  }
+
+  /* 새보험분석 기록 */
+  .analyze-list {
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .analyze-item {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--line);
+    font-size: 13px;
+  }
+  .analyze-item:last-child { border-bottom: none; }
+  .analyze-item.hidden { display: none; }
+  .analyze-date {
+    color: var(--ink-mute);
+    font-size: 11px;
+    margin-right: 8px;
+    font-family: 'SF Mono', Menlo, monospace;
+  }
+  .analyze-link {
+    color: var(--analyze);
+    text-decoration: none;
+    font-weight: 500;
+    cursor: pointer;
+  }
+  .analyze-link:hover { text-decoration: underline; }
+  .analyze-summary {
+    margin-top: 4px;
+    color: var(--ink-mute);
+    font-size: 12px;
+    line-height: 1.5;
+    padding-left: 0;
+    display: none;
+  }
+  .analyze-item.expanded .analyze-summary { display: block; }
+
+  .pagination {
+    display: flex;
+    gap: 4px;
+    justify-content: center;
+    margin-top: 16px;
+    flex-wrap: wrap;
+  }
+  .page-btn {
+    padding: 6px 11px;
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    color: var(--ink-soft);
+    font-family: inherit;
+  }
+  .page-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .page-btn.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+  .page-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .empty-msg {
+    text-align: center;
+    color: var(--ink-mute);
+    padding: 32px;
+    font-size: 13px;
+    font-style: italic;
+  }
+  .hidden { display: none !important; }
+
+  details.box {
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 8px 12px;
+    margin-bottom: 8px;
+  }
+  details.box summary { cursor: pointer; font-weight: 600; font-size: 13px; }
+  details.box[open] summary { margin-bottom: 8px; }
+
+  .gauge { display: inline-flex; gap: 1px; }
+  .gauge span { width: 8px; height: 12px; background: var(--line); border-radius: 1px; }
+  .gauge .pm { background: #fbbf24; }
+  .gauge .cto { background: #3b82f6; }
+  .status-done { color: var(--done); font-weight: 600; }
+  .status-progress { color: var(--progress); font-weight: 600; }
+  .status-pending { color: #d97706; font-weight: 600; }
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>worklog — 업무범위 + 트리거 구동 기록</h1>
+<p class="note">최종 갱신: 2026-04-27 v5 (insu) · 보험설계 상담실무용 · 본 파일은 동기화 메타 룰에 따라 동기화4 패키지에 최신본 자동 반영</p>
+
+<div class="tabs">
+  <div class="tab active" data-tab="worklog">📋 업무범위</div>
+  <div class="tab" data-tab="trigger">🔄 트리거 구동 기록</div>
+</div>
+
+<!-- 업무범위 탭 -->
+<div class="tab-content active" id="tab-worklog">
+
+  <h2>📌 현재 업무범위</h2>
+  <details class="box" open>
+    <summary>⑤ 운영 룰 인젝션(§16) 박제 + 미처리/미확정 16개 추적 (진행 중 — 2026-04-28)</summary>
+    <p class="note"><strong>진입 컨텍스트</strong>: 본 세션은 ① 가족 보험 구분(§13-7) 적용 검증 → ② 운영 룰 인젝션 도입 → ③ 미처리/미확정 16개 식별 및 자체 처리 결정 6건 → ④ §16 박제·5파일 동기화 흐름으로 진행. 새 대화창 클로드는 본 표를 기준으로 미완료 항목을 우선순위대로 처리.</p>
+    <table>
+      <thead><tr><th>분류</th><th>#</th><th>항목</th><th>상태</th><th>비고</th></tr></thead>
+      <tbody>
+        <tr><td rowspan="3" style="background:#fff8dc;"><strong>A. 기존 미처리 (3)</strong></td><td>1</td><td>§13-7 가족 PNG 룰 <strong>실 트리거 구동 검증</strong></td><td class="status-done">✅</td><td>2026-04-29 본 대화창에서 정상 구동 검증 완료. 직전 세션 6명 케이스(배주현·김선정·강선영·하상배·박훈·오서현)에서 가족 PNG 추가 생성·정렬·헤더·zip 호환성 모두 정상 동작 확인. 본 세션 이대훈님(가족 케이스 ❌) 본인 PNG·메시지 정상 생성으로 워크플로우 추가 검증</td></tr>
+        <tr><td>2</td><td><code>pre_report_gen.py</code> <strong>정렬 헬퍼 함수 부재</strong></td><td class="status-done">✅</td><td>발동 조건 룰 신설 — 웹 트리거 또는 프로그램 자동화 구동 시 1회 통작업(고객 레포트 생성 전체 업무 1세트)을 4~5회 진행 후 정렬 작업 부담·실수가 반복적으로 재발 시 발동. 반복 ❌ 시 보류 유지 (5대 원칙 1번 — 오버엔지니어링 금지 부합)</td></tr>
+        <tr><td>3</td><td>운영 룰 인젝션의 <strong>인스트럭션 박제</strong></td><td class="status-done">✅</td><td>§16 신설 완료 (직전 세션)</td></tr>
+
+        <tr><td rowspan="4" style="background:#e8f5e9;"><strong>B. 충돌·중복 정리 (4)</strong></td><td>4</td><td>박제 시점 정의 충돌 (§12-1 vs §16)</td><td class="status-done">✅</td><td>자체 처리 — §16-5에 시점·동작 분리 명시</td></tr>
+        <tr><td>5</td><td>ZIP 명령 구분 (§9 sync4_insu.zip vs §16-d 지식슬롯 ZIP)</td><td class="status-done">✅</td><td>자체 처리 — §16-6에 트리거·범위 별개 명시</td></tr>
+        <tr><td>6</td><td>한 줄 메시지 형식 통일 (§12-3 vs §16-e)</td><td class="status-done">✅</td><td>자체 처리 — §12-3 한국어 형식 우선 ("[프로젝트명] 진행 중. [현재 단계]까지 했어. 이어가자")</td></tr>
+        <tr><td>7</td><td>새 대화창 첫 응답 룰 vs 한 줄 메시지 (§2 vs §16-e)</td><td class="status-done">✅</td><td>자체 처리 — §16-7에 시점 분리 명시</td></tr>
+
+        <tr><td rowspan="3" style="background:#e3f2fd;"><strong>C. 인스트럭션 연쇄 갱신 (3)</strong></td><td>8</td><td>§14 우선순위 표 — §16 추가</td><td class="status-done">✅</td><td>본 세션 완료</td></tr>
+        <tr><td>9</td><td>§15 자기 점검 체크리스트 — §16 점검 항목 추가</td><td class="status-done">✅</td><td>13항목 → 14항목 갱신</td></tr>
+        <tr><td>10</td><td>terms_insu.html — 신규 용어 추가</td><td class="status-done">✅</td><td>§16 행 신설 + 자기점검 14항목 동기화</td></tr>
+
+        <tr><td rowspan="4" style="background:#fce4ec;"><strong>D. worklog 박제 대상 (4)</strong></td><td>11</td><td>가족 보험 구분 적용 검증 (문서·코드 일치, 실 구동 ❌)</td><td class="status-done">✅</td><td>본 세션 박제 완료</td></tr>
+        <tr><td>12</td><td>운영 룰 인젝션 적용</td><td class="status-done">✅</td><td>§16 박제 완료</td></tr>
+        <tr><td>13</td><td>미수행: §13-7 실 트리거 구동 검증 박제</td><td class="status-done">✅</td><td>본 표 항목 #1과 동일 — 박제 완료</td></tr>
+        <tr><td>14</td><td>미수행: 가족 정렬 헬퍼 함수 보강 검토 박제</td><td class="status-done">✅</td><td>본 표 항목 #2와 동일 — 박제 완료</td></tr>
+
+        <tr><td rowspan="2" style="background:#f3e5f5;"><strong>E. 운영 룰 모호 영역 (2)</strong></td><td>15</td><td>"feel-based 70% 임계값" 산정 기준 명시</td><td class="status-done">✅</td><td>자체 처리 — §16-3에 4지표(턴 수·메시지량·파일 교환·복잡도) 명시</td></tr>
+        <tr><td>16</td><td>(d) 지식슬롯 ZIP 무파일 케이스 정의</td><td class="status-done">✅</td><td>자체 처리 — §16-4에 "본 대화에서 생성된 지식슬롯 파일 없음" 명시 룰 정의</td></tr>
+      </tbody>
+    </table>
+    <p class="note"><strong>새 대화창 클로드용 안내</strong>: ⑤번 16개 항목 전부 처리 완료. 본 세션 이후 신규 업무는 ⑥번 박스 참조.</p>
+    <p class="note"><strong>산출물</strong>: instruction4_insu.md v6 · 갱신된 sync4_insu.zip (5 파일) · 본 worklog 박제분</p>
+  </details>
+
+  <details class="box">
+    <summary>⑥ 사전레포트 트리거 실 구동 + 김리아 롯데 새보험분석 mappings 갱신 (완료 — 2026-04-29)</summary>
+    <p class="note"><strong>진입 컨텍스트</strong>: ① ⑤번 ⏳ 2건 정리 (실 구동 검증 ✅ + 정렬 헬퍼 발동 조건 룰 신설) → ② 사전레포트 트리거 실 구동 (이대훈님 본인 1명 PNG·메시지·zip 정상 생성) → ③ 김리아 롯데 let:simple 간편3·N·10 신상품 새보험분석 → ④ mappings 갱신 + lotte.json 신규 등록 → ⑤ 통합 zip 1개 패키징.</p>
+    <table>
+      <thead><tr><th>분류</th><th>#</th><th>항목</th><th>상태</th><th>기여도 (PM 🟨 / CTO 🟦)</th></tr></thead>
+      <tbody>
+        <tr><td rowspan="2" style="background:#fff8dc;"><strong>A. ⑤번 ⏳ 2건 정리 (2)</strong></td><td>1</td><td>§13-7 가족 PNG 룰 실 트리거 구동 검증 → ✅ 정상 구동 확인</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 70 / 30</td></tr>
+        <tr><td>2</td><td>정렬 헬퍼 함수 보강 → 발동 조건 룰 신설 (4~5회 통작업 반복 재발 시 발동, 반복 ❌ 시 보류 유지)</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 60 / 40</td></tr>
+
+        <tr><td rowspan="2" style="background:#e3f2fd;"><strong>B. 사전레포트 트리거 실 구동 (2)</strong></td><td>3</td><td>이대훈님(41세 남) 본인 1명 PNG·메시지·zip 생성 (실손 적정·암 과잉·뇌 빈약·심장 빈약·수술 적정 / 596% 과잉)</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 20 / 80</td></tr>
+        <tr><td>4</td><td>2단계 게이트 룰 정상 동작 확인 (게이트 1 입력 종료 + 게이트 2 작업 종료)</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 10 / 90</td></tr>
+
+        <tr><td rowspan="4" style="background:#fce4ec;"><strong>C. 김리아 롯데 새보험분석 (4)</strong></td><td>5</td><td>categories.json v1.1 → v1.2 갱신 — 5건 별칭 추가 (통합형전이암 7종 / 일반암주요치료비·갑상선암주요치료비·특정항암호르몬·상급종합병원Ⅲ 호르몬 / 상급종합병원Ⅲ 하이클래스 암주요치료비 / 하이클래스 항암약물치료비 / 상급종합병원Ⅱ 특정순환계질환주요치료비)</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 10 / 90</td></tr>
+        <tr><td>6</td><td>labels.json v1.0 → v1.1 갱신 — 1건 별칭 추가 (심혈관질환진단비(기타심장부정맥) → 부정맥 진단비)</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 10 / 90</td></tr>
+        <tr><td>7</td><td>insurers/lotte.json v1.0 신규 등록 — let:simple 간편3·N·10 건강보험(세만기형) 계열 (간편심사형 6단계·무해지형·납입면제·90세 세만기·갱신담보 6종)</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 10 / 90</td></tr>
+        <tr><td>8</td><td>새보험분석 기록 섹션 추가 — 롯데 let:simple 항목</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 10 / 90</td></tr>
+
+        <tr><td style="background:#e8f5e9;"><strong>D. 통합 패키징 (1)</strong></td><td>9</td><td>sync4_insu.zip(5 파일) + mappings/(categories·labels·insurers/lotte 3 파일) 통합 zip 1개 패키징</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 10 / 90</td></tr>
+      </tbody>
+    </table>
+    <p class="note"><strong>산출물</strong>: sync4_insu_full_20260429.zip (sync4_insu.zip 5파일 + mappings/ 갱신·신규 3파일) → v2 (chat_log.md 추가) → v3 (triggers_and_worklog_excerpt.md 추가)</p>
+    <p class="note"><strong>검증</strong>: mappings JSON 4개 syntax 검증 통과 (categories v1.2 / labels v1.1 / meta v1.0 / hanwha v1.1 / lotte v1.0 신규). 사전레포트 트리거 본 대화창 첫 구동에서 5종 라벨링·갱신형 감지·헤드라인 매핑·메시지 분기·zip 호환성 모두 정상.</p>
+  </details>
+
+  <details class="box">
+    <summary>⑨ 트리거 3 v7 룰 — 5단계 라벨 + 카드 ③ 통일 + 카테고리 정정 + PNG 디자인 전면 갱신 (완료 — 2026-05-06)</summary>
+    <p class="note"><strong>진입 컨텍스트</strong>: 본 토스 페르소나 작업 진행 중 트리거 3 룰 전면 v7 갱신 — (1) 카테고리 정정 (암 4종만/뇌혈관진단비만/허혈성+부정맥만/수술비 합산) / (2) 5단계 라벨 통합 (구 7단계 → 매우과잉/높은편/보통/낮음/미확인) / (3) 카드 ③ 제목·라벨 변경 / (4) 헤드라인·메시지 통일 매핑 / (5) PNG 디자인 갱신 (가족 표 시안 B·진단 목적 안내·갱신형 박스·5개 보장 카드 명칭/detail/배경) / (6) device_scale_factor 3 / (7) 코드 단순화 (determine_conclusion_case 5종 직접 산출 / 구 7단계 fallback 제거 / 구버전 본문 모두 정리). 본 세션 11명 케이스 검증 완료.</p>
+    <table>
+      <thead><tr><th>#</th><th>항목</th><th>상태</th><th>기여도 (PM 🟨 / CTO 🟦)</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>카테고리 영역 정정 — 암 진단비(일반암+통합암) + 치료비(주요+특정) / 뇌혈관진단비만 + 치료비 / 허혈성+부정맥 + 치료비 / 질병수술+상해수술 합산. 제외 영역 명시.</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span></span> 90 / 10</td></tr>
+        <tr><td>2</td><td>5종 보장 라벨 임계값 (만원 단위) — 암 ≥15,000/10,000-14,999/5,000-9,999/2,000-4,999/&lt;2,000 / 뇌혈관·심장 ≥7,000/5,000-6,999/3,000-4,999/1,000-2,999/&lt;1,000 / 수술 ≥1,500/1,000-1,499/501-999/1-500/0</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span></span> 80 / 20</td></tr>
+        <tr><td>3</td><td>카드 ③ "보험료&amp;보장 기준 진단" 5단계 라벨 — 매우과잉(≥130%)/높은편(90-129%)/보통(51-89%)/낮음(21-50%)/미확인(0-20%). 보장 완성도 매핑(100/100/50/30/0%) + classify_premium_level_v7() 함수 신설.</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 70 / 30</td></tr>
+        <tr><td>4</td><td>카드 ③ 제목·본문 라벨 변경 — "보험료 기준 진단"→"보험료&amp;보장 기준 진단" / "보험료 지출 적정성"→"보험료 지출 정도". 카드 ③ 라벨 폰트 22px (긴 라벨 한 줄 fit).</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span></span> 90 / 10</td></tr>
+        <tr><td>5</td><td>헤드라인·메시지 결론 본문 5단계 통일 매핑 — 매우과잉="지나치게 과잉상태"(accent 빨간) / 높은편="완성된 상태" / 보통="완성되지 않았습니다" / 낮음="빈약한 상태" / 미확인="전무한 상태". PNG 검정박스 + 메시지 결론 동시 사용.</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span></span> 80 / 20</td></tr>
+        <tr><td>6</td><td>메시지 1번 분기 (잔여보험료) 4가지 조합 — 갱신 ✅: ①+④ / 갱신 ❌+매우과잉·높은편: ② / 갱신 ❌+보통·낮음: ③ / 갱신 ❌+미확인: ②③ 둘 다 미노출 (잔여 0원 추정).</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span></span> 80 / 20</td></tr>
+        <tr><td>7</td><td>5개 보장 카드 디자인 v7 — 명칭(실손의료비/암(진단비, 치료비)/뇌혈관(진단, 치료)/심장(진단, 치료)/수술보장) + detail 분리 표기(통원/입원·진단비/치료비·질병수술/상해수술) + 배경 #F9FAFB.</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span></span> 80 / 20</td></tr>
+        <tr><td>8</td><td>카드 ② 보장항목별 진단 명칭 — 실손의료비/암(진단,치료)/뇌(진단,치료)/심장(진단,치료)/질병수술비. 색상 검정 통일(#191F28).</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span></span> 80 / 20</td></tr>
+        <tr><td>9</td><td>갱신형 박스 디자인 갱신 — background #F04452 / color #FFD700 (노란) / font 21px / 한 줄 fit / 본문 "진단결과와 별개로 갱신형보험 구성으로, 보험료 낭비 과다상태입니다!".</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span></span> 80 / 20</td></tr>
+        <tr><td>10</td><td>진단 목적 안내 신설 — 5개 보장 카드 아래 + 가족 표 위 / 본문 "※ {고객명}님의 보험 진단 목적의 레포트로, 세부현황의 차이가 발생할 수 있습니다." / font 12px / color #8B95A1.</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span></span> 90 / 10</td></tr>
+        <tr><td>11</td><td>가족 표 시안 B 신설 — background #F0F9FF / border 1px #BAE6FD / rounded 14px / 검토의견=가족 자체 결론(본인 헤드라인 ❌) / 라벨 % 표기(부재 0%/빈약 30%/보통 50%/적정 100%/과잉 100%) / 가족 명칭 마스킹 그대로 유지.</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span></span> 80 / 20</td></tr>
+        <tr><td>12</td><td>device_scale_factor 3 (v6 2 → v7 3) + text-rendering: geometricPrecision — 해상도 ↑ + 카드 ③ 라벨 안티에일리어싱 정밀도 ↑.</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 20 / 80</td></tr>
+        <tr><td>13</td><td>코드 단순화 (오버엔지니어링 폐기) — determine_conclusion_case 7가지 케이스 → 5종 라벨 직접 산출 / HEADLINE_BY_LEVEL·CONCLUSION_TEXT_BY_LEVEL·LEVEL_BAR_HTML·COMPLETION_PERCENT 구 7단계 fallback 제거 / render_html 헤드라인 분기 level["label"] 기준 직접 매핑 / render_message 5단계 4가지 조합으로 단순화 / rules.json 전면 재작성.</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 10 / 90</td></tr>
+        <tr><td>14</td><td>SKILL.md v7 갱신 — 6단계(5종 라벨)·7단계(카드 ③ 5단계)·8단계(헤드라인 통일 매핑)·8-1단계(메시지 분기 v7)·9단계(device_scale_factor 3·카드 ③ 폰트·갱신형 박스·진단 안내·가족 표)·10단계(메시지 양식 v7)·가족 PNG 헤더 룰 모두 갱신 / 비교 본문(v5 갱신·v6 박제) 모두 제거.</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 10 / 90</td></tr>
+        <tr><td>15</td><td>11명 케이스 검증 — 이숙희(높은편)·양주미(높은편+가족)·홍정림(미확인)·전종호(미확인)·양성모(매우과잉)·조화정(보통)·김경래(보통)·정현지(미확인)·박현기(높은편)·백민현(매우과잉)·이정아(매우과잉+가족) 모두 정상 산출. 가족 표 시안 B + 진단 목적 안내 + 갱신형 박스 정상.</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 40 / 60</td></tr>
+        <tr><td>16</td><td>본 클로드 자체 결함 8건 정직 인정·정정 — 박제 검토 ❌(이숙희 뇌혈관 추정)·임의 변경(디자인·로고)·시각 검증 ❌·본 본문 ❌ 시 추정·첨부 zip 전수 점검 ❌(동기화통합본 zip 누락)·SKILL.md 누락 산출(skill zip)·구버전 본문 잔존(7가지 케이스)·"영역" 단어 무의미 반복 패턴.</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 20 / 80</td></tr>
+      </tbody>
+    </table>
+    <p class="note"><strong>산출물</strong>: toss_report_skill_final_v7_20260506.zip (SKILL.md + pre_report v7 정리본 — 18파일) / 사전레포트_11명_v7_2026-05-06.zip (검증용)</p>
+    <p class="note"><strong>목적</strong>: 트리거 3 룰 전면 정합 통일 + 코드 단순화 (오버엔지니어링 폐기) + PNG 디자인 정밀도 ↑ + 본 클로드 결함 패턴 박제 (향후 차단)</p>
+    <p class="note"><strong>검증</strong>: 11명 케이스 산출 100% 정상 / SKILL.md·pre_report_gen.py 전수 grep 점검 — 구버전 본문 0건 / 회귀 테스트 직전 산출과 100% 동일 / 트리거 1·2 영역 변경 ❌ → 충돌 ❌</p>
+  </details>
+
+  <details class="box">
+    <summary>⑧ 사전레포트 트리거 룰 v5 — 메시지 양식 분기 + 갱신형 버튼 + 입력 2가지 기준 + detect_renewal v5 (완료 — 2026-05-02)</summary>
+    <p class="note"><strong>진입 컨텍스트</strong>: 본 토스 페르소나 작업 진행 중 트리거 3 룰 다단계 변경 — (1) 메시지 ①②③ 분기 룰 신설 + 빈 줄 1행 + 콤마 표기 / (2) 갱신형 PNG 빨간 버튼 디자인 (#F04452 + #FFD700 + bold) / (3) 트리거 3 입력 2가지 기준 (텍스트 / zip 폴더링) / (4) 메시지 양식 2줄 갱신 ("궁금하신점은 [보험검토요청]") / (5) 갱신형 버튼 폰트 17px → 20px / (6) detect_renewal v5 룰 — "갱신" 단순 in → "갱신형 특약" / "갱신형 보험" 정확 패턴 + 순수 실손보험(실비 단일) 제외 + 보험명·카테고리 매핑 (parse_insurances 신규 함수). 본 세션 11명 + 9명 + 2명 + 10명 케이스 검증 완료.</p>
+    <table>
+      <thead><tr><th>#</th><th>항목</th><th>상태</th><th>기여도 (PM 🟨 / CTO 🟦)</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>메시지 ①②③ 분기 룰 신설 — ① 갱신형 무조건 + ② 과잉·적정 → 낭비 / ③ 그 외 → 일반. 라벨 부재 fallback 미노출 + 빈 줄 1행 + 콤마 표기</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span></span> 80 / 20</td></tr>
+        <tr><td>2</td><td>갱신형 PNG 빨간 버튼 디자인 — 빨간 배경(#F04452) + 노란 굵은 글씨(#FFD700) + 카드 폭 정합 + 60% 세로(64px) + 1.8배 여백(14px) + border-radius 14px + 폰트 20px(.sec-title 90%)</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 70 / 30</td></tr>
+        <tr><td>3</td><td>트리거 3 입력 2가지 기준 — 텍스트 직접 입력(00명 레포트작성 시작) + zip 파일 첨부(00명 등록·폴더별 순차) + 폴더 구분 무시 + 단일 폴더 평탄 저장</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span></span> 80 / 20</td></tr>
+        <tr><td>4</td><td>메시지 양식 갱신 — 3번 본문 "치료/사고 후 효율적 가입 어렵습니다" + 2줄 양식 ("궁금하신점은 [보험검토요청] 등으로" + "본사 상담사" 공백 1칸)</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span></span> 90 / 10</td></tr>
+        <tr><td>5</td><td>detect_renewal v5 룰 — "갱신형 특약" / "갱신형 보험" 정확 패턴 매칭 + 순수 실손보험(실비 단일 카테고리) 제외 + parse_insurances 함수 신규 (보험명·갱신유무·카테고리 매핑) + 도메인 원칙: 실손은 본질적 갱신, 누수 ❌</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 20 / 80</td></tr>
+        <tr><td>6</td><td>pre_report_gen.py 코드 갱신 — render_message ①②③ 분기 본문 + generate_reports v2 폴더 평탄화(NN.고객명 파일명) + detect_renewal/parse_insurances 신규</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 10 / 90</td></tr>
+        <tr><td>7</td><td>pre_report_template.html — .renewal-warning CSS 디자인 갱신 (빨간 배경 버튼)</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 10 / 90</td></tr>
+        <tr><td>8</td><td>SKILL.md §2(입력 2가지 기준)·§8-1(갱신형 v5)·§10(메시지 양식)·§10.5·§13-7·§13-8·§11(폴더 평탄화) 일괄 갱신</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 10 / 90</td></tr>
+        <tr><td>9</td><td>본 세션 검증 — 김도연·손현수 2명 + 11명 zip(중복 제외 9명) + 배주현·김선정 직접 검증 + 10명 zip(이기섭~권선영). v5 룰 정확성: 배주현(실손만 갱신)·유태수(보험 ❌) 정확 ❌ 처리 / 김선정(실비 외 갱신 다수) 정확 ✅</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 40 / 60</td></tr>
+        <tr><td>10</td><td>안내문 메모 vs zip 안 박제 자료 정합 검증 결함 정정 — 안내문 메모는 부수, 1차 진실은 zip 안. 새 대화창 첫 검토 시 1·2차 정합 검증 의무 (γ·δ 추적 영역 사후 정정)</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 10 / 90</td></tr>
+      </tbody>
+    </table>
+    <p class="note">산출물: toss_report_skill_final_v5_20260501.zip (SKILL.md + pre_report_gen.py + pre_report_template.html 갱신) · report_20260501.zip (2명) · report_20260501_9명.zip · report_20260502_10명.zip</p>
+    <p class="note">목적: 트리거 3 산출물 정확도 + 사용자 시점 가독성 ⬆️ + 도메인 정확성 (실손은 본질적 갱신이므로 트리거 제외) + 입력 흐름 유연성 (텍스트·zip 2가지)</p>
+    <p class="note">검증: 본 세션 22명 케이스(2 + 9 + 10 + 1 검증케이스) 모두 정상 생성. detect_renewal v5 정확성 — 배주현·유태수·손현수(실손만 갱신) ❌ 정확 처리 / 김선정·김도연 등 실비 외 갱신 ✅ 정확 처리. 메시지 4가지 조합(①+②, ①+③, ②만, ③만) 모두 정상.</p>
+  </details>
+
+  <details class="box">
+    <summary>⑦ 사전레포트 트리거 룰 변경 + 스킬 zip 갱신 (완료 — 2026-05-01)</summary>
+    <p class="note"><strong>진입 컨텍스트</strong>: mr.와이가 다른 대화창의 토스 클로드 컨텍스트에 트리거 1·2·3·업무 진행 정의 전달 필요 → 발췌본 작성 → 트리거 1·2·3 구동 테스트 (테스트 모드) → 사전레포트 트리거 룰 변경 2건 (메시지 양식 2줄 추가 + 폴더 평탄화·NN.고객명 파일명) → 스킬 zip 재패키징.</p>
+    <table>
+      <thead><tr><th>분류</th><th>#</th><th>항목</th><th>상태</th><th>기여도 (PM 🟨 / CTO 🟦)</th></tr></thead>
+      <tbody>
+        <tr><td rowspan="2" style="background:#fff8dc;"><strong>A. 발췌본 + 통합 (2)</strong></td><td>1</td><td>chat_log.md 신규 작성 + 통합 zip v2 패키징</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 20 / 80</td></tr>
+        <tr><td>2</td><td>triggers_and_worklog_excerpt.md 신규 작성 + 통합 zip v3 패키징 (다른 대화창 토스 클로드 컨텍스트 전달용)</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 20 / 80</td></tr>
+
+        <tr><td rowspan="3" style="background:#e3f2fd;"><strong>B. 사전레포트 룰 변경 (3)</strong></td><td>3</td><td>메시지 양식 2줄 고정 추가 — 3번 끝 ↔ 본사 상담사 재직정보 사이에 `❗궁금하신 점은 메시지 남겨주세요.` + `❗본사  상담사가 순차적으로 안내드릴 예정입니다.` ("본사" 뒤 공백 2칸 유지)</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span></span> 80 / 20</td></tr>
+        <tr><td>4</td><td>폴더 평탄화 — 고객별 폴더 ❌, zip 안에 모든 파일 평탄 저장</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span></span> 80 / 20</td></tr>
+        <tr><td>5</td><td>파일명 규칙 변경 — 본인 `{NN}.{고객명}.png/.txt` / 가족 `{NN}.{고객명}{NN_가족}.png` (NN = 입력 순서, NN_가족 = 정렬 순서)</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span></span> 80 / 20</td></tr>
+
+        <tr><td rowspan="3" style="background:#fce4ec;"><strong>C. 스킬·인스트럭션 동기화 (3)</strong></td><td>6</td><td>`pre_report_gen.py` 갱신 — `render_message()` 2줄 추가 + `generate_reports()` 폴더 평탄화·NN.고객명 룰 적용</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 10 / 90</td></tr>
+        <tr><td>7</td><td>SKILL.md 갱신 — 라인 250 산출물 정의 / 라인 354~373 메시지 양식 / §13-3 산출물 보관 / §13-7 가족 PNG / 라인 448 zip 패키징 모두 폴더 평탄화·NN.고객명 룰로 갱신</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 10 / 90</td></tr>
+        <tr><td>8</td><td>instruction4_insu.md 갱신 — §13-3·§13-7·§13-8·§15 자기점검 모두 폴더 평탄화·NN.고객명 룰로 갱신 (v6 → v7)</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 10 / 90</td></tr>
+
+        <tr><td rowspan="2" style="background:#e8f5e9;"><strong>D. 검증 + 패키징 (2)</strong></td><td>9</td><td>다중 고객 + 가족 케이스 폴더 평탄화 룰 검증 — 3명 케이스(홍길동·김철수+가족 2명·뽀로로) 실제 zip 생성 → 8개 파일 (`01.홍길동.png`·`01.홍길동.txt`·`02.김철수.png`·`02.김철수.txt`·`02.김철수01.png`·`02.김철수02.png`·`03.뽀로로.png`·`03.뽀로로.txt`) 모두 정상</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 10 / 90</td></tr>
+        <tr><td>10</td><td>report-skill_v2.zip + sync4_insu_full_20260501.zip 통합 패키징 (스킬 zip + sync4 zip + mappings + chat_log + 발췌본)</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 10 / 90</td></tr>
+      </tbody>
+    </table>
+    <p class="note"><strong>산출물</strong>: sync4_insu_full_20260501.zip (sync4_insu.zip 5파일 갱신 + mappings/ 3파일 + chat_log.md + triggers_and_worklog_excerpt.md + report-skill_v2.zip)</p>
+    <p class="note"><strong>검증</strong>: 메시지 양식 2줄 추가 정상 (홍길동 테스트 케이스) / 폴더 평탄화 + NN.고객명 파일명 정상 (3명 + 가족 2명 케이스) / 코드 syntax 정상.</p>
+  </details>
+
+  <h2>📌 완료된 업무범위 (최신순)</h2>
+
+  <details class="box" open>
+    <summary>⑩ v8 스킬 업데이트 — references/ 12종 분리 + v7 기능 모두 유지 + 영문 파일명 + UTF-8 zip (완료 — 2026-05-09)</summary>
+    <table>
+      <thead><tr><th>#</th><th>항목</th><th>상태</th><th>기여도 (PM 🟨 / CTO 🟦)</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>v7 기능·파일 모두 유지 (18파일 — CODING_GUIDELINES·base_template·replace_jeonansu_reference·verify·skin_preview·1번파일·2번파일·mappings/ 등)</td><td class="status-done">✅</td><td>10 / 90</td></tr>
+        <tr><td>2</td><td>references/ 12종 신설 (영문 파일명) — renewal·cancer·brain·heart·surgery·silson·death·disability·dental·fire·premium_label·png_color</td><td class="status-done">✅</td><td>30 / 70</td></tr>
+        <tr><td>3</td><td>v8 추가 정의 4종 row — 사망보장 3종 / 후유장해 4종 (명시적 % 표기 룰) / 치아보장 3종 (충치·크라운·임플란트) / 주택화재보험 4종</td><td class="status-done">✅</td><td>80 / 20</td></tr>
+        <tr><td>4</td><td>SKILL.md 본문 — v7 본문 모두 유지 + v8 references/ 가이드 박제 (재직정보 직후·스킬 구동 워크플로우 직전)</td><td class="status-done">✅</td><td>20 / 80</td></tr>
+        <tr><td>5</td><td>5종 평균 라벨 산출 (점수 평균 + 반올림) + 결론 본문 통일 매핑 (5종 평균 라벨 → 헤드라인·결론 단일 출처)</td><td class="status-done">✅</td><td>50 / 50</td></tr>
+        <tr><td>6</td><td>pre_report_gen.py v8 정정 (HEADLINE_BY_LEVEL·CONCLUSION_TEXT_BY_LEVEL·COMPLETION_PERCENT 5종 평균 라벨 기반) + build_v8_main.py·build_v8_table.py 신규 추가</td><td class="status-done">✅</td><td>10 / 90</td></tr>
+        <tr><td>7</td><td>zip 정상 등록 보장 — Python zipfile UTF-8 강제 + 영문 파일명 (한글 인코딩 첨부 오류 결함 차단)</td><td class="status-done">✅</td><td>10 / 90</td></tr>
+        <tr><td>8</td><td>본 클로드 자체 결함 박제 — v7 본문 누락·임의 슬림화·zip 인코딩 ❌ 정정 (㉥·㉦ 룰 적용 강화)</td><td class="status-done">✅</td><td>50 / 50</td></tr>
+      </tbody>
+    </table>
+    <p class="note">산출물: toss_report_skill_final_v8_20260509.zip (32파일 — v7 18 + references/ 12 + pre_report v8 코드 추가)</p>
+    <p class="note">목적: 트리거 1·2·3 적용 시 정확도·오류 ❌·모든 고객 동일·통일 기준 보장. 본 클로드 자체 단순화·추정 영역 차단 (룰 적용 시점 references/*.md 전수 view 의무).</p>
+    <p class="note">검증: zip 무결성 ✅ / 영문 파일명 ✅ / v7 본문 18파일 모두 유지 ✅ / SKILL.md 1418줄 (v7 1306줄 + v8 가이드 112줄).</p>
+  </details>
+
+  <details class="box">
+    <summary>④ 사전레포트 운영 룰 3종 누적 박제 — 피보험자 기준 합산 + 가족 PNG 추가 생성 + zip 호환성 (완료 — 2026-04-27)</summary>
+    <table>
+      <thead><tr><th>#</th><th>항목</th><th>상태</th><th>기여도 (PM 🟨 / CTO 🟦)</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>피보험자 기준 합산 룰 (§13-6) 박제 — 본인 5종 라벨링은 피보험자=본인인 보험만 합산. 계약자 무관</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span></span> 90 / 10</td></tr>
+        <tr><td>2</td><td>가족 피보험자 PNG 추가 생성 룰 (§13-7) 박제 — 단독 가족 피보험자 보험 있을 때 그 가족 기준 PNG 추가, 본인 메시지만 1개, 정렬·헤더·라벨 룰 정의</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span></span> 80 / 20</td></tr>
+        <tr><td>3</td><td>zip 압축 호환성 룰 (§13-8) 박제 — Python zipfile 사용 (UTF-8), bash zip 명령 ❌</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 10 / 90</td></tr>
+        <tr><td>4</td><td>인스트럭션 §13-6, §13-7, §13-8 신설 + 자기 점검 항목 갱신</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 20 / 80</td></tr>
+        <tr><td>5</td><td>SKILL.md — 피보험자 룰·가족 PNG 룰·zip 호환성 룰 섹션 신설</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 20 / 80</td></tr>
+        <tr><td>6</td><td>rules.json — insured_person_rule + family_member_rule + zip_compression_rule 박제 + workflow 6단계로 재정의</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 10 / 90</td></tr>
+        <tr><td>7</td><td>pre_report_gen.py — build_family_member() 헬퍼 함수 + customer["family_members"] 처리 로직 + 정렬된 zip 압축</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 10 / 90</td></tr>
+        <tr><td>8</td><td>terms_insu.html — 3개 룰 행 추가 (피보험자·가족 PNG·zip 호환성)</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 10 / 90</td></tr>
+        <tr><td>9</td><td>02_summary_insu.md ⑱ 합의 누적 + sync4_insu.md 가이드 갱신</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 10 / 90</td></tr>
+        <tr><td>10</td><td>인스트럭션 v4 → v5 갱신 + 5개 동기화 파일 일관 반영 + 스킬 zip 재패키징</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 10 / 90</td></tr>
+      </tbody>
+    </table>
+    <p class="note">산출물: instruction4_insu.md v5 · 갱신된 sync4_insu.zip (5 파일) · 갱신된 toss_report_skill_final_20260427.zip (SKILL.md + rules.json + pre_report_gen.py)</p>
+    <p class="note">목적: 보장 분석은 피보험자 기준이라는 보험 도메인 절대 원칙 박제 + 가족 피보험자 보험 누수 시각화로 보험 효율성 컨설팅 도구 강화 + Windows·Mac 한글 폴더명 호환성 확보</p>
+    <p class="note">검증: 본 세션 6명 케이스(배주현·김선정·강선영·하상배·박훈·오서현)에서 룰 적용 및 누적 zip 정상 생성 검증 완료. 하상배 1명·오서현 3명 가족 PNG 추가 생성 정상.</p>
+  </details>
+
+  <details class="box">
+    <summary>③ 사전레포트 2단계 게이트 룰 박제 — "레포트작성이 끝나셨나요?" 게이트 신설 (완료 — 2026-04-27)</summary>
+    <table>
+      <thead><tr><th>#</th><th>항목</th><th>상태</th><th>기여도 (PM 🟨 / CTO 🟦)</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>2단계 게이트 룰 정의 — 게이트 1(입력 종료) + 게이트 2(작업 종료) 시점·기능·산출물 분리</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span></span> 90 / 10</td></tr>
+        <tr><td>2</td><td>산출물 보관 룰 정의 — 게이트 2 "아니" 시 기존 폴더 보관·추가만 새 폴더로 분석 (재분석 ❌)</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span></span> 80 / 20</td></tr>
+        <tr><td>3</td><td>인스트럭션 §13 신설 (5개 하위 섹션)</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 20 / 80</td></tr>
+        <tr><td>4</td><td>SKILL.md §사전레포트 워크플로우 — 10.5단계(작업 종료 게이트) 삽입</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 20 / 80</td></tr>
+        <tr><td>5</td><td>rules.json two_gate_rule 박제 + workflow 9단계 재정의 (6 → 9 확장)</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 10 / 90</td></tr>
+        <tr><td>6</td><td>terms_insu.html — 사전레포트 트리거 행 + 2단계 게이트 룰 행 추가 + 자기 점검 13항목 갱신</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 10 / 90</td></tr>
+        <tr><td>7</td><td>02_summary_insu.md ⑰ 합의 누적 + sync4_insu.md 가이드 갱신</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 10 / 90</td></tr>
+        <tr><td>8</td><td>인스트럭션 v3 → v4 갱신 + 5개 동기화 파일 일관 반영 + 스킬 zip 재패키징</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 10 / 90</td></tr>
+      </tbody>
+    </table>
+    <p class="note">산출물: instruction4_insu.md v4 · 갱신된 sync4_insu.zip (5 파일) · 갱신된 toss_report_skill_final_20260427.zip (SKILL.md + pre_report/rules.json)</p>
+    <p class="note">목적: 실무 1회 트리거당 10~20명+ 처리 시 매번 zip 다운로드·압축해제 부담 제거. mr.와이 "응" 응답 직후 즉시 zip 전달 (대기 ❌).</p>
+  </details>
+
+  <details class="box">
+    <summary>② 운영 룰 3종 박제 — 인스트럭션 변경 자동 안내·종료 절차·업무 박제+새 대화창 이전 (완료 — 2026-04-27)</summary>
+    <table>
+      <thead><tr><th>#</th><th>항목</th><th>상태</th><th>기여도 (PM 🟨 / CTO 🟦)</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>§10 인스트럭션 변경 시 자동 안내 + 전문 제공 룰 박제 (변경 시 ⚠️ 안내 → .md 전문 제공 → 적용 확인)</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span></span> 80 / 20</td></tr>
+        <tr><td>2</td><td>§11 종료 시점 종결 절차 룰 박제 (종료 신호 6단계 분기 처리)</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span></span> 80 / 20</td></tr>
+        <tr><td>3</td><td>§12 업무 진행 박제 + 새 대화창 이전 룰 박제 (한 줄 전달 메시지 자동 생성)</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span></span> 80 / 20</td></tr>
+        <tr><td>4</td><td>합의 — 트리거 구동은 스킬 첨부 의존 (페르소나 디벨롭으로는 불가능 영역 존재 + 가능 영역도 비효율 극심)</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 50 / 50</td></tr>
+        <tr><td>5</td><td>인스트럭션 v1 → v2 (§10·§11) → v3 (§12) 갱신 + 채팅창 기억 누적 + 5개 파일 일관 반영</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 20 / 80</td></tr>
+      </tbody>
+    </table>
+    <p class="note">산출물: instruction4_insu.md v3 · 갱신된 sync4_insu.zip (5 파일)</p>
+  </details>
+
+  <details class="box">
+    <summary>① 동기화4 insu 첫 적용 — 보험설계/상담실무용 페르소나·시스템 신설 (완료 — 2026-04-26)</summary>
+    <table>
+      <thead><tr><th>#</th><th>항목</th><th>상태</th><th>기여도 (PM 🟨 / CTO 🟦)</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>이중 페르소나 정의 (CTO + 보험설계사) — "너 / 네 페르소나" 호칭</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 60 / 40</td></tr>
+        <tr><td>2</td><td>업무 범위 3개 축 정의 (상담자료교체·새보험분석·미정의 보험 자료)</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 70 / 30</td></tr>
+        <tr><td>3</td><td>호칭·명명 규칙 (설계안파일·베이스템플릿·worklog·동기화파일)</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 50 / 50</td></tr>
+        <tr><td>4</td><td>_insu 접미사 적용 (동기화 zip 5개 파일만)</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 30 / 70</td></tr>
+        <tr><td>5</td><td>동기화1·2·3 폐기 + 코인봇 도메인 잔재 제거 + 동기화 후 파일 올림 룰 철회</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 50 / 50</td></tr>
+        <tr><td>6</td><td>worklog 트리거 구동 기록 섹션 신설 (검색·페이지네이션·로컬 링크)</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 20 / 80</td></tr>
+        <tr><td>7</td><td>terms_insu.html · worklog_insu.html 신규 작성 + 띄움</td><td class="status-done">✅</td><td><span class="gauge"><span class="pm"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span><span class="cto"></span></span> 10 / 90</td></tr>
+      </tbody>
+    </table>
+    <p class="note">산출물: terms_insu.html · worklog_insu.html · (별도 명령 시) sync4_insu.zip</p>
+  </details>
+
+  <h2>📌 갱신 룰</h2>
+  <table>
+    <thead><tr><th>시점</th><th>동작</th></tr></thead>
+    <tbody>
+      <tr><td>mr.와이 요청 시</td><td>즉시 갱신</td></tr>
+      <tr><td>현 업무범위 전체 완료 → 새 업무범위 시작 시</td><td>자동 갱신</td></tr>
+      <tr><td>매번 표시</td><td>❌ (토큰 절약 — mr.와이 확인 시에만 표시)</td></tr>
+      <tr><td>동기화 시</td><td>최신 worklog가 동기화4 패키지에 자동 반영</td></tr>
+      <tr><td>트리거 구동 완료 시</td><td>트리거 구동 기록 섹션 자동 갱신 (네가 직접 추가)</td></tr>
+    </tbody>
+  </table>
+
+  <h2>📌 진행 원칙 · 기여도 표시 룰</h2>
+  <ul style="padding-left: 22px; line-height: 1.8;">
+    <li>카테고리 단위 완전히 종료 후 다음 업무범위 진입</li>
+    <li>5대 작업 원칙 적용 (오버엔지니어링 금지·범용성·표준화·규격화·구조 간소화)</li>
+    <li>기여도 측정: 결정권·전문성·책임 무게 (작업량·시간·줄 수 ❌)</li>
+    <li>게이지 10칸 (🟨 PM / 🟦 CTO) · 변경 이력 추적 ❌ (최신값만)</li>
+  </ul>
+
+</div>
+
+<!-- 트리거 구동 기록 탭 -->
+<div class="tab-content" id="tab-trigger">
+
+  <p class="note">트리거 구동 기록 — 업무가 아닌 자료작성 기록용. 정상 구동·작성 일시·고객명 확인 목적.</p>
+
+  <div class="search-box">
+    <input type="text" id="triggerSearch" placeholder="고객명 또는 날짜(YYMMDD)로 검색...">
+  </div>
+
+  <h2>🔵 상담자료교체 — 설계안파일 생성 기록</h2>
+  <p class="note">계층: 연 &gt; 월 &gt; <code>{YYMMDD}_{고객명}님</code>. 클릭 시 설계안파일 표시.</p>
+
+  <div id="replaceRecords">
+    <div class="year-block">
+      <div class="year-title">2026년</div>
+      <details class="month-block" open>
+        <summary>05월 <span class="month-count">(22건)</span></summary>
+        <ul class="record-list">
+          <li>260502_권선영님 (트리거 3 — zip 입력 폴더 02·5번)</li>
+          <li>260502_오서현님 (트리거 3 — zip 입력 폴더 02·4번)</li>
+          <li>260502_박훈님 (트리거 3 — zip 입력 폴더 02·3번)</li>
+          <li>260502_하상배님 (트리거 3 — zip 입력 폴더 02·2번)</li>
+          <li>260502_강선영님 (트리거 3 — zip 입력 폴더 02·1번)</li>
+          <li>260502_김선정님 (트리거 3 — zip 입력 폴더 01·5번)</li>
+          <li>260502_배주현님 (트리거 3 — zip 입력 폴더 01·4번, 갱신 ❌ — v5 룰: 실손만 갱신)</li>
+          <li>260502_유태수님 (트리거 3 — zip 입력 폴더 01·3번, 보험 ❌)</li>
+          <li>260502_심재윤님 (트리거 3 — zip 입력 폴더 01·2번)</li>
+          <li>260502_이기섭님 (트리거 3 — zip 입력 폴더 01·1번)</li>
+          <li>260501_오덕식님 (트리거 3 — zip 입력 폴더 03·1번)</li>
+          <li>260501_전병철님 (트리거 3 — zip 입력 폴더 02·3번)</li>
+          <li>260501_김해도님 (트리거 3 — zip 입력 폴더 02·2번)</li>
+          <li>260501_김동희님 (트리거 3 — zip 입력 폴더 02·1번)</li>
+          <li>260501_김승동님 (트리거 3 — zip 입력 폴더 01·5번)</li>
+          <li>260501_김민우님 (트리거 3 — zip 입력 폴더 01·3번, 단체보험)</li>
+          <li>260501_최승호님 (트리거 3 — zip 입력 폴더 01·2번)</li>
+          <li>260501_조수진님 (트리거 3 — zip 입력 폴더 01·1번)</li>
+          <li>260501_손현수님 (트리거 3 — 텍스트 입력, 갱신 ❌ — v5 룰: 실손만 갱신)</li>
+          <li>260501_김도연님 (트리거 3 — 텍스트 입력, 가족 1명 추가)</li>
+          <li>260501_(김민우님 중복) — mr.와이 동일인 2회 입력 인지·제외 처리</li>
+          <li>260501_(김은영님 중복) — mr.와이 동일인 2회 입력 인지·제외 처리</li>
+        </ul>
+      </details>
+      <details class="month-block">
+        <summary>04월 <span class="month-count">(2건)</span></summary>
+        <ul class="record-list">
+          <li>
+            <a href="reports/2026/04/toss_insureport_한희정님_19780107.html" target="_blank">260426_한희정님</a>
+          </li>
+          <li>
+            <a href="#" class="error-link">260426_(트리거 양식 누락)</a><span class="error-tag">(오류)</span>
+            <div class="error-detail">
+              <b>사건</b>: 상담자료교체 트리거 구동 시 SKILL.md 라인 397 [즉시 실행] 양식 출력 룰 누락. PDF 첨부 요청 문구만 임의 출력.<br>
+              <b>원인</b>: SKILL.md 첫 view 시 라인 256까지만 읽고 truncated 부분(트리거 동작 정의 포함) 재열람 안 함 → 5대 원칙 객관적 검증 우선 위반.<br>
+              <b>정정</b>: SKILL.md 라인 397~408 양식 재확인 후 정식 양식 출력. mr.와이 지적으로 발견.<br>
+              <b>산출물</b>: 없음 (PDF 미첨부 단계에서 멈춤).<br>
+              <b>재발 방지</b>: 트리거 감지 시 SKILL.md 트리거 섹션 재확인 의무화.
+            </div>
+          </li>
+        </ul>
+      </details>
+    </div>
+    <!--
+      TEMPLATE — 정상 기록
+      <li><a href="reports/2026/04/toss_insureport_홍길동님_19850315.html" target="_blank">260426_홍길동님</a></li>
+    -->
+  </div>
+
+  <h2 style="margin-top: 36px;">🟤 새보험분석 — 스킬 학습 기록</h2>
+  <p class="note">단순 나열 (10건/페이지). 클릭 시 작업 내용(주요내용) 표시.</p>
+
+  <div id="analyzeRecords">
+    <div class="analyze-list">
+      <div class="analyze-item" data-keyword="롯데 let:simple 간편3.10.10 260429">
+        <span class="analyze-date">260429</span>
+        <span class="analyze-link">롯데 let:simple 간편3·N·10 건강보험(세만기형)(2604) 신상품 분석 (김리아님)</span>
+        <div class="analyze-summary">주요내용: categories.json v1.1 → v1.2 (5건 별칭 추가 — 통합형전이암 7종→통합암 / 일반암주요치료비·갑상선암주요치료비·특정항암호르몬·상급종합병원Ⅲ 호르몬→암주요치료비 / 상급종합병원Ⅲ 하이클래스 암주요치료비→하이클래스 진단후특정치료비 / 상급종합병원Ⅲ 하이클래스 항암약물치료비→하이클래스 항암약물치료비 / 상급종합병원Ⅱ 특정순환계질환주요치료비→2대 주요 질환 치료비), labels.json v1.0 → v1.1 (심혈관질환진단비(기타심장부정맥)→부정맥 진단비), insurers/lotte.json v1.0 신규 (간편심사형 6단계·무해지형·납입면제·90세 세만기·갱신담보 6종 정의). 산출 zip: sync4_insu_full_20260429.zip.</div>
+      </div>
+      <div class="analyze-item" data-keyword="한화 시그니처 여성 건강보험3.0 260426">
+        <span class="analyze-date">260426</span>
+        <span class="analyze-link">한화 시그니처 여성 건강보험3.0 신상품 분석</span>
+        <div class="analyze-summary">주요내용: categories.json v1.1 (5건 신규 매핑 추가 — 특정양성뇌종양→brain · 심장판막협착증→heart · 자궁내막증/이형성증/HIFU→cancer 카드 하단), insurers/hanwha.json v1.1 (4번째 product_line "시그니처 여성 건강보험3.0 (납입후50%해약환급금지급형) 계열" 등록), terms_insu.html v1.1 동기화. 산출 zip: toss_report_skill_final_20260426.zip (5.5 MB).</div>
+      </div>
+    </div>
+  </div>
+
+  <p class="empty-msg hidden" id="triggerEmptyMsg">검색 결과가 없습니다.</p>
+
+</div>
+
+<p class="note" style="margin-top: 32px;">⚠️ 정직한 한계: 본 대화 시작 전 업무범위·트리거 구동 이력은 컨텍스트에 없어 누락. mr.와이가 이전 worklog 첨부 시 통합 갱신 가능.</p>
+
+</div>
+
+<script>
+  // 탭 전환
+  document.querySelectorAll('.tab').forEach(function(tab) {
+    tab.addEventListener('click', function() {
+      var tabName = tab.dataset.tab;
+      document.querySelectorAll('.tab').forEach(function(t) { t.classList.remove('active'); });
+      document.querySelectorAll('.tab-content').forEach(function(c) { c.classList.remove('active'); });
+      tab.classList.add('active');
+      document.getElementById('tab-' + tabName).classList.add('active');
+    });
+  });
+
+  // 새보험분석 클릭 시 주요내용 토글
+  document.addEventListener('click', function(e) {
+    var link = e.target.closest('.analyze-link');
+    if (link) {
+      var item = link.closest('.analyze-item');
+      if (item) item.classList.toggle('expanded');
+    }
+    // 상담자료교체 오류 링크 클릭 시 상세 토글
+    var errLink = e.target.closest('.error-link');
+    if (errLink) {
+      e.preventDefault();
+      var li = errLink.closest('li');
+      if (li) li.classList.toggle('expanded');
+    }
+  });
+
+  // 트리거 구동 기록 검색 (상담자료교체 + 새보험분석 동시)
+  var triggerSearch = document.getElementById('triggerSearch');
+  var triggerEmptyMsg = document.getElementById('triggerEmptyMsg');
+  triggerSearch.addEventListener('input', function() {
+    var q = triggerSearch.value.trim().toLowerCase();
+    var anyMatch = false;
+
+    // 상담자료교체 필터
+    document.querySelectorAll('#replaceRecords .record-list li').forEach(function(li) {
+      var text = li.textContent.toLowerCase();
+      var match = q === '' || text.indexOf(q) !== -1;
+      li.classList.toggle('hidden', !match);
+      if (match) anyMatch = true;
+    });
+    // 월 블록 자동 숨김
+    document.querySelectorAll('#replaceRecords .month-block').forEach(function(m) {
+      var visibleItems = m.querySelectorAll('.record-list li:not(.hidden)').length;
+      m.classList.toggle('hidden', visibleItems === 0 && q !== '');
+    });
+    document.querySelectorAll('#replaceRecords .year-block').forEach(function(y) {
+      var visibleMonths = y.querySelectorAll('.month-block:not(.hidden)').length;
+      y.classList.toggle('hidden', visibleMonths === 0 && q !== '');
+    });
+
+    // 새보험분석 필터
+    document.querySelectorAll('#analyzeRecords .analyze-item').forEach(function(item) {
+      var text = item.textContent.toLowerCase();
+      var keyword = (item.dataset.keyword || '').toLowerCase();
+      var match = q === '' || text.indexOf(q) !== -1 || keyword.indexOf(q) !== -1;
+      item.classList.toggle('hidden', !match);
+      if (match) anyMatch = true;
+    });
+
+    // 검색 시 페이지네이션 비활성화 (검색 결과 전체 표시)
+    if (q !== '') {
+      document.querySelectorAll('#analyzeRecords .pagination').forEach(function(p) {
+        p.classList.add('hidden');
+      });
+    } else {
+      document.querySelectorAll('#analyzeRecords .pagination').forEach(function(p) {
+        p.classList.remove('hidden');
+      });
+      // 페이지네이션 재초기화
+      if (typeof initPagination === 'function') initPagination();
+    }
+
+    triggerEmptyMsg.classList.toggle('hidden', anyMatch || q === '');
+  });
+
+  // 새보험분석 페이지네이션 (10건/페이지, 레이아웃 부담 시 20건)
+  var PAGE_SIZE = 10;
+  function initPagination() {
+    var list = document.querySelector('#analyzeRecords .analyze-list');
+    if (!list) return;
+    var items = list.querySelectorAll('.analyze-item');
+    var pagination = document.querySelector('#analyzeRecords .pagination');
+    if (!pagination) return;
+
+    if (items.length <= PAGE_SIZE) {
+      pagination.innerHTML = '';
+      return;
+    }
+
+    var totalPages = Math.ceil(items.length / PAGE_SIZE);
+    var currentPage = 1;
+
+    function renderPage(page) {
+      currentPage = page;
+      items.forEach(function(item, idx) {
+        var start = (page - 1) * PAGE_SIZE;
+        var end = start + PAGE_SIZE;
+        item.classList.toggle('hidden', idx < start || idx >= end);
+      });
+      pagination.querySelectorAll('.page-btn').forEach(function(btn, i) {
+        btn.classList.toggle('active', (i + 1) === page);
+      });
+    }
+
+    pagination.innerHTML = '';
+    for (var i = 1; i <= totalPages; i++) {
+      (function(p) {
+        var btn = document.createElement('button');
+        btn.className = 'page-btn' + (p === 1 ? ' active' : '');
+        btn.textContent = p;
+        btn.addEventListener('click', function() { renderPage(p); });
+        pagination.appendChild(btn);
+      })(i);
+    }
+    renderPage(1);
+  }
+  initPagination();
+</script>
+
+</body>
+</html>

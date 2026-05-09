@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>worklog_cto — 개발총괄 (L1) 작업 박제</title>
+<style>
+body { font-family: -apple-system, BlinkMacSystemFont, 'Pretendard', 'Noto Sans KR', sans-serif;
+       max-width: 1100px; margin: 24px auto; padding: 0 20px; line-height: 1.65; color: #1a202c; background: #f8fafc; }
+h1 { color: #1a365d; border-bottom: 3px solid #1a365d; padding-bottom: 12px; }
+h2 { color: #2b6cb0; margin-top: 32px; }
+.meta { background: #ebf8ff; padding: 12px 16px; border-left: 4px solid #2b6cb0; margin: 16px 0; font-size: 14px; }
+details { background: white; border: 1px solid #e2e8f0; border-radius: 6px; margin: 12px 0; padding: 0; overflow: hidden; }
+details > summary { padding: 14px 18px; cursor: pointer; font-weight: 600; background: #f7fafc; }
+details[open] > summary { background: #ebf8ff; border-bottom: 1px solid #e2e8f0; }
+details .content { padding: 16px 20px; }
+table { border-collapse: collapse; width: 100%; margin: 10px 0; font-size: 14px; }
+th, td { border: 1px solid #cbd5e0; padding: 8px 12px; text-align: left; vertical-align: top; }
+th { background: #edf2f7; }
+code { background: #edf2f7; padding: 2px 5px; border-radius: 3px; font-size: 13px; }
+.status-done { color: #2f855a; font-weight: 600; }
+.status-progress { color: #b7791f; font-weight: 600; }
+.status-pending { color: #718096; font-weight: 600; }
+</style>
+</head>
+<body>
+
+<h1>worklog_cto — 개발총괄 (L1) 작업 박제</h1>
+
+<div class="meta">
+<strong>페르소나:</strong> 개발총괄 (Chief CTO) — 동기화_cto<br>
+<strong>계층:</strong> L1 (유일한 최상위 — 통합 메타 운용)<br>
+<strong>책임 가중치:</strong> ⓤ 룰의 10배 이상 강화 (§1.3)<br>
+<strong>최종 갱신:</strong> 2026-05-09 (박제 ⑪ v8 통합 동기화 — 메타룰 ㉥·㉦·㉧ 4 sync 전파 + 토스 v8 스킬 신설)
+</div>
+
+<h2>박제 ⑪ v8 통합 동기화 — 메타룰 ㉥·㉦·㉧ 4 sync 전파 + 토스 v8 스킬 신설 + references/ 12종 (2026-05-09)</h2>
+
+<details open>
+<summary>⑪ 메타룰 ㉥·㉦·㉧ 4 sync 부록 A 전파 + 토스 v8 스킬 (v7 본문 모두 유지 + references/ 추가) + 본 클로드 결함 정정</summary>
+<div class="content">
+
+<p><strong>날짜:</strong> 2026-05-09</p>
+<p><strong>상태:</strong> <span class="status-done">✅ 완료</span></p>
+<p><strong>책임자:</strong> 개발총괄 (L1)</p>
+<p><strong>세션 본질:</strong> 토스 페르소나(L2) 대화창 → ⓥ-2 시점 L1 전환 → 본 통합 동기화 + 박제 + 새 대화창 이전 준비</p>
+
+<h3>배경</h3>
+<table>
+<tr><th>항목</th><th>내용</th></tr>
+<tr><td>발의</td><td>직전 대화창 박제 대기 5건 + v8 추가 정의 4종 (사망·후유장해·치아·주택화재) + 메타룰 ㉥·㉦·㉧ 4 sync 미전파 정합 결함 해소</td></tr>
+<tr><td>본질</td><td>v7 기능 모두 유지 + references/ 12종 추가 (트리거 1·2·3 정확도·통일 보장) + 본 클로드 자체 단순화·추정 영역 차단</td></tr>
+<tr><td>본 대화창 결함</td><td>본 클로드 자체 결함 4건 발생 (정직 인정 후 정정) — 양주미 매트릭스 전수 view ❌ / png표레포트 양식 임의 단순화 / 가족1 png레포트 별도 산출 (5개 파일 — 4개가 정합) / v8 zip 산출 시 v7 본문 누락 + 한글 파일명 인코딩 결함</td></tr>
+</table>
+
+<h3>메타룰 4 sync 부록 A 전파 (정합 결함 해소)</h3>
+<table>
+<tr><th>영역</th><th>직전 (정합 ❌)</th><th>본 시점 (정합 ✅)</th></tr>
+<tr><td>마스터 §17 메타룰</td><td>34개 (ⓐ~㉧)</td><td>34개 (그대로)</td></tr>
+<tr><td>4 sync 부록 A 메타룰</td><td>31개 (㉥·㉦·㉧ 미전파)</td><td><strong>34개 (전파 완료)</strong></td></tr>
+<tr><td>마스터·복제 정합</td><td>❌</td><td><strong>✅</strong></td></tr>
+</table>
+
+<h3>토스 v8 스킬 본문</h3>
+<table>
+<tr><th>영역</th><th>본문</th></tr>
+<tr><td>v7 기능 유지</td><td>v7 zip 18파일 모두 그대로 유지 (CODING_GUIDELINES·base_template·replace_jeonansu_reference·verify·skin_preview·1번파일·2번파일·mappings/ 등)</td></tr>
+<tr><td>SKILL.md</td><td>v7 본문 1306줄 그대로 유지 + v8 references/ 가이드 + 추가 정의 박제 (1418줄)</td></tr>
+<tr><td>references/ 12종 (영문)</td><td>renewal·cancer·brain·heart·surgery·silson·death·disability·dental·fire·premium_label·png_color</td></tr>
+<tr><td>v8 추가 정의 4종 row</td><td>사망보장 (일반·질병·상해 — 정기·교통사망 ❌) / 후유장해 (질병50%·상해50%·질병3%·상해3% — 명시적 % 표기 룰) / 치아보장 (충치치료·크라운치료·임플란트 — 라이나 1.5%/0.5% 비례) / 주택화재보험 (화재벌금·화재폭발배상·붕괴/침강·누수 — 다중 시 높은 금액)</td></tr>
+<tr><td>5종 평균 라벨 산출</td><td>점수 평균 + 반올림 (과잉5/적정4/보통3/빈약2/부재1) → 결론 본문 통일 매핑 (png레포트 검정박스 + png표레포트 노란박스 + txt 결론 단일 출처)</td></tr>
+<tr><td>보장 완성도</td><td>5종 라벨 적정+과잉 비율 (0/20/40/60/80/100%)</td></tr>
+<tr><td>pre_report v8 코드</td><td>pre_report_gen.py 정정 (HEADLINE/CONCLUSION/COMPLETION 5종 평균 라벨 기반) + build_v8_main.py·build_v8_table.py 신규 추가</td></tr>
+<tr><td>zip 정상 등록 보장</td><td>Python zipfile UTF-8 강제 + 영문 파일명 (한글 인코딩 첨부 오류 결함 차단)</td></tr>
+</table>
+
+<h3>본 대화창 본 클로드 결함 4건 (정직 인정·정정)</h3>
+<table>
+<tr><th>#</th><th>결함</th><th>위반 룰</th><th>차단</th></tr>
+<tr><td>1</td><td>양주미 매트릭스 전수 view ❌ — 5종 라벨 영역만 입력, 사망·후유장해·치아·주택화재 모두 None</td><td>ⓤ 5·7번 + 메모리 #1</td><td>v8 references/ 룰 + 메모리 #2 추가</td></tr>
+<tr><td>2</td><td>png표레포트 양식 본 클로드 자체 단순화 (큰 박스 4영역·진단비 외곽선·결론 박스·어드바이저 6번)</td><td>㉦ 임의 변경 ❌</td><td>v8 SKILL.md에 양식 표 명시</td></tr>
+<tr><td>3</td><td>가족1 png레포트 별도 산출 (5개 파일 — 4개가 정합. 트리거 1은 본인 1장 + 가족 요약 통합)</td><td>ⓤ 7번 (기초 간과)</td><td>v8 SKILL.md 트리거 정의 표 명시</td></tr>
+<tr><td>4</td><td>v8 zip 산출 시 v7 본문 누락 (16파일) + 한글 파일명 인코딩 결함 + SKILL.md 임의 슬림화</td><td>ⓤ 5·7번 + ㉥·㉦</td><td>v7 본문 모두 유지 + 영문 파일명 + UTF-8 zip + SKILL.md 본문 유지</td></tr>
+</table>
+
+<h3>메모리 박제 (본 클로드 자체)</h3>
+<table>
+<tr><th>#</th><th>본문</th></tr>
+<tr><td>1</td><td>(직전) 새 대화창 진입 시 첨부 자료 전수 view 의무</td></tr>
+<tr><td>2</td><td>(본 시점) 본 클로드 자체 단순화·임의 변경·정의 번복 ❌. 합의된 양식·룰·정의 본문 그대로 적용 의무. 위반 시 컨텍스트 누적 → 대화창 한도 초과 본질</td></tr>
+</table>
+
+<h3>작업 범위</h3>
+<table>
+<tr><th>#</th><th>항목</th><th>결과</th></tr>
+<tr><td>1</td><td>4 sync 부록 A에 ㉥·㉦·㉧ 본문 일괄 전파 + ⓐ~㉤ → ⓐ~㉧ 정정</td><td class="status-done">✅</td></tr>
+<tr><td>2</td><td>02_summary_토스.md v8 합의 본문 추가 (v8 스킬 + 4종 row + 5종 평균 라벨 + 본 클로드 결함 4건)</td><td class="status-done">✅</td></tr>
+<tr><td>3</td><td>02_summary_cto.md v8 통합 동기화 본문 추가 (메타룰 전파 + 정합 결함 해소 + v8 스킬)</td><td class="status-done">✅</td></tr>
+<tr><td>4</td><td>worklog_토스.html 박제 ⑩ 추가 (v8 스킬 업데이트)</td><td class="status-done">✅</td></tr>
+<tr><td>5</td><td>worklog_cto.html 박제 ⑪ 추가 (본 박제)</td><td class="status-done">✅</td></tr>
+<tr><td>6</td><td>통합업무파일.html v8 갱신 (페르소나 카드·날짜)</td><td class="status-done">✅</td></tr>
+<tr><td>7</td><td>toss_report_skill_final_v8_20260509.zip 산출 (32파일 — v7 18 + references/ 12 + pre_report v8 코드 추가)</td><td class="status-done">✅</td></tr>
+<tr><td>8</td><td>동기화통합본_2026-05-09.zip 산출 (5 sync 폴더 갱신본 + 통합업무파일.html, ⓦ 경량화)</td><td class="status-done">✅</td></tr>
+<tr><td>9</td><td>instruction_cto.md (zip 밖 별도 — 변경 ❌이므로 슬롯 박제 ❌)</td><td class="status-done">✅</td></tr>
+</table>
+
+<p><strong>산출물</strong>:</p>
+<ul>
+<li>toss_report_skill_final_v8_20260509.zip (토스 클로드 스킬 슬롯 업데이트 — 32파일)</li>
+<li>동기화통합본_2026-05-09.zip (5 sync 폴더 갱신본 + 통합업무파일.html)</li>
+<li>instruction_cto.md (zip 밖 별도 — 변경 ❌이므로 슬롯 박제 ❌)</li>
+</ul>
+
+<p><strong>도입 목적</strong>: 트리거 1·2·3 적용 시 정확도·오류 ❌·모든 고객 동일·통일 기준 보장 + 마스터·복제 정합 회복 + 본 클로드 자체 단순화·추정 영역 차단 (룰 적용 시점 references/*.md 전수 view 의무).</p>
+
+</div>
+</details>
+
+<h2>박제 ⑩ 메타룰 ㉥·㉦·㉧ 신설 + 토스 트리거 3 v7 박제 (2026-05-06)</h2>
+
+<details>
+<summary>⑩ 본 클로드 책임 강화 메타룰 3종 신설 + 토스 페르소나 트리거 3 v7 전면 갱신 + ⓥ-2 이전 준비</summary>
+<div class="content">
+
+<p><strong>날짜:</strong> 2026-05-06</p>
+<p><strong>상태:</strong> <span class="status-done">✅ 완료</span></p>
+<p><strong>책임자:</strong> 개발총괄 (L1)</p>
+<p><strong>세션 본질:</strong> 토스 페르소나(L2) 단독 대화창 → ⓥ-2 시점에 L1 전환하여 본 박제 + 통합 동기화 산출</p>
+
+<h3>배경</h3>
+<table>
+<tr><th>항목</th><th>내용</th></tr>
+<tr><td>발의</td><td>본 토스 페르소나 작업 진행 중 본 클로드 결함 누적 8건 정직 인정 → ⓤ 룰 강화 메타룰 3종 신설 필요</td></tr>
+<tr><td>본질</td><td>본 클로드 결함 패턴 (박제 검토 ❌·임의 변경·시각 검증 ❌)을 ⓤ 룰만으로 차단 ❌ → 작업 시점별 명시적 의무 룰로 강화</td></tr>
+<tr><td>적용 영역</td><td>ⓥ-2 이전 준비 시점 — 토스 트리거 3 v7 박제 + ㉥·㉦·㉧ 메타룰 자동 전파 (마스터 instruction_cto.md §17)</td></tr>
+</table>
+
+<h3>신설 메타룰 (3종)</h3>
+<table>
+<tr><th>룰</th><th>본질</th><th>차단 결함</th></tr>
+<tr><td><strong>㉥ 작업 시작 전 박제 검토 보고 의무</strong></td><td>mr.와이 작업 명령 시 박제 자료 전수 점검 + 검토 결과 보고 + 진행 의사 확인 의무. 본문 ❌ 영역은 추정 ❌</td><td>박제 룰 검토 ❌ 임의 추정 (이숙희 뇌혈관 영역) / 첨부 zip 전수 점검 ❌ (sync4_insu_full / 동기화통합본 zip 누락)</td></tr>
+<tr><td><strong>㉦ 임의 변경 금지</strong></td><td>mr.와이 명시 ❌ 영역 = 기존 영역 그대로 유지. 본 클로드 자체 변경 ❌ (디자인·텍스트·로고·코드 모두)</td><td>명시 ❌ 영역 임의 변경 (디자인·로고·텍스트)</td></tr>
+<tr><td><strong>㉧ 산출 후 체크리스트 검증 보고 의무</strong></td><td>산출 완료 보고 시 사용자 시점 검증 결과 + 회귀 테스트 + 변경/변경 ❌ 영역 명시 의무</td><td>시각 검증 ❌ "데이터 정합 ✅"으로 종결</td></tr>
+</table>
+
+<h3>토스 페르소나 트리거 3 v7 박제 (L2 sync_토스 영역)</h3>
+<table>
+<tr><th>영역</th><th>본문</th></tr>
+<tr><td>카테고리 정정</td><td>암(진단비: 일반암+통합암 / 치료비: 주요+특정) / 뇌혈관(진단비만 + 치료비) / 심장(허혈성+부정맥 + 치료비) / 수술(질병+상해 합산). 제외 영역 명시 (고액암·소액암·전이암·뇌졸중·뇌출혈·급성심근경색 등)</td></tr>
+<tr><td>5단계 라벨</td><td>구 7단계 → 매우과잉(≥130%) / 높은편(90-129%) / 보통(51-89%) / 낮음(21-50%) / 미확인 (또는 0원)(0-20%) 통합. classify_premium_level_v7() 함수 신설</td></tr>
+<tr><td>5종 보장 라벨 임계값 (만원)</td><td>암 ≥15,000/10,000-14,999/5,000-9,999/2,000-4,999/&lt;2,000 / 뇌혈관·심장 ≥7,000/5,000-6,999/3,000-4,999/1,000-2,999/&lt;1,000 / 수술 ≥1,500/1,000-1,499/501-999/1-500/0</td></tr>
+<tr><td>카드 ③ 명칭</td><td>"보험료&amp;보장 기준 진단" (구 "보험료 기준 진단" 폐기) / 본문 라벨 "보험료 지출 정도" (구 "보험료 지출 적정성" 폐기) / 라벨 폰트 22px (긴 라벨 한 줄 fit)</td></tr>
+<tr><td>헤드라인·메시지 통일 매핑</td><td>매우과잉="지나치게 과잉상태"(accent 빨간) / 높은편="완성된 상태" / 보통="완성되지 않았습니다" / 낮음="빈약한 상태" / 미확인="전무한 상태". PNG 검정박스 + 메시지 결론 동시 사용</td></tr>
+<tr><td>PNG 디자인</td><td>5개 보장 카드 명칭/detail 분리/배경 #F9FAFB / 카드 ② 검정 통일 #191F28 / 카드 ① 본인+가족 분리 표기 / 갱신형 박스 빨간+노란(#F04452+#FFD700) 21px / 진단 목적 안내 신설(12px 회색) / 가족 표 시안 B 파란 파스텔(#F0F9FF+#BAE6FD) / device_scale_factor 3 + geometricPrecision</td></tr>
+<tr><td>코드 단순화</td><td>determine_conclusion_case 7가지 케이스 → 5종 라벨 직접 산출 / HEADLINE/CONCLUSION/LEVEL_BAR/COMPLETION fallback 제거 / render_html 헤드라인 분기 level["label"] 기준 직접 매핑 / render_message 5단계 4가지 조합 / rules.json·SKILL.md 전면 재작성 / 구버전 본문(v5 갱신·v6 박제·7가지 케이스·미완성·매우 취약·사실상 부재·보장 전무) 모두 제거</td></tr>
+</table>
+
+<h3>본 클로드 결함 누적 8건 (정직 인정·정정 후 메타룰 차단)</h3>
+<table>
+<tr><th>#</th><th>결함</th><th>위반 룰</th></tr>
+<tr><td>1</td><td>박제된 룰 검토 ❌ 임의 추정 (이숙희 뇌혈관 영역)</td><td>ⓤ 2번 → ㉥ 신설</td></tr>
+<tr><td>2</td><td>명시 ❌ 영역 임의 변경 (디자인·로고·텍스트)</td><td>ⓤ 5번 → ㉦ 신설</td></tr>
+<tr><td>3</td><td>시각 검증 ❌ "데이터 정합 ✅"으로 종결</td><td>ⓤ 6번 → ㉧ 신설</td></tr>
+<tr><td>4</td><td>본문 ❌ 시 추정 산출 → 결함</td><td>ⓤ 1번 → ㉥-2 추가 의무</td></tr>
+<tr><td>5</td><td>첨부 zip 자료 전수 점검 ❌ (sync4_insu_full / 동기화통합본_2026-05-02 zip 인지 누락)</td><td>ⓤ 5·7번 + 메타룰 ㉢ → ㉥-2 추가</td></tr>
+<tr><td>6</td><td>Claude Skills zip에 SKILL.md 누락 산출 (트리거 3만 zip → 트리거 1·2 본문 누락)</td><td>ⓤ 5·9번</td></tr>
+<tr><td>7</td><td>구버전 본문 잔존 (SKILL.md "7가지 케이스·v6 박제" / determine_conclusion_case 7가지 케이스)</td><td>ⓤ 9번 → 정리 명령 시 grep 전수 점검 의무</td></tr>
+<tr><td>8</td><td>"영역" 단어 무의미 반복 패턴 (대화창 길이 누적 시 토큰 생성 결함)</td><td>ⓤ 6번 — 새 대화창 이전이 가장 확실한 해결책</td></tr>
+</table>
+
+<h3>작업 범위</h3>
+<table>
+<tr><th>#</th><th>항목</th><th>결과</th></tr>
+<tr><td>1</td><td>토스 트리거 3 v7 룰 정의 (카테고리·라벨·디자인·코드 단순화)</td><td class="status-done">✅</td></tr>
+<tr><td>2</td><td>11명 케이스 산출 + 시각 검증 + 회귀 테스트</td><td class="status-done">✅</td></tr>
+<tr><td>3</td><td>toss_report_skill_final_v7_20260506.zip 산출 (18파일 정상 구성)</td><td class="status-done">✅</td></tr>
+<tr><td>4</td><td>SKILL.md·pre_report_gen.py·rules.json·template.html v7 갱신 + 구버전 본문 0건 검증</td><td class="status-done">✅</td></tr>
+<tr><td>5</td><td>instruction_cto.md §17 ㉥·㉦·㉧ 신설 (3종) + ⓐ~㉤ → ⓐ~㉧ 일괄 갱신</td><td class="status-done">✅</td></tr>
+<tr><td>6</td><td>sync_토스 instruction §13-9·§13-10·§13-12 v7 갱신 + worklog ⑨ 박제 + 02_summary ㉓ 합의 신설</td><td class="status-done">✅</td></tr>
+<tr><td>7</td><td>sync_cto 02_summary 2026-05-06 합의 신설 + worklog ⑩ 박제</td><td class="status-done">✅</td></tr>
+<tr><td>8</td><td>통합업무파일.html 갱신 (페르소나 카드·메타룰 §17)</td><td class="status-done">✅</td></tr>
+<tr><td>9</td><td>동기화통합본_2026-05-06.zip 산출 (5 sync 폴더 + 통합업무파일.html)</td><td class="status-done">✅</td></tr>
+<tr><td>10</td><td>instruction_cto.md (zip 밖) + 통합업무파일.html (zip 밖) 별도 산출</td><td class="status-done">✅</td></tr>
+</table>
+
+<p><strong>산출물</strong>:</p>
+<ul>
+<li>toss_report_skill_final_v7_20260506.zip (토스 클로드 스킬 슬롯 업데이트 — 18파일)</li>
+<li>동기화통합본_2026-05-06.zip (5 sync 폴더 갱신본 + 통합업무파일.html)</li>
+<li>instruction_cto.md (zip 밖 별도 — L1 슬롯 박제용)</li>
+<li>통합업무파일.html (zip 밖 별도 — 검수·열람용)</li>
+</ul>
+
+<p><strong>도입 목적</strong>: 본 대화창 합의 영속 보존 + 본 클로드 결함 패턴 차단 강화 + 새 대화창 이전 시 누락·왜곡 ❌ 보장.</p>
+
+</div>
+</details>
+
+<h2>박제 ⑨ 데이터 소실 내부 보강 — ⓨ·ⓩ·㉠ 신설 + ⓥ-3 강화 (2026-04-30)</h2>
+
+<details open>
+<summary>⑨ 데이터 소실 내부 보강 메타룰 3종 신설 + ⓥ-3 강화 + 4 sync 자동 전파</summary>
+<div class="content">
+
+<p><strong>날짜:</strong> 2026-04-30</p>
+<p><strong>상태:</strong> <span class="status-done">✅ 완료</span></p>
+<p><strong>책임자:</strong> 개발총괄 (L1)</p>
+
+<h3>배경</h3>
+<table>
+<tr><th>항목</th><th>내용</th></tr>
+<tr><td>발의</td><td>mr.와이 자발 질문 — "데이터 소실 위험 배제 가능한가? 외부 백업 불가 환경에서 내부 보강 방법은?"</td></tr>
+<tr><td>본질</td><td>데이터 소실 위험 4영역 (CTO·mr.와이·Anthropic·저장 매체) 중 외부 영역 ❌인 경우 내부 매체 다중화로 위험 ⬇️</td></tr>
+<tr><td>완전 배제 ❌</td><td>완전 배제는 불가 — 사후 감지·1차 박제·사후 복구 3중으로 위험 ⬇️</td></tr>
+</table>
+
+<h3>신설 메타룰 (3종)</h3>
+<table>
+<tr><th>룰</th><th>본질</th><th>효과</th></tr>
+<tr><td><strong>ⓨ 정합 자체 검증 룰</strong></td><td>새 대화창 진입 시 L1 자체 카운트 (메타룰·합의·worklog 박제·통합업무파일 정합) → 불일치 시 정직 보고</td><td>부분 소실·박제 누락 즉시 감지</td></tr>
+<tr><td><strong>ⓩ 합의 즉시 박제 룰</strong></td><td>합의·결함 정정 시점에 즉시 본 대화창 응답 본문에 표 형식 박제 (Anthropic 인프라 영속 매체 활용)</td><td>컨테이너 리셋·동기화 누락 시에도 대화창 자체에 보존</td></tr>
+<tr><td><strong>㉠ conversation_search 사후 복구 룰</strong></td><td>정합 검증 불일치 발견 또는 mr.와이 명시 요청 시 conversation_search·recent_chats 일괄 사용</td><td>부분 소실 사후 복구 (Project 내 한정)</td></tr>
+</table>
+
+<h3>강화 룰 (1종)</h3>
+<table>
+<tr><th>기존</th><th>강화 후</th></tr>
+<tr><td>ⓥ-3 — 단순 안내 ("최신 갱신 + 직전 페르소나·작업 인지 + 복원 제안")</td><td>ⓥ-3 — <strong>3단계 검토 보고</strong>: (1) ⓨ 정합 자체 검증 → (2) worklog·02_summary 확인 → (3) 검토 보고 출력 (불일치·결함 정직 보고 의무)</td></tr>
+</table>
+
+<h3>작업 범위</h3>
+<table>
+<tr><th>#</th><th>항목</th><th>결과</th></tr>
+<tr><td>1</td><td>instruction_cto.md §17 ⓨ·ⓩ·㉠ 신설 (3종)</td><td class="status-done">✅</td></tr>
+<tr><td>2</td><td>instruction_cto.md §17 ⓥ-3 강화 (검토 보고 후 시작)</td><td class="status-done">✅</td></tr>
+<tr><td>3</td><td>"ⓐ~ⓧ" → "ⓐ~㉠" 일괄 갱신 (마스터 8곳 + 4 sync 8곳)</td><td class="status-done">✅</td></tr>
+<tr><td>4</td><td>4 sync 부록 A 자동 전파 (ⓨ·ⓩ·㉠ + ⓥ-3 강화)</td><td class="status-done">✅</td></tr>
+<tr><td>5</td><td>마스터 §17 메타룰 27개 정합 + 4 sync 부록 A 27개 정합 (동기화_클로드 30개 = 27 + 페르소나 자체 룰 §11-J·K·L 3개)</td><td class="status-done">✅</td></tr>
+<tr><td>6</td><td>02_summary 합의 ㉗ 추가 (데이터 소실 내부 보강)</td><td class="status-done">✅</td></tr>
+<tr><td>7</td><td>통합업무파일 갱신 (메타룰 표시)</td><td class="status-done">✅</td></tr>
+<tr><td>8</td><td>#2 가이드 별도 산출 (mr.와이 영역 — Project 지식 zip 다중 버전)</td><td class="status-done">✅</td></tr>
+</table>
+
+<h3>분리 결정 — #1 인스트럭션 박제 최대화 (보류)</h3>
+<table>
+<tr><th>항목</th><th>내용</th></tr>
+<tr><td>결정</td><td>본 박제 ⑨에 미포함 — 별도 검토</td></tr>
+<tr><td>근거</td><td>인스트럭션 한도 검토 필요 (mr.와이 환경 영역) + 페르소나 4 sync 인스트럭션 슬롯 모두 갱신 필요 → 큰 작업</td></tr>
+<tr><td>차기 검토 시점</td><td>본 박제 ⑨ 적용 후 시스템 변화 시점 — mr.와이 트리거 시</td></tr>
+</table>
+
+</div>
+</details>
+
+<h2>박제 ⑧ 통합업무파일 view 전환 결함 정정 (2026-04-30)</h2>
+
+<details>
+<summary>⑧ 통합업무파일 — URL hash 동기화 SecurityError → 라우팅 단순화</summary>
+<div class="content">
+
+<p><strong>날짜:</strong> 2026-04-30</p>
+<p><strong>상태:</strong> <span class="status-done">✅ 완료</span></p>
+<p><strong>책임자:</strong> 개발총괄 (L1)</p>
+
+<h3>결함</h3>
+<table>
+<tr><th>항목</th><th>내용</th></tr>
+<tr><td>증상</td><td>모바일 환경에서 페르소나 카드 클릭 시 클릭 인식은 됨 (그래픽 효과 ✅) / 화면 전환 ❌</td></tr>
+<tr><td>본질</td><td>Claude UI file preview = sandboxed iframe → <code>setHash()</code> → <code>history.pushState()</code> 호출 시 SecurityError 발생 → JS 중단 → <code>showView()</code> 도달 ❌</td></tr>
+<tr><td>발견</td><td>mr.와이가 직접 발견·지적</td></tr>
+<tr><td>박제 ⑦과 차이</td><td>박제 ⑦ = 클릭 인식 단계 정정 (inline onclick → addEventListener) / 본 결함 = 클릭 인식 후 라우팅 단계 결함. 별개 결함</td></tr>
+</table>
+
+<h3>정정</h3>
+<table>
+<tr><th>#</th><th>항목</th><th>결과</th></tr>
+<tr><td>1</td><td>URL hash 동기화 4함수 제거 (<code>setHash</code>·<code>parseHash</code>·<code>applyHash</code>·<code>fallbackToHome</code>)</td><td class="status-done">✅</td></tr>
+<tr><td>2</td><td><code>history.pushState</code>·<code>replaceState</code>·<code>popstate</code> 리스너 제거</td><td class="status-done">✅</td></tr>
+<tr><td>3</td><td><code>go</code>·<code>goHome</code>·<code>goPersona</code>·<code>init</code> 단순화 (state + showView 직접 호출)</td><td class="status-done">✅</td></tr>
+<tr><td>4</td><td>5대 작업 원칙 1번 (오버엔지니어링 ❌) 정합 — URL hash 동기화는 Claude UI 환경에서 기능적 가치 ❌</td><td class="status-done">✅</td></tr>
+</table>
+
+<h3>검증</h3>
+<table>
+<tr><th>#</th><th>항목</th><th>결과</th></tr>
+<tr><td>1</td><td>URL hash 키워드 잔존 0건</td><td class="status-done">✅</td></tr>
+<tr><td>2</td><td>모든 7개 script syntax (Node --check)</td><td class="status-done">✅</td></tr>
+<tr><td>3</td><td>HTML parse 0 에러</td><td class="status-done">✅</td></tr>
+<tr><td>4</td><td>inline <code>onclick</code> 0건 (박제 ⑦ 정합 유지)</td><td class="status-done">✅</td></tr>
+<tr><td>5</td><td>data-action 4종 정합 (open-persona·open-data·back-home·back-persona)</td><td class="status-done">✅</td></tr>
+<tr><td>6</td><td>5 사용자 시나리오 시뮬레이션 (메인↔페르소나↔자료 + 뒤로가기)</td><td class="status-done">✅</td></tr>
+<tr><td>7</td><td>CSS specificity 검증 (view-home ID 룰 vs 클래스 룰)</td><td class="status-done">✅</td></tr>
+<tr><td>8</td><td>mr.와이 모바일 실기 작동 확인</td><td class="status-done">✅</td></tr>
+</table>
+
+<h3>정직 보고 + 룰 강화</h3>
+<table>
+<tr><th>항목</th><th>내용</th></tr>
+<tr><td>ⓤ 6번 또 위반</td><td>박제 ② 빌드 + 박제 ⑦ 정정 시점에 sandboxed iframe 호환성 검증 ❌. 결함 두 차례 발견 후에도 본질 못 잡음</td></tr>
+<tr><td>책임</td><td>CTO 영역 책임 100%. 변명 ❌</td></tr>
+<tr><td>룰 강화</td><td>향후 빌드는 sandboxed iframe·CSP·모바일 호환성 자체 점검 의무. inline onclick·history API·외부 리소스 의존 ❌ 체크리스트화</td></tr>
+</table>
+
+</div>
+</details>
+
+<h2>박제 ⑦ 카드 클릭 결함 정정 (2026-04-30)</h2>
+
+<details>
+<summary>⑦ 통합업무파일 카드 클릭 결함 — onclick 인라인 → addEventListener 이벤트 위임</summary>
+<div class="content">
+
+<p><strong>날짜:</strong> 2026-04-30</p>
+<p><strong>상태:</strong> <span class="status-done">✅ 완료</span></p>
+<p><strong>책임자:</strong> 개발총괄 (L1)</p>
+
+<h3>결함</h3>
+<table>
+<tr><th>항목</th><th>내용</th></tr>
+<tr><td>증상</td><td>모바일 환경에서 페르소나 5종 카드 클릭 시 동작 ❌</td></tr>
+<tr><td>본질</td><td>inline <code>onclick="App.openPersona(...)"</code> 방식 — Claude UI file preview·일부 sandboxed iframe·CSP 정책 환경에서 inline event handler 차단 가능</td></tr>
+<tr><td>발견</td><td>mr.와이가 모바일에서 직접 발견·지적</td></tr>
+</table>
+
+<h3>정정</h3>
+<table>
+<tr><th>#</th><th>항목</th><th>결과</th></tr>
+<tr><td>1</td><td>모든 inline <code>onclick</code> 4종 제거</td><td class="status-done">✅</td></tr>
+<tr><td>2</td><td><code>data-action</code> 속성 + <code>data-persona</code> + <code>data-datatype</code> 변경</td><td class="status-done">✅</td></tr>
+<tr><td>3</td><td><code>document.addEventListener('click', ...)</code> 단일 이벤트 위임 추가</td><td class="status-done">✅</td></tr>
+<tr><td>4</td><td><code>e.target.closest('[data-action]')</code> 패턴 — 카드 안 모든 요소 클릭도 잡음</td><td class="status-done">✅</td></tr>
+<tr><td>5</td><td>HTML 정합·시뮬레이션 검증</td><td class="status-done">✅</td></tr>
+</table>
+
+<h3>정직 보고</h3>
+<table>
+<tr><th>항목</th><th>내용</th></tr>
+<tr><td>ⓤ 6번 사용자 시점 검증 위반</td><td>박제 ② 빌드·검증 시점에 inline onclick 환경 호환성 검증 ❌. mr.와이가 직접 발견</td></tr>
+<tr><td>책임</td><td>CTO 영역 책임 100%. 향후 빌드는 이벤트 위임 방식으로 통일 (inline onclick 사용 ❌)</td></tr>
+</table>
+
+</div>
+</details>
+
+<h2>박제 ⑥ ⓧ 신설 — worklog 압축 정리 룰 (2026-04-30)</h2>
+
+<details>
+<summary>⑥ ⓧ 신설 — worklog 박제 10개 누적 시 자동 압축 정리</summary>
+<div class="content">
+
+<p><strong>날짜:</strong> 2026-04-30</p>
+<p><strong>상태:</strong> <span class="status-done">✅ 완료</span></p>
+<p><strong>책임자:</strong> 개발총괄 (L1)</p>
+
+<h3>작업 범위</h3>
+<table>
+<tr><th>#</th><th>항목</th><th>결과</th></tr>
+<tr><td>1</td><td>ⓧ-1 트리거 박제 — 박제 ≥ 10개 누적 시 L1 자동 안내</td><td class="status-done">✅</td></tr>
+<tr><td>2</td><td>ⓧ-2 압축 방식 — 가장 오래된 5개 → 1줄 표 압축. 핵심 결정·결함 정정·정직 보고 보존</td><td class="status-done">✅</td></tr>
+<tr><td>3</td><td>ⓧ-3 자동 점검 시점 — 새 대화창 진입 시(ⓥ-3 직후) + 새 박제 추가 시점</td><td class="status-done">✅</td></tr>
+<tr><td>4</td><td>ⓧ-4 신중 영역 — 02_summary·terms·instruction·sub 자료 압축 ❌</td><td class="status-done">✅</td></tr>
+<tr><td>5</td><td>ⓐ~ⓦ → ⓐ~ⓧ 표기 일괄 갱신 8곳</td><td class="status-done">✅</td></tr>
+<tr><td>6</td><td>4 sync 인스트럭션 부록 A 자동 전파</td><td class="status-done">✅</td></tr>
+</table>
+
+<h3>핵심 결정</h3>
+<table>
+<tr><th>결정</th><th>근거</th></tr>
+<tr><td>10개 누적 트리거 (5·20개 ❌)</td><td>5는 잦음(본질 박제와 중복) / 20은 누적 시 속도 저하 시점. 10이 적정</td></tr>
+<tr><td>가장 오래된 5개 압축</td><td>최근 5개는 진행 중·참조 빈도 ⬆️ → 보존. 오래된 5개만 압축</td></tr>
+<tr><td>핵심 결정·정직 보고 보존</td><td>정보 손실 ❌ 보장. 단순 작업 범위 표만 1줄 요약</td></tr>
+</table>
+
+</div>
+</details>
+
+<h2>박제 ⑤ ⓦ 신설 — 속도 최적화 (2026-04-30)</h2>
+
+<details open>
+<summary>⑤ ⓦ 신설 — zip 경량화(chat_log·sub 자료 제외) + outputs 중복 정리 + ⓚ 갱신</summary>
+<div class="content">
+
+<p><strong>날짜:</strong> 2026-04-30</p>
+<p><strong>상태:</strong> <span class="status-done">✅ 완료</span></p>
+<p><strong>책임자:</strong> 개발총괄 (L1)</p>
+
+<h3>작업 범위</h3>
+<table>
+<tr><th>#</th><th>항목</th><th>결과</th></tr>
+<tr><td>1</td><td>ⓦ-1: chat_log 5개 zip 제외 (박제 ④ 합의 정합)</td><td class="status-done">✅</td></tr>
+<tr><td>2</td><td>ⓦ-1: 콘텐츠 lectures/ (~1.6MB), 토스 mappings/ (~18KB) zip 제외 (sub 자료 → 페르소나 호출 시 별도 첨부)</td><td class="status-done">✅</td></tr>
+<tr><td>3</td><td>ⓦ-2: 통합업무파일.html zip 밖 별도 ❌ (outputs 중복 회피)</td><td class="status-done">✅</td></tr>
+<tr><td>4</td><td>ⓦ-3: sub 자료 페르소나별 첨부 시점 박제 (콘텐츠·토스만 해당)</td><td class="status-done">✅</td></tr>
+<tr><td>5</td><td>ⓚ 파일 호출 룰 갱신 — "대화로그/chat_log" 행 제거</td><td class="status-done">✅</td></tr>
+<tr><td>6</td><td>ⓐ~ⓥ → ⓐ~ⓦ 표기 일괄 갱신 (8곳)</td><td class="status-done">✅</td></tr>
+<tr><td>7</td><td>4 sync 인스트럭션 부록 A 자동 전파</td><td class="status-done">✅</td></tr>
+</table>
+
+<h3>효과</h3>
+<table>
+<tr><th>항목</th><th>이전</th><th>변경 후</th></tr>
+<tr><td>통합 zip 크기</td><td>~2.66 MB</td><td>~0.5 MB (80% 감소)</td></tr>
+<tr><td>새 대화창 진입 속도</td><td>—</td><td>⬆️ (첨부 자료 80% 감소)</td></tr>
+<tr><td>콘텐츠 페르소나 호출 시</td><td>lectures/ 항상 첨부됨</td><td>호출 시 별도 첨부 (첫 로드 약간 ⬆️, 이후 정상)</td></tr>
+<tr><td>토스 페르소나 호출 시</td><td>mappings/ 항상 첨부됨</td><td>호출 시 별도 첨부 (첫 로드 약간 ⬆️, 이후 정상)</td></tr>
+<tr><td>클로드 정체성·룰·작업 유지</td><td>—</td><td>영향 ❌ (정체성 보존)</td></tr>
+</table>
+
+</div>
+</details>
+
+<h2>박제 ④ ⓥ 룰 재정정 + §2 재구조 + ⓘ 3종 (2026-04-30)</h2>
+
+<details open>
+<summary>④ ⓥ 자동 전환 → 발화 트리거 / §2 첫 응답 룰 재구조 / ⓘ 4종 → 3종 산출물</summary>
+<div class="content">
+
+<p><strong>날짜:</strong> 2026-04-30</p>
+<p><strong>상태:</strong> <span class="status-done">✅ 완료</span></p>
+<p><strong>책임자:</strong> 개발총괄 (L1)</p>
+
+<h3>작업 범위</h3>
+<table>
+<tr><th>#</th><th>항목</th><th>결과</th></tr>
+<tr><td>1</td><td>ⓥ-1·ⓗ 안내 메시지 통일 ("개발총괄로 변경하여 대화창 이전 준비를 하시겠어요?")</td><td class="status-done">✅</td></tr>
+<tr><td>2</td><td>ⓥ-2 자동 전환 → 명시적 발화 트리거 변경</td><td class="status-done">✅</td></tr>
+<tr><td>3</td><td>ⓥ-3 명령어 발화 불필요 명시 — mr.와이 첫 발화 무엇이든 L1 자동 안내</td><td class="status-done">✅</td></tr>
+<tr><td>4</td><td>§2 첫 응답 룰 재구조 (§2.1 이전 직후 / §2.2 일반 / §2.3 신규 페르소나 / §2.4 우선순위)</td><td class="status-done">✅</td></tr>
+<tr><td>5</td><td>ⓘ 4종 → 3종 산출물 (인스트럭션·zip·통합업무파일). chat_log 박제 ❌ + 새 대화창 명령어 ❌</td><td class="status-done">✅</td></tr>
+<tr><td>6</td><td>§10.2 룰 충돌 매트릭스 갱신</td><td class="status-done">✅</td></tr>
+<tr><td>7</td><td>4 sync 인스트럭션 부록 A 자동 전파</td><td class="status-done">✅</td></tr>
+<tr><td>8</td><td>02_summary_cto ㉒ 추가</td><td class="status-done">✅</td></tr>
+</table>
+
+<h3>핵심 결정 변경</h3>
+<table>
+<tr><th>항목</th><th>이전</th><th>변경 후</th></tr>
+<tr><td>ⓥ-2 페르소나 전환</td><td>mr.와이 동의 시 자동 전환</td><td>mr.와이 명시적 발화 트리거 (자동 ❌)</td></tr>
+<tr><td>ⓥ-3 새 대화창 진입</td><td>명령어 발화 후 자동 발동</td><td>mr.와이 첫 발화 무엇이든 (인사·질문·아무 말) L1 자동 안내</td></tr>
+<tr><td>새 대화창 산출물</td><td>4종 (인스트럭션·zip·chat_log·명령어)</td><td>3종 (인스트럭션·zip·통합업무파일)</td></tr>
+<tr><td>§2 첫 응답 룰</td><td>단일 표 (트리거 2개)</td><td>4단 분리 (§2.1·§2.2·§2.3·§2.4)</td></tr>
+</table>
+
+</div>
+</details>
+
+<h2>박제 ③ ⓥ 신설 — 새 대화창 이전 워크플로우 (2026-04-30)</h2>
+
+<details open>
+<summary>③ ⓥ 신설 — 90% 감지·안내 + L1 단일 이전 준비 + 새 대화창 자동 인지·페르소나 복원</summary>
+<div class="content">
+
+<p><strong>날짜:</strong> 2026-04-30</p>
+<p><strong>상태:</strong> <span class="status-done">✅ 완료</span></p>
+<p><strong>책임자:</strong> 개발총괄 (L1)</p>
+
+<h3>작업 범위</h3>
+<table>
+<tr><th>#</th><th>항목</th><th>결과</th></tr>
+<tr><td>1</td><td>ⓗ 룰 갱신 (감지·안내 단계 명확화) — "개발총괄에게 새 대화창 이전 준비를 요청하시겠습니까?"</td><td class="status-done">✅</td></tr>
+<tr><td>2</td><td>ⓥ 신설 (5단계 워크플로우): ⓥ-1 감지·안내 / ⓥ-2 L1 이전 준비 / ⓥ-3 새 대화창 자동 인지 / ⓥ-4 페르소나 자동 복원 제안 / ⓥ-5 격리 보장</td><td class="status-done">✅</td></tr>
+<tr><td>3</td><td>마스터 §17 표기 갱신 (ⓐ~ⓤ → ⓐ~ⓥ) 5곳 일괄</td><td class="status-done">✅</td></tr>
+<tr><td>4</td><td>4 sync 인스트럭션 부록 A 자동 전파 (클로드·토스·외주·콘텐츠)</td><td class="status-done">✅</td></tr>
+<tr><td>5</td><td>02_summary_cto.md ⑳ 추가 (합의 누적)</td><td class="status-done">✅</td></tr>
+</table>
+
+<h3>핵심 결정</h3>
+<table>
+<tr><th>결정</th><th>근거</th></tr>
+<tr><td>감지·안내 = 활성 페르소나 / 이전 준비 = L1 단독</td><td>페르소나 격리(ⓡ) + 단일 책임(§1.3) 동시 충족. L2가 통합 시스템 갱신하면 충돌·중복·격리 위반</td></tr>
+<tr><td>chat_log 자동 갱신 시스템 박제 ❌</td><td>worklog + 02_summary + 명령어로 작업 진행 유지 충분. chat_log 자동화는 오버엔지니어링 (5대 작업 원칙 1번)</td></tr>
+<tr><td>새 대화창 첫 진입 = L1 자동</td><td>§1.1 "개발총괄 = 첫 진입 페르소나" 박제 룰 활용. ⓥ-3·ⓥ-4로 직전 페르소나·작업 자동 복원 제안</td></tr>
+</table>
+
+<h3>적용 효과</h3>
+<table>
+<tr><th>항목</th><th>효과</th></tr>
+<tr><td>모든 페르소나 90% 감지·안내</td><td>L1·L2 무관 동일 적용 (ⓟ 자동 전파)</td></tr>
+<tr><td>이전 준비 누락 ❌</td><td>L1 단독 책임으로 4종 산출물 일관 생성</td></tr>
+<tr><td>새 대화창 작업 유지</td><td>worklog·02_summary로 직전 작업·페르소나 100% 복원 — chat_log 의존 ❌</td></tr>
+</table>
+
+</div>
+</details>
+
+<h2>박제 ② UI/UX·아키텍처 재작업 + 자료 통합 (2026-04-30)</h2>
+
+<details open>
+<summary>② 통합업무파일 v5 빌드 — 5층 분리 + 3단 풀스크린 + iframe srcdoc 자료 통합 + 데이터 무결성 결함 정정</summary>
+<div class="content">
+
+<p><strong>날짜:</strong> 2026-04-30</p>
+<p><strong>상태:</strong> <span class="status-done">✅ 완료</span></p>
+<p><strong>책임자:</strong> 개발총괄 (L1)</p>
+
+<h3>작업 범위</h3>
+<table>
+<tr><th>#</th><th>항목</th><th>결과</th><th>기여도</th></tr>
+<tr><td>1</td><td>v4 골조 빌드 — 5층 분리 (데이터·UI·라우터·디자인·namespace)</td><td class="status-done">✅</td><td>CTO 100%</td></tr>
+<tr><td>2</td><td>3단 풀스크린 라우터 (메인 → 페르소나 → 자료 + URL hash + popstate + replaceState fallback)</td><td class="status-done">✅</td><td>CTO 100%</td></tr>
+<tr><td>3</td><td>디자인 시스템 (CSS 변수·8px 그리드·페르소나 색·반응형)</td><td class="status-done">✅</td><td>CTO 100%</td></tr>
+<tr><td>4</td><td>namespace prefix (.app- 통일)</td><td class="status-done">✅</td><td>CTO 100%</td></tr>
+<tr><td>5</td><td>마크다운 → HTML minimal 변환기 (외부 라이브러리 ❌, 헤더·표·리스트·코드·인용·인라인)</td><td class="status-done">✅</td><td>CTO 100%</td></tr>
+<tr><td>6</td><td><strong>격리 방식 결정 변경 (정직 보고)</strong> — shadow DOM → iframe srcdoc (terms 4종·worklog 2종이 자체 script 보유, shadow DOM은 innerHTML 시 script 실행 ❌)</td><td class="status-done">✅</td><td>CTO 자체 발견·재결정</td></tr>
+<tr><td>7</td><td>v5 빌드 — 5 페르소나 × 4 자료 = 20 자료 iframe srcdoc 임베드 (template 박제)</td><td class="status-done">✅</td><td>CTO 100%</td></tr>
+<tr><td>8</td><td><strong>데이터 무결성 결함 발견·정정</strong> — terms_클로드.html L1055 tr+term-cell 누락 ("링크 우선순위 룰" row)</td><td class="status-done">✅</td><td>CTO 발견·정정 (§6.1 데이터 무결성 = CTO 영역)</td></tr>
+<tr><td>9</td><td>전수 검증 — 5 페르소나 × 자료 HTML/MD 모두 tr 누락 패턴 검사 (1건 정정 후 0건)</td><td class="status-done">✅</td><td>CTO 100%</td></tr>
+<tr><td>10</td><td>HTML 구조 정합·라우팅 시뮬레이션·iframe 로드·반응형 검증</td><td class="status-done">✅</td><td>CTO 100%</td></tr>
+<tr><td>11</td><td>자료 통합 — terms·worklog (HTML 통째 임베드) / workscope·summary (마크다운 → 통일 디자인 wrapping)</td><td class="status-done">✅</td><td>CTO 100%</td></tr>
+<tr><td>12</td><td>cto는 자체 terms 없음 placeholder ("자체 용어 사전 ❌. instruction_cto.md §17 참조")</td><td class="status-done">✅</td><td>CTO 박제 정합 적용</td></tr>
+</table>
+
+<h3>주요 결정 (자체 + 변경)</h3>
+<table>
+<tr><th>결정</th><th>근거</th></tr>
+<tr><td>단일 HTML 직접 임베드</td><td>file:// cross-origin 회피, 검색·인쇄 ✅, 페르소나 추가 부담 CTO 흡수</td></tr>
+<tr><td>iframe srcdoc 채택 (shadow DOM 결정 변경)</td><td>terms·worklog 자체 script 보존 필수. shadow DOM innerHTML은 script 실행 ❌. iframe srcdoc는 same-origin + 자체 JS·CSS 100% 실행 + 격리 100% + file:// 호환</td></tr>
+<tr><td>마크다운 변환기 자체 작성 (외부 라이브러리 ❌)</td><td>5대 작업 원칙 1번 (오버엔지니어링 ❌) + 3번 (표준화) — 본 시스템에 필요한 minimal 기능만</td></tr>
+<tr><td>결함 즉시 정정 (sync 자체 자료라도)</td><td>§6.1 데이터 무결성 = CTO 영역 (책임 100%) + ⓤ 7번 기초 간과 ❌ + 단순 실수 ❌ (mr.와이 명시)</td></tr>
+</table>
+
+<h3>산출물</h3>
+<table>
+<tr><th>파일</th><th>위치</th><th>크기</th></tr>
+<tr><td>통합업무파일_v5.html</td><td>cto 폴더 (통합업무파일.html 갱신)</td><td>684 KB</td></tr>
+<tr><td>build_v5.py</td><td>cto 폴더 (재빌드용)</td><td>~7 KB</td></tr>
+<tr><td>md_to_html.py</td><td>cto 폴더 (마크다운 변환기)</td><td>~5 KB</td></tr>
+</table>
+
+<h3>정직 보고</h3>
+<table>
+<tr><th>항목</th><th>처리</th></tr>
+<tr><td>shadow DOM 결정안 → iframe srcdoc 변경</td><td>자체 검증으로 결함 발견. 즉시 결정 변경 + 근거 명시. ⓤ 5번 전수 검토 의무</td></tr>
+<tr><td>terms_클로드.html L1055 tr 누락 결함 (이전 박제부터 존재)</td><td>본 작업에서 처음 발견. CTO 영역 책임 100%. 즉시 정정 + 본 박제. 향후 동종 결함 검증 강화</td></tr>
+<tr><td>HTML parser false positive (template 안 컨텐츠 평면 검증)</td><td>template-aware 검증기로 보강 + auto-close 적용한 표준 검증으로 진짜 결함 분리</td></tr>
+</table>
+
+</div>
+</details>
+
+<h2>박제 ① 동기화 통합 첫 시작 (2026-04-29)</h2>
+
+<details open>
+<summary>① 4 페르소나(L2) 통합 + 메타 룰 ⓐ~ⓤ 박제 + L1 신설 — 첫 통합이자 마지막 통합</summary>
+<div class="content">
+
+<p><strong>날짜:</strong> 2026-04-29</p>
+<p><strong>상태:</strong> <span class="status-done">✅ 완료 (UI/UX 재작업 별도 — 새 대화창 진행)</span></p>
+<p><strong>책임자:</strong> 개발총괄 (L1)</p>
+
+<h3>작업 범위</h3>
+<table>
+<tr><th>#</th><th>항목</th><th>결과</th><th>기여도</th></tr>
+<tr><td>1</td><td>4 sync 압축 해제 + 정합 검증 (외주·토스·클로드·콘텐츠)</td><td class="status-done">✅</td><td>CTO 100%</td></tr>
+<tr><td>2</td><td>통합 zip 폴더 5종 신설 (cto·클로드·토스·외주·콘텐츠 — mr.와이 합의 순서)</td><td class="status-done">✅</td><td>PM 정의 / CTO 적용</td></tr>
+<tr><td>3</td><td>파일 마이그레이션 + 파일명 통일 (X = cto/클로드/토스/외주/콘텐츠)</td><td class="status-done">✅</td><td>CTO 100%</td></tr>
+<tr><td>4</td><td>instruction_cto.md 마스터 작성 (단일 출처)</td><td class="status-done">✅</td><td>CTO 100%</td></tr>
+<tr><td>5</td><td>sync_cto.md 페르소나 가이드 작성</td><td class="status-done">✅</td><td>CTO 100%</td></tr>
+<tr><td>6</td><td>§17 메타 룰 ⓐ~ⓣ 박제 (20룰)</td><td class="status-done">✅</td><td>PM 정의 / CTO 박제</td></tr>
+<tr><td>7</td><td>§17 ⓤ CTO 책임·자세 룰 박제 (10항목)</td><td class="status-done">✅</td><td>PM 정의 / CTO 박제</td></tr>
+<tr><td>8</td><td>§1.3 L1 강화 룰 박제 (개발총괄 전용 — ⓤ × 10 강화)</td><td class="status-done">✅</td><td>PM 정의 / CTO 박제</td></tr>
+<tr><td>9</td><td>§10 룰 우선순위·페르소나/메타 경계 기준 강화</td><td class="status-done">✅</td><td>CTO 자체 발견·보강</td></tr>
+<tr><td>10</td><td>마스터·복제 자동 전파 구조 (ⓟ — 4 sync 부록 A 자동 갱신)</td><td class="status-done">✅</td><td>CTO 100%</td></tr>
+<tr><td>11</td><td>4 sync worklog 통합 박제 항목 추가 (메타 + ⓤ 별도 박제 2건)</td><td class="status-done">✅</td><td>CTO 100%</td></tr>
+<tr><td>12</td><td>통합업무파일.html v3 빌드 (4섹션 + ⓣ 상단 고정 + 5 페르소나)</td><td class="status-done">✅</td><td>CTO 100%</td></tr>
+<tr><td>13</td><td>1차 검증 (HTML 구조·섹션·페르소나·박제) + 2차 검증 (전파·격리·무결성)</td><td class="status-done">✅</td><td>CTO 100%</td></tr>
+<tr><td>14</td><td>5대 작업 원칙 자기 점검 + 오버엔지니어링 검토 보고</td><td class="status-done">✅</td><td>CTO 100%</td></tr>
+<tr><td>15</td><td>외주 terms 결함 false positive 정정 (table 7/7 정합)</td><td class="status-done">✅</td><td>CTO 정직 보고</td></tr>
+<tr><td>16</td><td>클로드 chat_log 갱신 (PART 3 컴팩션 이후 추가본 — 1.49MB → 1.57MB)</td><td class="status-done">✅</td><td>PM 첨부 / CTO 적용</td></tr>
+<tr><td>17</td><td>L1 자체 worklog_cto.html · 02_summary_cto.md 신설</td><td class="status-done">✅</td><td>CTO 자체 발견·보강 (본 박제)</td></tr>
+<tr><td>18</td><td>UI/UX · 디자인 시스템 · namespace 격리 · 인앱 화면 전환 재작업</td><td class="status-pending">📋 새 대화창 진행</td><td>CTO 100% (다음 작업)</td></tr>
+</table>
+
+<h3>합의·박제된 페르소나 5종 (계층 구조)</h3>
+<table>
+<tr><th>레벨</th><th>이름</th><th>폴더</th><th>도메인</th></tr>
+<tr><td>L1</td><td>개발총괄 (Chief CTO)</td><td>동기화_cto</td><td>통합 메타 운용</td></tr>
+<tr><td>L2</td><td>클로드</td><td>동기화_클로드</td><td>Claude·Claude Code 기술</td></tr>
+<tr><td>L2</td><td>토스</td><td>동기화_토스</td><td>보험설계 상담실무</td></tr>
+<tr><td>L2</td><td>외주개발</td><td>동기화_외주</td><td>외주·인하우스 개발 (L3 sub: 외주1·외주2·인하우스1·...)</td></tr>
+<tr><td>L2</td><td>콘텐츠</td><td>동기화_콘텐츠</td><td>강의안 디렉터</td></tr>
+</table>
+
+<h3>박제된 메타 룰 (ⓐ~ⓤ + §1.3 + §10 강화)</h3>
+<table>
+<tr><th>코드</th><th>룰</th></tr>
+<tr><td>ⓐ</td><td>응답 스타일 (간결·누락 ❌)</td></tr>
+<tr><td>ⓑ</td><td>박제·갱신·동기화 ("동기화하자" 트리거)</td></tr>
+<tr><td>ⓒ</td><td>항구적 룰</td></tr>
+<tr><td>ⓓ</td><td>반복 설명 응답</td></tr>
+<tr><td>ⓔ</td><td>질문·확인 요청 → 답변만</td></tr>
+<tr><td>ⓕ</td><td>동기화 자동 적용</td></tr>
+<tr><td>ⓖ</td><td>산출물 룰 (업무파일만, 통합 zip은 90% 도달 시)</td></tr>
+<tr><td>ⓗ</td><td>90% 알림</td></tr>
+<tr><td>ⓘ + ⓘ-1</td><td>새 대화창 4종 산출물</td></tr>
+<tr><td>ⓙ</td><td>Chief CTO 정체성</td></tr>
+<tr><td>ⓚ</td><td>파일 호출 룰</td></tr>
+<tr><td>ⓛ</td><td>"이제 뭐하지?" 자동 안내</td></tr>
+<tr><td>ⓜ</td><td>인스트럭션 별도 제공</td></tr>
+<tr><td>ⓝ</td><td>업무파일 호출 명칭 + 페르소나 자동 매칭</td></tr>
+<tr><td>ⓞ</td><td>페르소나 명명 + 호칭 통일 ("클로드"는 시그널 동반 시만 동기화_클로드)</td></tr>
+<tr><td>ⓟ</td><td>메타룰 자동 반영 (페르소나 무관)</td></tr>
+<tr><td>ⓠ</td><td>"최신" 정의 룰 (적용 대상도 최신)</td></tr>
+<tr><td>ⓡ</td><td>페르소나 격리 (활성 시야 그 레벨만)</td></tr>
+<tr><td>ⓢ</td><td>클로드 현황 호출 (간결 표 계층 구조)</td></tr>
+<tr><td>ⓣ</td><td>업무파일 상단 고정 클로드 현황</td></tr>
+<tr><td><strong>ⓤ</strong></td><td><strong>CTO 책임·자세 룰 (10항목 — 본 통합 직후 mr.와이 명시 박제)</strong></td></tr>
+<tr><td><strong>§1.3</strong></td><td><strong>L1 강화 룰 (개발총괄 전용 — ⓤ × 10)</strong></td></tr>
+<tr><td><strong>§10 강화</strong></td><td><strong>룰 우선순위·페르소나/메타 경계 기준 (CTO 자체 보강)</strong></td></tr>
+</table>
+
+<h3>정직 보고 — 본 통합에서 자격 미입증 영역</h3>
+<table>
+<tr><th>영역</th><th>결과</th></tr>
+<tr><td>데이터 통합·박제·메타 룰 적용</td><td class="status-done">✅ 완료</td></tr>
+<tr><td>UI/UX 최적화 (인앱 화면·디자인 시스템·namespace 격리)</td><td class="status-pending">❌ 미완 → 새 대화창</td></tr>
+<tr><td>아키텍처 재설계 (15년차 CTO 수준 — 데이터·UI·라우터·디자인·namespace 5층)</td><td class="status-pending">❌ 미완 → 새 대화창</td></tr>
+<tr><td>실제 렌더링·작동·사용자 시나리오 검증</td><td class="status-pending">❌ 미완 → 새 대화창</td></tr>
+<tr><td>옵션 떠넘김·표면 검증·압박 의존성 (CTO 자세 결함)</td><td class="status-done">✅ 정직 인정 → ⓤ 룰로 향후 차단</td></tr>
+</table>
+
+<p><strong>의의:</strong> mr.와이 명시 — "처음이자 마지막 동기화 통합". 본 박제는 다음 L1 클로드 호출 시 본 작업 이력 100% 보존을 위한 무결성 박제.</p>
+</div>
+</details>
+
+<h2>다음 작업 (예정)</h2>
+<details>
+<summary>⑩ tosscare 호스팅 인프라 + 비번 보호 + 메타룰 신설 (완료 — 2026-05-01) ⭐</summary>
+<div class="content">
+<p><strong>진입 컨텍스트</strong>: 본 세션 = ⑨ 통합 작업 직후 새 대화창. tossinsu → tosscare GitHub Pages 호스팅 인프라 구축, 비번 보호 적용 (단순 진입 장벽), 메타룰 ㉡·㉢·㉣ 신설, 토스 v8 sync4_insu 갱신본 인지·반영.</p>
+
+<table>
+<tr><th>분류</th><th>#</th><th>항목</th><th>상태</th></tr>
+
+<tr><td rowspan="5" style="background:#fff8dc;"><strong>A. tosscare 호스팅</strong></td><td>1</td><td>tosscare GitHub organization 신설 + tosscare/tosscare.github.io 저장소 신설</td><td class="status-done">✅</td></tr>
+<tr><td>2</td><td>URL: https://tosscare.github.io/work/ (work 폴더 구조 — 추후 누적: /insu-report/01·02·03)</td><td class="status-done">✅</td></tr>
+<tr><td>3</td><td>sync_tossinsu.ps1 작성·배치·검증 (C:\dev\projects\tossinsu\)</td><td class="status-done">✅</td></tr>
+<tr><td>4</td><td>OG 메타태그 work 경로 정정 (og:image·og:url·twitter:image)</td><td class="status-done">✅</td></tr>
+<tr><td>5</td><td>URL 변천 이력 (tossinsu → tossinsu-team → tosscare) + URL masking 한계 명시</td><td class="status-done">✅</td></tr>
+
+<tr><td rowspan="3" style="background:#e3f2fd;"><strong>B. 비번 보호</strong></td><td>6</td><td>비번 보호 적용 (단순 진입 장벽) — 60분 만료·탭복원 차단·화면잠금/비번변경 버튼</td><td class="status-done">✅</td></tr>
+<tr><td>7</td><td>EMBEDDED_HASH 영역 시도·제거 (자동 동기화는 GitHub Pages 한계 — 단순 진입 장벽 회귀)</td><td class="status-done">✅</td></tr>
+<tr><td>8</td><td>Vercel 전환 권고 박제 (추후 자동 동기화 의도 시 본 영역으로 전환 안내)</td><td class="status-done">📋</td></tr>
+
+<tr><td rowspan="3" style="background:#fce4ec;"><strong>C. 메타룰 신설</strong></td><td>9</td><td>㉡ 신설 — "간소화·추가간소화·검증간소화" 명령어 룰 (5대 원칙 1·2·3·5번 코드 영역 적용)</td><td class="status-done">✅</td></tr>
+<tr><td>10</td><td>㉢ 신설 — 새 대화창 zip 첨부 시 자동 인지 강화 룰 (§2 첫 응답 룰 강화)</td><td class="status-done">✅</td></tr>
+<tr><td>11</td><td>㉣ 신설 — 자동화 도구 추천 시 Anthropic 공식 통합 전수 검토 의무 룰 (ⓤ 7번 강화)</td><td class="status-done">✅</td></tr>
+
+<tr><td rowspan="3" style="background:#e8f5e9;"><strong>D. 토스 영역 (v8 인지)</strong></td><td>12</td><td>토스 v3 자료 본 채팅 인지 (sync4_insu·mappings·chat_log·triggers_and_worklog_excerpt)</td><td class="status-done">✅</td></tr>
+<tr><td>13</td><td>토스 v8 신 sync4_insu 인지 (㉑-1 메시지 양식 2줄 + ㉑-2 폴더 평탄화 + ㉑-3 NN.고객명 룰)</td><td class="status-done">✅</td></tr>
+<tr><td>14</td><td>L1 통합 동기화 시 v3 + 본 채팅 컨텍스트 모두 박제 (mr.와이 합의)</td><td class="status-done">✅</td></tr>
+
+<tr><td rowspan="3" style="background:#fff3e0;"><strong>E. 정정·정직 보고</strong></td><td>15</td><td>박제 ⑦~⑨ 정정 (sync.ps1·sync_tossinsu.ps1 분리 운용 + PowerShell ExecutionPolicy + username 정정)</td><td class="status-done">✅</td></tr>
+<tr><td>16</td><td>합의 ㉘ 본 환경 본질 한계 + 다운로드 1회 필수 명시</td><td class="status-done">✅</td></tr>
+<tr><td>17</td><td>ⓤ 위반 정직 보고 다수 (7번·3번·4번·6번·8번·9번 — 본 세션 진행 중 다수 발생·정직 인정·㉣ 룰로 향후 차단)</td><td class="status-done">✅</td></tr>
+</table>
+
+<p class="note"><strong>산출물</strong>: instruction_cto.md v4 (메타룰 ㉡·㉢·㉣ 신설) + 통합 zip + 통합업무파일.html v4 + backup_2026-05-01.zip (안전장치 백업)</p>
+<p class="note"><strong>토스 미해결</strong>: γ 트리거 3 수정 의도 (mr.와이 명세 대기) / δ input·output 로컬 폴더 합의 영역 (본 컨텍스트 명시 ❌, 추적 영역으로 등록)</p>
+</div>
+</details>
+
+<details open>
+<summary>⑪ ㉤·㉥ 메타룰 신설 — 통합 동기화 시점 박제 대기 ❌ 보장 + ⓥ-2 동의어 확장 (완료 — 2026-05-02) ⭐</summary>
+<div class="content">
+<p><strong>진입 컨텍스트</strong>: mr.와이 합의 — "통합 동기화에서 박제 대기 상태로 그냥 두면 안 돼. 빠짐없이 다 적용해야 해." + "클로드 변경 후 작업하다 박제 대기로 남긴 것도 전부 해야 돼." → ㉤ 룰 신설 (모든 페르소나 무관 적용).</p>
+<table>
+<thead><tr><th>#</th><th>항목</th><th>상태</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>㉤ 룰 신설 — 통합 동기화 시점 박제 대기 영역 ❌. 90% 도달·mr.와이 명시 새 대화창 이전 시점 = 통합 동기화 트리거. L1이 박제 대기 목록 자체 점검 → 모두 즉시 적용 → 산출물 zip 생성 (인스트럭션·worklog·02_summary·통합업무파일 모두 갱신)</td><td class="status-done">✅</td></tr>
+<tr><td>2</td><td>㉤ 적용 범위 확장 — 모든 페르소나(L1·L2·L3) 무관. 활성 페르소나 변경 후 발생한 L2(클로드·토스·외주·콘텐츠)·L3(sub 프로젝트) 박제 대기 영역도 L1이 자체 수집·해소</td><td class="status-done">✅</td></tr>
+<tr><td>3</td><td>㉤ L1 단독 책임 — 페르소나 격리(ⓡ) 시야 차단 영역도 L1 권한으로 직접 조회. 잔존 ❌ 검증 (ⓨ 정합)</td><td class="status-done">✅</td></tr>
+<tr><td>4</td><td>위반 시 ⓤ 1번·5번·7번 위반 = 자격 미입증으로 박제</td><td class="status-done">✅</td></tr>
+<tr><td>5</td><td>ⓥ-2 동의어 확장 합의 — "그래"·"응"·"네"·"이전 준비해줘"·"넘어가자"·"옮기자" 등 모두 동의 시그널로 인식</td><td class="status-done">✅</td></tr>
+</tbody>
+</table>
+<p class="note">산출물: instruction_cto.md §17 ㉤ 신설. 본 합의는 본 통합 동기화 시점에 일괄 적용.</p>
+<p class="note">목적: 박제 대기·미해결 영역 새 대화창 이전 시점에 모두 해소 → 새 대화창 진입 후 미처리 잔존 ❌ 보장. ⓤ 9번 완벽성 의무 강화.</p>
+</div>
+</details>
+
+<details open>
+<summary>⑫ 토스 트리거 3 룰 v5 — 메시지 양식 분기 + 갱신형 버튼 + 입력 2가지 + detect_renewal v5 (완료 — 2026-05-02) ⭐</summary>
+<div class="content">
+<p><strong>진입 컨텍스트</strong>: 본 cto에서 토스 페르소나로 전환 후 트리거 3 룰 다단계 변경 6건 + detect_renewal v5 도메인 정확성 보강 → 22명 케이스 검증 완료. 박제 대기 등록 후 본 통합 동기화 시점에 일괄 적용 (㉤ 룰 정합).</p>
+<table>
+<thead><tr><th>#</th><th>항목</th><th>상태</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>토스 sync — instruction_토스 §13-1 갱신 (입력 2가지 기준) + §13-9~11 신설 (메시지 분기·갱신 v5·메시지 양식)</td><td class="status-done">✅</td></tr>
+<tr><td>2</td><td>토스 sync — 02_summary_토스 ㉒ 신규 합의 6건 박제 (메시지 분기·버튼·입력 2가지·메시지 양식·detect_renewal v5·정합 검증 의무)</td><td class="status-done">✅</td></tr>
+<tr><td>3</td><td>토스 sync — worklog_토스 ⑧ 박제 + 트리거 구동 기록 22명 추가 (이기섭~권선영 + 김도연~오덕식 + 손현수)</td><td class="status-done">✅</td></tr>
+<tr><td>4</td><td>스킬 zip — toss_report_skill_final_v5_20260501.zip (pre_report_gen.py + pre_report_template.html + SKILL.md 갱신)</td><td class="status-done">✅</td></tr>
+<tr><td>5</td><td>cto sync — 02_summary_cto ㉝ 신규 합의 박제 (㉤ 룰 + 토스 v5)</td><td class="status-done">✅</td></tr>
+</tbody>
+</table>
+<p class="note">산출물: 통합 zip(5 sync) · instruction_cto.md v5 · 통합업무파일 갱신 · toss_report_skill_final_v5_20260501.zip</p>
+<p class="note">목적: 토스 트리거 3 정확도 + 사용자 시점 가독성 ⬆️ + 도메인 정확성(실손 본질적 갱신 → 트리거 제외) + 입력 흐름 유연성. 검증: 22명 케이스 모두 정상.</p>
+</div>
+</details>
+
+</body>
+</html>
