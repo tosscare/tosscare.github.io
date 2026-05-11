@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=720, initial-scale=1">
+<title>토스 보험분석 사전레포트</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-print-color-adjust: exact; print-color-adjust: exact; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; text-rendering: geometricPrecision; }
+  html, body { font-family: 'Pretendard', 'Apple SD Gothic Neo', sans-serif; }
+  body { background: #fff; padding: 40px 28px 36px; color: #191F28; max-width: 720px; margin: 0 auto; line-height: 1.5; }
+
+  .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 18px; }
+  .h-name { font-size: 30px; font-weight: 800; letter-spacing: -1px; color: #191F28; line-height: 1.2; }
+  .h-name .summary-tag { font-size: 22px; font-weight: 700; color: #4E5968; letter-spacing: -0.5px; }
+  .h-sub { font-size: 13px; color: #8B95A1; margin-top: 6px; letter-spacing: -0.3px; }
+  .logo img { height: 38px; display: block; }
+
+  .box-dark { background: #191F28; color: #fff; padding: 26px 28px; border-radius: 14px; margin-bottom: 14px; }
+  .box-dark-title { font-size: 22px; font-weight: 800; line-height: 1.4; letter-spacing: -0.5px; padding-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.2); margin-bottom: 12px; }
+  .box-dark-sub { font-size: 14.5px; line-height: 1.7; color: #E5E8EB; font-weight: 500; }
+  .accent { color: #f87171; font-weight: 800; }
+  .yellow { color: #fbbf24; font-weight: 800; }
+  .red { color: #f87171; font-weight: 800; }
+
+  .cards-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 18px; }
+  .card-3 { background: #F0F9FF; border: 1px solid #BAE6FD; border-radius: 12px; padding: 12px 12px; }
+  .card-3-title { font-size: 14px; font-weight: 800; color: #0369A1; padding-bottom: 6px; margin-bottom: 6px; letter-spacing: -0.5px; border-bottom: 1px solid #BAE6FD; }
+
+  .card-summary-premium { font-size: 22px; font-weight: 800; color: #191F28; letter-spacing: -0.8px; line-height: 1.15; margin-bottom: 8px; }
+  .card-summary-premium .count-tag { font-size: 11px; font-weight: 600; color: #4E5968; letter-spacing: -0.3px; }
+  .card-summary-row { display: flex; font-size: 11.5px; line-height: 1.5; color: #191F28; letter-spacing: -0.4px; gap: 4px; }
+  .card-summary-row b { color: #191F28; font-weight: 700; }
+  .card-summary-divider { height: 8px; }
+  .card-summary-self-family { font-size: 12.5px; line-height: 1.55; color: #1d4ed8; font-weight: 800; letter-spacing: -0.4px; }
+
+  .card-diag { padding-top: 4px; }
+  .card-diag-row { display: flex; justify-content: space-between; align-items: center; font-size: 13px; line-height: 1.6; padding: 2px 0; letter-spacing: -0.4px; }
+  .card-diag-name { color: #191F28; font-weight: 700; }
+  .card-diag-val { font-weight: 800; letter-spacing: -0.3px; }
+
+  .card-level-label { font-size: 22px; font-weight: 800; letter-spacing: -0.6px; line-height: 1.15; margin-bottom: 5px; word-break: keep-all; }
+  .level-bar { display: flex; gap: 3px; margin-bottom: 6px; }
+  .level-seg { flex: 1; height: 4px; background: #E5E8EB; border-radius: 2px; }
+  .level-seg.active-danger { background: #F04452; }
+  .level-seg.active-warning { background: #F97316; }
+  .level-seg.active-neutral { background: #191F28; }
+  .level-seg.active-good { background: #15803D; }
+  .level-seg.active-rich { background: #DB2777; }
+  .completion-label { font-size: 11px; color: #4E5968; font-weight: 600; letter-spacing: -0.3px; margin-bottom: 1px; }
+  .completion-value { font-size: 17px; font-weight: 800; color: #191F28; letter-spacing: -0.5px; line-height: 1.15; }
+
+  .completion-bar { width: 100%; height: 7px; background: #fff; border: 1px solid #E5E8EB; border-radius: 4px; overflow: hidden; margin-top: 4px; }
+  .completion-bar-fill { height: 100%; border-radius: 4px; }
+  .completion-bar-fill.fill-과잉 { background: #DB2777; }
+  .completion-bar-fill.fill-적정 { background: #15803D; }
+  .completion-bar-fill.fill-보통 { background: #191F28; }
+  .completion-bar-fill.fill-빈약 { background: #F97316; }
+  .completion-bar-fill.fill-부재 { background: #F04452; }
+
+  .val-부재 { color: #F04452; }
+  .val-빈약 { color: #F97316; }
+  .val-보통 { color: #191F28; }
+  .val-적정 { color: #15803D; }
+  .val-과잉 { color: #DB2777; }
+
+  .sec-title { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; margin: 14px 0 10px; color: #191F28; }
+
+  .renewal-warning {
+    background: #F04452;
+    color: #FFD700;
+    font-size: 21px;
+    font-weight: 800;
+    text-align: center;
+    letter-spacing: -0.5px;
+    line-height: 1.4;
+    padding: 14px 16px;
+    border-radius: 14px;
+    margin: 14px 0 14px 0;
+    min-height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+  }
+
+  .cards-5 { display: flex; flex-direction: column; gap: 8px; margin-bottom: 18px; }
+  .card-5 { background: #F9FAFB; border-radius: 14px; padding: 22px 26px; display: flex; justify-content: space-between; align-items: center; }
+  .card-5-left { font-size: 22px; font-weight: 800; letter-spacing: -0.4px; color: #191F28; }
+  .card-5-right { text-align: right; }
+  .card-5-label { display: inline-block; font-size: 15px; font-weight: 800; padding: 5px 13px; border-radius: 8px; letter-spacing: -0.2px; margin-bottom: 8px; }
+  .card-5-detail { font-size: 18px; font-weight: 700; line-height: 1.5; letter-spacing: -0.3px; }
+
+  .status-부재 { background: #FFE2E5; color: #F04452; }
+  .status-빈약 { background: #FFEDD5; color: #F97316; }
+  .status-보통 { background: #E5E8EB; color: #191F28; }
+  .status-적정 { background: #DCFCE7; color: #15803D; }
+  .status-과잉 { background: #FCE7F3; color: #DB2777; }
+
+  .diag-purpose-notice { font-size: 12px; color: #8B95A1; line-height: 1.5; letter-spacing: -0.3px; padding: 12px 4px 0 4px; margin-bottom: 8px; }
+
+  .family-block { background: #F0F9FF; border: 1px solid #BAE6FD; border-radius: 14px; overflow: hidden; margin: 18px 0 18px; }
+  .family-block-title { padding: 16px 20px; font-size: 16px; font-weight: 800; text-align: center; color: #0369A1; letter-spacing: -0.5px; line-height: 1.5; background: #fff; border-bottom: 1px solid #BAE6FD; }
+  .family-block-row { display: grid; grid-template-columns: 100px 36% 1fr; align-items: center; }
+  .family-block-row + .family-block-row { border-top: 1px solid #BAE6FD; }
+  .family-block-row-review { grid-template-columns: 100px 1fr; }
+  .family-block-head { padding: 18px 12px; font-size: 17px; font-weight: 800; text-align: center; color: #0369A1; letter-spacing: -1px; white-space: nowrap; }
+  .family-block-count { padding: 18px 12px; text-align: center; }
+  .family-block-count-num { font-size: 17px; font-weight: 700; color: #4E5968; line-height: 1.4; letter-spacing: -0.5px; }
+  .family-block-premium { font-size: 22px; font-weight: 800; color: #191F28; line-height: 1.4; letter-spacing: -0.8px; }
+  .family-block-labels { padding: 14px 22px 14px 8px; }
+  .fam-line { display: flex; justify-content: space-between; line-height: 1.7; padding: 1px 0; letter-spacing: -0.4px; font-size: 15px; }
+  .fam-key { color: #191F28; font-weight: 700; }
+  .fam-val { font-weight: 800; }
+  .family-block-review { padding: 18px 22px; font-size: 16px; line-height: 1.65; color: #191F28; letter-spacing: -0.4px; }
+
+  .notice { background: #fffbeb; border: 2px solid #f59e0b; border-radius: 14px; padding: 24px 26px; margin-bottom: 14px; }
+  .notice-title { font-size: 19px; font-weight: 800; color: #b45309; margin-bottom: 10px; letter-spacing: -0.4px; }
+  .notice-body { font-size: 17px; color: #78350f; line-height: 1.7; font-weight: 500; }
+  .notice-body b { color: #92400e; font-weight: 800; }
+
+  .concl { background: #eff6ff; border-left: 6px solid #3182F6; border-radius: 6px; padding: 24px 26px; }
+  .concl-title { font-size: 19px; font-weight: 800; color: #1d4ed8; margin-bottom: 10px; letter-spacing: -0.4px; }
+  .concl-body { font-size: 17px; color: #1e3a8a; line-height: 1.7; font-weight: 500; }
+  .concl-body b { font-weight: 800; color: #1d4ed8; }
+
+  .footer { display: flex; justify-content: space-between; align-items: flex-end; margin-top: 24px; padding-top: 18px; border-top: 1px solid #E5E8EB; }
+  .footer-left { font-size: 11px; color: #8B95A1; line-height: 1.8; }
+  .footer-left b { color: #191F28; font-weight: 700; display: inline-block; min-width: 50px; }
+  .footer-right { text-align: right; }
+  .footer-name { font-size: 17px; font-weight: 800; color: #191F28; letter-spacing: -0.4px; }
+  .footer-role { font-size: 12px; color: #8B95A1; margin-top: 4px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <div class="h-name">강선영님의 보장분석 <span class="summary-tag">(요약)</span></div>
+    <div class="h-sub">여성 · 보험나이 53세 · —</div>
+  </div>
+  <div class="logo">
+    <img src="toss_logo.png" alt="toss insurance">
+  </div>
+</div>
+
+<div class="box-dark">
+  <div class="box-dark-title">강선영님의 기존보험은 <span class="accent">핵심 의료보장이 완성된 상태입니다</span>.</div>
+  <div class="box-dark-sub"></div>
+</div>
+
+<div class="cards-3">
+  <div class="card-3">
+    <div class="card-3-title">보험 가입 요약</div>
+    <div class="card-summary-premium">469,826원 <span class="count-tag">(총 10건)</span></div>
+    <div class="card-summary-row">보장: 9건 / 469,826원</div>
+    <div class="card-summary-row">저축: 0건 / 0원</div>
+    <div class="card-summary-divider"></div>
+    <div class="card-summary-self-family">본인보험 : 469,826원</div>
+    <div class="card-summary-self-family">가족보험 : 0원</div>
+  </div>
+
+  <div class="card-3">
+    <div class="card-3-title">보장항목별 진단</div>
+    <div class="card-diag-row"><span class="card-diag-name">실손의료비</span><span class="card-diag-val val-적정">적정</span></div>
+    <div class="card-diag-row"><span class="card-diag-name">암(진단,치료)</span><span class="card-diag-val val-과잉">과잉</span></div>
+    <div class="card-diag-row"><span class="card-diag-name">뇌(진단,치료)</span><span class="card-diag-val val-빈약">빈약</span></div>
+    <div class="card-diag-row"><span class="card-diag-name">심장(진단,치료)</span><span class="card-diag-val val-빈약">빈약</span></div>
+    <div class="card-diag-row"><span class="card-diag-name">질병수술비</span><span class="card-diag-val val-과잉">과잉</span></div>
+  </div>
+
+  <div class="card-3">
+    <div class="card-3-title">보험료&amp;보장 기준 진단</div>
+    <div class="completion-label" style="margin-bottom:4px;">보험료 지출 정도</div>
+    <div class="card-level-label val-과잉">매우과잉</div>
+    <div class="level-bar"><div class="level-seg active-rich"></div><div class="level-seg active-rich"></div><div class="level-seg active-rich"></div><div class="level-seg active-rich"></div></div>
+    <div class="completion-label">보장 완성도</div>
+    <div class="completion-value">60%</div>
+    <div class="completion-bar"><div class="completion-bar-fill fill-적정" style="width:60%;"></div></div>
+  </div>
+</div>
+
+<div class="sec-title">필수보장(권장) vs 현재보장상태</div>
+
+<div class="renewal-warning">진단결과와 별개로 갱신형보험 구성으로, 보험료 낭비 과다상태입니다!</div>
+
+<div class="cards-5">
+
+  <div class="card-5">
+    <div class="card-5-left">실손의료비</div>
+    <div class="card-5-right">
+      <div class="card-5-label status-적정">적정</div>
+      <div class="card-5-detail val-적정">통원 30만 / 입원 5,000만</div>
+    </div>
+  </div>
+
+  <div class="card-5">
+    <div class="card-5-left">암(진단비, 치료비)</div>
+    <div class="card-5-right">
+      <div class="card-5-label status-과잉">과잉</div>
+      <div class="card-5-detail val-과잉">진단비 15,000만원<br>치료비 0만원</div>
+    </div>
+  </div>
+
+  <div class="card-5">
+    <div class="card-5-left">뇌혈관(진단, 치료)</div>
+    <div class="card-5-right">
+      <div class="card-5-label status-빈약">빈약</div>
+      <div class="card-5-detail val-빈약">진단비 1,000만원<br>치료비 0만원</div>
+    </div>
+  </div>
+
+  <div class="card-5">
+    <div class="card-5-left">심장(진단, 치료)</div>
+    <div class="card-5-right">
+      <div class="card-5-label status-빈약">빈약</div>
+      <div class="card-5-detail val-빈약">진단비 1,000만원<br>치료비 0만원</div>
+    </div>
+  </div>
+
+  <div class="card-5">
+    <div class="card-5-left">수술보장</div>
+    <div class="card-5-right">
+      <div class="card-5-label status-과잉">과잉</div>
+      <div class="card-5-detail val-과잉">질병수술 520만원<br>상해수술 2,170만원</div>
+    </div>
+  </div>
+
+</div>
+
+<div class="diag-purpose-notice">※ 강선영님의 보험 진단 목적의 레포트로, 세부현황의 차이가 발생할 수 있습니다.</div>
+
+
+
+<div class="notice">
+  <div class="notice-title">⚠ 중요 - 보험은 치료/사고 후에는 효율적으로 가입하기 어렵습니다.</div>
+  <div class="notice-body">
+    실손의료비는 <b>5년이내 병원치료이력</b>이 있으면 가입이 불가능하고, 진단비/치료비/수술비 역시 진단후엔 <b>보장범위가 좁아지거나 가입이 거절</b>됩니다.
+    <b>현재시점이 가장 건강</b>하기때문에 <b>올바른 보험가입에 가장 유리한 시점</b>이며, 시간이 지날수록 가입가능 보장범위가 좁아집니다.
+  </div>
+</div>
+
+<div class="concl">
+  <div class="concl-title">▶ 보강방향</div>
+  <div class="concl-body">
+    <b>1순위</b> - 핵심의료보장5종 완성 (실손보험,암,뇌혈관,심장,수술비)<br>
+    <b>2순위</b> - 추가보장 (운전자,치아,상해보장, 일상생활배상책임 등 손해배상 관련)<br>
+    국내 전체보험사(33개보험사)마다 적용되는 보험료 산정기준이 달라, 기준 동일보장에서 <b>보험료 편차가 30~40% 이상</b> 발생되며, 추가상담을 통해 <b>100% 정확한 안내</b>를 받으실 수 있습니다.
+  </div>
+</div>
+
+<div class="footer">
+  <div class="footer-left">
+    <div><b>등록번호</b>20080479060011</div>
+    <div><b>Mail.</b>i2309006@tossinsu-advisor.com</div>
+    <div><b>Mobile.</b>010-9903-8702</div>
+    <div><b>Fax.</b>0504-474-4937</div>
+  </div>
+  <div class="footer-right">
+    <div class="footer-name">토스인슈어런스 송영종 어드바이저</div>
+    <div class="footer-role">토스인슈어런스 Pro Coach (사내강사)</div>
+  </div>
+</div>
+
+</body>
+</html>

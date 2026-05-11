@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="utf-8"/><title>박상기님 보장분석</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; font-feature-settings: 'tnum'; }
+body { font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+  background: #fff; color: #191F28; width: 1742px; padding: 30px; font-size: 11.5px; line-height: 1.55; }
+.header-title { font-size: 26px; font-weight: 800; padding-bottom: 8px; border-bottom: 3px solid #191F28; margin-bottom: 4px; display: flex; justify-content: space-between; align-items: baseline; }
+.header-title-text { display: inline-block; }
+.header-logo { display: inline-block; }
+.header-logo img { height: 36px; display: block; }
+.header-sub { font-size: 16px; font-weight: 500; color: #555; }
+.subtitle { font-size: 11px; color: #777; margin-bottom: 16px; }
+.section-title { font-size: 15px; font-weight: 800; margin: 18px 0 8px; padding-left: 10px; border-left: 4px solid #3182F6; }
+
+.ins-area { display: flex; gap: 1em; margin-bottom: 18px; align-items: stretch; }
+.stats-box { width: 260px; min-width: 260px; max-width: 260px; flex: 0 0 260px; padding: 16px; background: #F4F6F9; box-sizing: border-box; }
+.stats-divider { height: 1px; background: #D1D5DB; margin: 14px 0 12px; }
+.stats-card3-title { font-size: 13px; font-weight: 800; color: #191F28; letter-spacing: -0.4px; margin-bottom: 8px; }
+.stats-card3-self-family { font-size: 11.5px; color: #4E5968; padding: 2px 0; font-weight: 600; }
+.stats-card3-section { margin-top: 10px; }
+.stats-card3-sublabel { font-size: 10.5px; color: #4E5968; font-weight: 600; letter-spacing: -0.3px; margin-bottom: 3px; }
+.stats-card3-level-label { font-size: 16px; font-weight: 800; letter-spacing: -0.5px; line-height: 1.15; margin-bottom: 5px; word-break: keep-all; }
+.stats-card3-completion-value { font-size: 14px; font-weight: 800; color: #191F28; letter-spacing: -0.4px; line-height: 1.15; }
+.level-bar { display: flex; gap: 3px; margin-bottom: 6px; margin-top: 2px; }
+.level-seg { flex: 1; height: 4px; background: #E5E8EB; border-radius: 2px; }
+.level-seg.active-danger { background: #F04452; }
+.level-seg.active-warning { background: #F97316; }
+.level-seg.active-neutral { background: #191F28; }
+.level-seg.active-good { background: #15803D; }
+.level-seg.active-rich { background: #DB2777; }
+.completion-bar { width: 100%; height: 7px; background: #fff; border: 1px solid #E5E8EB; border-radius: 4px; overflow: hidden; margin-top: 4px; }
+.completion-bar-fill { height: 100%; border-radius: 4px; }
+.completion-bar-fill.fill-과잉 { background: #DB2777; }
+.completion-bar-fill.fill-적정 { background: #15803D; }
+.completion-bar-fill.fill-보통 { background: #191F28; }
+.completion-bar-fill.fill-빈약 { background: #F97316; }
+.completion-bar-fill.fill-부재 { background: #F04452; }
+.val-부재 { color: #F04452; }
+.val-빈약 { color: #F97316; }
+.val-보통 { color: #191F28; }
+.val-적정 { color: #15803D; }
+.val-과잉 { color: #DB2777; }
+.ins-table-wrap { width: 1410px; flex: 0 0 1410px; background: #fff; }
+.stats-info { font-size: 10.5px; color: #555; margin-bottom: 8px; }
+.sub-pre { background: #DBEAFE; padding: 1px 5px; border-radius: 3px; font-size: 9.5px; color: #1E40AF; font-weight: 700; }
+.stats-table { width: 100%; border-collapse: collapse; font-size: 11.5px; margin-bottom: 4px; }
+.stats-table td { padding: 5px 0; vertical-align: middle; }
+.stats-label { color: #4E5968; }
+.stats-val { text-align: right; }
+.stats-val strong { font-size: 13px; }
+.stats-sub-block { margin: 4px 0 8px; padding-left: 8px; }
+.stats-sub { font-size: 10.5px; color: #777; padding: 1px 0; }
+.stats-unknown { color: #DC2626; font-weight: 700; }
+.amt-blue { color: #2563EB; }
+.amt-red { color: #F04452; }
+.amt-black { color: #191F28; }
+.amt-blue-text { color: #2563EB; font-weight: 700; }
+.amt-black-text { color: #191F28; }
+.amt-right { text-align: right !important; padding-right: 2.5em !important; }
+
+.ins-table { width: 1410px; border-collapse: collapse; font-size: 10.5px; table-layout: fixed; }
+.ins-table col.col-label { width: 90px; }
+.ins-table col.col-data { width: 120px; }
+.ins-table th, .ins-table td { padding: 6px 5px; text-align: center; vertical-align: middle;
+  border-top: 1px solid #BBB; border-bottom: 1px solid #BBB; border-left: 0; border-right: 0; overflow: hidden; }
+.ins-row-label { background: #F4F6F9; font-weight: 700; font-size: 10.5px; }
+.ins-cell { height: 40px; vertical-align: middle; }
+.ins-cell.ins-contractor { font-size: 10.5px; height: 40px; padding: 4px 6px; vertical-align: middle; }
+.ins-cell.ins-contractor .cell-clamp { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+  overflow: hidden; word-break: break-all; line-height: 1.35; }
+.ins-cell.ins-name { font-size: 10.5px; height: 40px; padding: 4px 6px; vertical-align: middle; }
+.ins-cell.ins-name .cell-clamp { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+  overflow: hidden; word-break: break-all; line-height: 1.35; }
+.ins-cell.ins-insurer { white-space: nowrap; overflow: hidden; text-overflow: clip; }
+.ins-cell.empty { background: #FAFBFC; }
+.renewal-tag { background: #F04452; color: #fff; padding: 2px 6px; border-radius: 3px; font-size: 9.5px; font-weight: 700; display: inline-block; }
+.pay-tag { background: #DBEAFE; color: #1E40AF; padding: 2px 8px; border-radius: 12px; font-size: 9.5px; font-weight: 700; display: inline-block; }
+.pay-tag.pay-end { background: #E5E7EB; color: #4E5968; }
+
+.cards-row { display: flex; gap: 0; margin: 14px 0; }
+.cov-card { flex: 1; padding: 14px 8px; text-align: center; min-height: 110px; }
+.cov-card-head { font-size: 13px; font-weight: 700; color: #191F28; margin-bottom: 8px; white-space: nowrap; }
+.cov-card-amt { font-size: 19px; font-weight: 800; color: #191F28; margin-bottom: 8px; line-height: 1.15; }
+.cov-card-label-row { margin-bottom: 6px; }
+.cov-card-label { display: inline-block; padding: 4px 16px; border-radius: 14px; font-size: 11.5px; font-weight: 700; }
+.cov-card-mssg { font-size: 10.5px; color: #777; line-height: 1.45; padding: 0 4px; }
+.lbl-rich { background: #DB2777; color: #fff; }
+.lbl-good { background: #15803D; color: #fff; }
+.lbl-warning { background: #F97316; color: #fff; }
+.lbl-danger { background: #F04452; color: #fff; }
+
+.renewal-box { background: #FEE2E2; border: 1px solid #F04452; border-radius: 8px; padding: 12px 16px; margin: 4px 0 16px; }
+.renewal-title { color: #F04452; font-weight: 800; font-size: 12.5px; margin-bottom: 4px; }
+.renewal-list { font-size: 10.5px; color: #555; line-height: 1.55; }
+.renewal-conclusion { font-size: 10.5px; color: #F04452; font-weight: 700; margin-top: 4px; }
+
+.advisor-box { background: #F4F6F9; padding: 20px 28px; margin: 18px 0; border-radius: 4px; }
+.advisor-title { font-size: 14px; font-weight: 700; margin-bottom: 16px; color: #191F28; }
+.advisor-ol { padding-left: 20px; line-height: 1.85; font-size: 11px; color: #4E5968; }
+.advisor-ol li { margin-bottom: 8px; }
+.advisor-auto { background: #FFFBEA; padding: 16px 20px 16px 36px; margin: 14px 0; font-size: 11.5px; line-height: 1.85; color: #DC2626; list-style-type: disc; border-radius: 4px; }
+.advisor-auto li { margin-bottom: 6px; padding-left: 4px; font-weight: 700; }
+.auto-strong { font-weight: 700; color: #DC2626; }
+
+.matrix-info { font-size: 10.5px; color: #555; margin: 6px 0 4px; }
+.cov-matrix { width: 100%; border-collapse: collapse; font-size: 10.5px; table-layout: fixed; margin-bottom: 0; }
+.cov-matrix th, .cov-matrix td { padding: 5px 5px; text-align: center; vertical-align: middle; border: 1px solid #BBB; }
+.matrix-head th { background: #F4F6F9; font-weight: 700; padding: 8px 4px; font-size: 11px; }
+.cat-cell { width: 90px; font-weight: 800; font-size: 12px; vertical-align: middle; }
+.sub-cell { width: 160px; text-align: left; padding-left: 10px; font-size: 10.5px; }
+.total-cell { width: 110px; }
+.total-cell.empty { color: #BBB; }
+.total-bold { font-weight: 800; }
+.ins-col { width: 120px; height: 28px; }
+.matrix-col-head { font-size: 9.5px; font-weight: 600; padding: 6px 8px !important; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.ineff-text { text-align: right; padding: 4px 4px 6px; font-size: 10.5px; color: #DC2626; font-weight: 700; }
+
+.bg-amni { background: #FFF9E5; }
+.bg-brain { background: #E0F0FF; }
+.bg-heart { background: #FFE5EC; }
+.bg-surg { background: #E5F5E5; }
+.bg-grey { background: #F1F3F5; }
+.bg-driver { background: #EEF2FF; }
+.bg-fire { background: #FFF7ED; }
+.bg-tooth { background: #F0FDFA; }
+
+.row-3jin > th.cat-cell { border-left: 2px solid #15803D !important; }
+.row-3jin > td:last-child { border-right: 2px solid #15803D !important; }
+.row-3jin-top > th, .row-3jin-top > td { border-top: 2px solid #15803D !important; }
+.row-3jin-top > th.cat-cell { border-bottom: 2px solid #15803D !important; }
+.row-3jin-bot > th, .row-3jin-bot > td { border-bottom: 2px solid #15803D !important; }
+
+.row-surg-box > th.cat-cell { border-left: 2px solid #DC2626 !important; }
+.row-surg-box > td:last-child { border-right: 2px solid #DC2626 !important; }
+.row-surg-top > th, .row-surg-top > td { border-top: 2px solid #DC2626 !important; }
+.row-surg-top > th.cat-cell { border-bottom: 2px solid #DC2626 !important; }
+.row-surg-bot > th, .row-surg-bot > td { border-bottom: 2px solid #DC2626 !important; }
+
+.conclusion-box { background: #fff; border-left: 4px solid #15803D; padding: 14px 18px; margin: 18px 0 12px; }
+.conc-title { font-size: 13.5px; font-weight: 800; margin-bottom: 8px; color: #15803D; }
+.conclusion-box ol { padding-left: 20px; line-height: 1.7; font-size: 11px; }
+.conclusion-box ol li { margin-bottom: 4px; }
+.important-box { background: #FEF2F2; border: 1px solid #FCA5A5; border-radius: 8px; padding: 12px 16px; margin: 10px 0; }
+.imp-title { color: #DC2626; font-weight: 700; font-size: 12.5px; margin-bottom: 4px; }
+.imp-body { font-size: 10.5px; color: #555; line-height: 1.65; }
+.boost-box { background: #EFF6FF; border: 1px solid #93C5FD; border-radius: 8px; padding: 12px 16px; margin-bottom: 14px; }
+.boost-title { color: #1E40AF; font-weight: 700; font-size: 12.5px; margin-bottom: 4px; }
+.boost-body { font-size: 10.5px; color: #555; line-height: 1.65; }
+.footer { display: flex; justify-content: space-between; align-items: flex-end; padding: 12px 16px; border-top: 1px solid #E5E7EB; margin-top: 14px; font-size: 9.5px; color: #555; }
+.footer-right .name { font-size: 13px; font-weight: 800; color: #191F28; }
+.footer-right .role { font-size: 10px; color: #555; margin-top: 2px; }
+
+.cov-matrix tr.warning-spacer td { height: 8px; padding: 0; border: 0 !important; background: transparent; }
+.cov-matrix tr.warning-row td { text-align: center; color: #FCA5A5; font-weight: 700; font-size: 11px; padding: 6px 8px; border: 0 !important; background: #4B5563; }
+</style></head>
+<body>
+<div class="header-title"><span class="header-title-text">박상기님의 보장분석 <span class="header-sub">— 본인</span></span><span class="header-logo"><img src="toss_logo.png" alt="toss insurance"></span></div>
+<div class="subtitle">남성 · 보험나이 52세</div>
+<div class="section-title">가입보험 상세정보</div>
+<div class="ins-area">
+<div class="stats-box">
+<div class="stats-info">- <span class="sub-pre">납입중</span> 인 보험만 보험료 합계로 포함돼요</div>
+<table class="stats-table">
+<tr><td class="stats-label">보험 개수</td><td class="stats-val">11 개</td></tr>
+<tr><td class="stats-label">월 납 보험료 합계</td><td class="stats-val amt-blue"><strong>473,870 원</strong></td></tr>
+</table>
+<div class="stats-sub-block">
+<div class="stats-sub">- 보장성보험료 합계 6건 425,940원</div>
+<div class="stats-sub">- 기타보험료 합계 3건 47,930원</div>
+<div class="stats-sub">- 저축보험료 합계 0건 0원</div>
+<div class="stats-sub stats-unknown">(납입보험료 미확인 보험 2건)</div>
+</div>
+<table class="stats-table">
+<tr><td class="stats-label">기납 보험료 합계</td><td class="stats-val amt-black"><strong>64,856,990 원</strong></td></tr>
+<tr><td class="stats-label">잔여 보험료 합계</td><td class="stats-val amt-red"><strong>84,456,180 원</strong></td></tr>
+<tr><td class="stats-label">총 보험료 합계</td><td class="stats-val amt-blue"><strong>149,313,170 원</strong></td></tr>
+</table>
+
+<div class="stats-divider"></div>
+<div class="stats-card3-title">보험료&amp;보장기준진단</div>
+<div class="stats-card3-self-family">본인보험 : 473,870원</div><div class="stats-card3-self-family">가족보험 : 0원</div>
+<div class="stats-card3-section">
+<div class="stats-card3-sublabel">보험료 지출정도</div>
+<div class="stats-card3-level-label val-과잉">매우과잉</div>
+<div class="level-bar"><div class="level-seg active-rich"></div><div class="level-seg active-rich"></div><div class="level-seg active-rich"></div><div class="level-seg active-rich"></div></div>
+</div>
+<div class="stats-card3-section">
+<div class="stats-card3-sublabel">보장완성도</div>
+<div class="stats-card3-completion-value">20%</div>
+<div class="completion-bar"><div class="completion-bar-fill fill-보통" style="width:20%;"></div></div>
+</div>
+</div>
+<div class="ins-table-wrap"><table class="ins-table"><colgroup><col class="col-label" style="width:90px"/><col class="col-data" style="width:120px"/><col class="col-data" style="width:120px"/><col class="col-data" style="width:120px"/><col class="col-data" style="width:120px"/><col class="col-data" style="width:120px"/><col class="col-data" style="width:120px"/><col class="col-data" style="width:120px"/><col class="col-data" style="width:120px"/><col class="col-data" style="width:120px"/><col class="col-data" style="width:120px"/><col class="col-data" style="width:120px"/></colgroup><tbody><tr><th class="ins-row-label" style="width:90px">보험명</th><td class="ins-cell ins-name" style="width:120px"><span class="cell-clamp">(무) 메리츠 유병력자 실손의료비보험2501</span></td><td class="ins-cell ins-name" style="width:120px"><span class="cell-clamp">무배당교보큰사랑플러스CI보험(두번보장형,1종,표준체)</span></td><td class="ins-cell ins-name" style="width:120px"><span class="cell-clamp">(무) 메리츠 통합간편건강보험(Ⅱ)2501(통합간편심사형)</span></td><td class="ins-cell ins-name" style="width:120px"><span class="cell-clamp">무배당 AXA나를지켜주는건강보험Ⅱ(갱신형)2501</span></td><td class="ins-cell ins-name" style="width:120px"><span class="cell-clamp">무배당 AXA생활안심종합보험Ⅱ2501</span></td><td class="ins-cell ins-name" style="width:120px"><span class="cell-clamp">무배당프라임평생설계보험 2형</span></td><td class="ins-cell ins-name" style="width:120px"><span class="cell-clamp">올커버건강보험(만기환급형)</span></td><td class="ins-cell ins-name" style="width:120px"><span class="cell-clamp">(무) 메리츠 운전자 상해 종합보험2509</span></td><td class="ins-cell ins-name" style="width:120px"><span class="cell-clamp">(무) 메리츠 운전자 상해 종합보험2501</span></td><td class="ins-cell ins-name" style="width:120px"><span class="cell-clamp">(무) 메리츠 운전자 상해 종합보험2501</span></td><td class="ins-cell ins-name" style="width:120px"><span class="cell-clamp">애니카다이렉트_개인용</span></td></tr><tr><th class="ins-row-label" style="width:90px">보험사명</th><td class="ins-cell ins-insurer" style="width:120px">메리츠화재해상</td><td class="ins-cell ins-insurer" style="width:120px">교보생명</td><td class="ins-cell ins-insurer" style="width:120px">메리츠화재해상</td><td class="ins-cell ins-insurer" style="width:120px">AXA손해보험</td><td class="ins-cell ins-insurer" style="width:120px">AXA손해보험</td><td class="ins-cell ins-insurer" style="width:120px">AIA생명보험</td><td class="ins-cell ins-insurer" style="width:120px">우정사업본부</td><td class="ins-cell ins-insurer" style="width:120px">메리츠화재해상</td><td class="ins-cell ins-insurer" style="width:120px">메리츠화재해상</td><td class="ins-cell ins-insurer" style="width:120px">메리츠화재해상</td><td class="ins-cell ins-insurer" style="width:120px">삼성화재해상보</td></tr><tr><th class="ins-row-label" style="width:90px">계약일</th><td class="ins-cell" style="width:120px">2025-02-07</td><td class="ins-cell" style="width:120px">2011-04-15</td><td class="ins-cell" style="width:120px">2025-02-07</td><td class="ins-cell" style="width:120px">2025-01-16</td><td class="ins-cell" style="width:120px">2025-01-16</td><td class="ins-cell" style="width:120px">2005-11-28</td><td class="ins-cell" style="width:120px">2004-12-20</td><td class="ins-cell" style="width:120px">2025-11-11</td><td class="ins-cell" style="width:120px">2025-02-07</td><td class="ins-cell" style="width:120px">2025-02-07</td><td class="ins-cell" style="width:120px">2025-09-26</td></tr><tr><th class="ins-row-label" style="width:90px">갱신 유무</th><td class="ins-cell" style="width:120px"><span class="renewal-tag">갱신형보험</span></td><td class="ins-cell" style="width:120px"><span class="renewal-tag">갱신형보험</span></td><td class="ins-cell" style="width:120px"><span class="renewal-tag">갱신형보험</span></td><td class="ins-cell" style="width:120px"><span class="renewal-tag">갱신형보험</span></td><td class="ins-cell" style="width:120px">비갱신형</td><td class="ins-cell" style="width:120px">비갱신형</td><td class="ins-cell" style="width:120px">비갱신형</td><td class="ins-cell" style="width:120px">비갱신형</td><td class="ins-cell" style="width:120px">비갱신형</td><td class="ins-cell" style="width:120px">비갱신형</td><td class="ins-cell" style="width:120px">비갱신형</td></tr><tr><th class="ins-row-label" style="width:90px">계약자<br/>/피보험자</th><td class="ins-cell ins-contractor" style="width:120px"><span class="cell-clamp">박상기/본인</span></td><td class="ins-cell ins-contractor" style="width:120px"><span class="cell-clamp">박상기/본인</span></td><td class="ins-cell ins-contractor" style="width:120px"><span class="cell-clamp">박상기/본인</span></td><td class="ins-cell ins-contractor" style="width:120px"><span class="cell-clamp">박상기/본인</span></td><td class="ins-cell ins-contractor" style="width:120px"><span class="cell-clamp">박상기/본인</span></td><td class="ins-cell ins-contractor" style="width:120px"><span class="cell-clamp">박상기/본인</span></td><td class="ins-cell ins-contractor" style="width:120px"><span class="cell-clamp">박상기/본인</span></td><td class="ins-cell ins-contractor" style="width:120px"><span class="cell-clamp">박상기/본인</span></td><td class="ins-cell ins-contractor" style="width:120px"><span class="cell-clamp">박상기/본인</span></td><td class="ins-cell ins-contractor" style="width:120px"><span class="cell-clamp">박상기/본인</span></td><td class="ins-cell ins-contractor" style="width:120px"><span class="cell-clamp">박상기/109고9525 기명피보험자1인한정 만48세이상</span></td></tr><tr><th class="ins-row-label" style="width:90px">납입 여부</th><td class="ins-cell" style="width:120px"><span class="pay-tag pay-active">납입중</span></td><td class="ins-cell" style="width:120px"><span class="pay-tag pay-active">납입중</span></td><td class="ins-cell" style="width:120px"><span class="pay-tag pay-active">납입중</span></td><td class="ins-cell" style="width:120px"><span class="pay-tag pay-active">납입중</span></td><td class="ins-cell" style="width:120px"><span class="pay-tag pay-active">납입중</span></td><td class="ins-cell" style="width:120px"><span class="pay-tag pay-active">납입중</span></td><td class="ins-cell" style="width:120px"><span class="pay-tag pay-end">납입종료</span></td><td class="ins-cell" style="width:120px"><span class="pay-tag pay-active">납입중</span></td><td class="ins-cell" style="width:120px"><span class="pay-tag pay-active">납입중</span></td><td class="ins-cell" style="width:120px"><span class="pay-tag pay-active">납입중</span></td><td class="ins-cell" style="width:120px"><span class="pay-tag pay-end">납입종료</span></td></tr><tr><th class="ins-row-label" style="width:90px">납입주기<br/>/납입기간</th><td class="ins-cell" style="width:120px">월납 / 3년</td><td class="ins-cell" style="width:120px">월납 / 33년</td><td class="ins-cell" style="width:120px">월납 / 20년</td><td class="ins-cell" style="width:120px">월납 / 49년</td><td class="ins-cell" style="width:120px">월납 / 9년</td><td class="ins-cell" style="width:120px">월납 / 24년</td><td class="ins-cell" style="width:120px">월납 / 20년</td><td class="ins-cell" style="width:120px">월납 / 20년</td><td class="ins-cell" style="width:120px">월납 / 20년</td><td class="ins-cell" style="width:120px">월납 / 20년</td><td class="ins-cell" style="width:120px">일시납 / 0년</td></tr><tr><th class="ins-row-label" style="width:90px">보장만기<br/>/만기연령</th><td class="ins-cell" style="width:120px">2028-02-07<br/>/ 53 세</td><td class="ins-cell" style="width:120px">9999-12-31<br/>/ 8025 세</td><td class="ins-cell" style="width:120px">2065-02-07<br/>/ 90 세</td><td class="ins-cell" style="width:120px">2075-01-16<br/>/ 100 세</td><td class="ins-cell" style="width:120px">2035-01-16<br/>/ 60 세</td><td class="ins-cell" style="width:120px">2078-11-28<br/>/ 104 세</td><td class="ins-cell" style="width:120px">2054-12-20<br/>/ 80 세</td><td class="ins-cell" style="width:120px">2045-11-11<br/>/ 71 세</td><td class="ins-cell" style="width:120px">2045-02-07<br/>/ 70 세</td><td class="ins-cell" style="width:120px">2045-02-07<br/>/ 70 세</td><td class="ins-cell" style="width:120px">2026-09-26<br/>/ 52 세</td></tr><tr><th class="ins-row-label" style="width:90px">월납보험료</th><td class="ins-cell amt-blue-text amt-right" style="width:120px">2,820 원</td><td class="ins-cell amt-blue-text amt-right" style="width:120px">102,540 원</td><td class="ins-cell amt-blue-text amt-right" style="width:120px">152,700 원</td><td class="ins-cell amt-blue-text amt-right" style="width:120px">17,900 원</td><td class="ins-cell amt-blue-text amt-right" style="width:120px">15,290 원</td><td class="ins-cell amt-blue-text amt-right" style="width:120px">134,690 원</td><td class="ins-cell amt-black-text amt-right" style="width:120px">37,000 원</td><td class="ins-cell amt-blue-text amt-right" style="width:120px">11,010 원</td><td class="ins-cell amt-blue-text amt-right" style="width:120px">15,320 원</td><td class="ins-cell amt-blue-text amt-right" style="width:120px">21,600 원</td><td class="ins-cell amt-black-text amt-right" style="width:120px">607,370 원</td></tr><tr><th class="ins-row-label" style="width:90px">기납보험료</th><td class="ins-cell amt-right" style="width:120px">45,120 원</td><td class="ins-cell amt-right" style="width:120px">18,559,740 원</td><td class="ins-cell amt-right" style="width:120px">2,443,200 원</td><td class="ins-cell amt-right" style="width:120px">286,400 원</td><td class="ins-cell amt-right" style="width:120px">244,640 원</td><td class="ins-cell amt-right" style="width:120px">33,133,740 원</td><td class="ins-cell amt-right" style="width:120px">8,880,000 원</td><td class="ins-cell amt-right" style="width:120px">66,060 원</td><td class="ins-cell amt-right" style="width:120px">245,120 원</td><td class="ins-cell amt-right" style="width:120px">345,600 원</td><td class="ins-cell amt-right" style="width:120px">607,370 원</td></tr><tr><th class="ins-row-label" style="width:90px">잔여보험료</th><td class="ins-cell amt-right" style="width:120px">56,400 원</td><td class="ins-cell amt-right" style="width:120px">22,046,100 원</td><td class="ins-cell amt-right" style="width:120px">34,204,800 원</td><td class="ins-cell amt-right" style="width:120px">10,238,800 원</td><td class="ins-cell amt-right" style="width:120px">1,406,680 원</td><td class="ins-cell amt-right" style="width:120px">5,656,980 원</td><td class="ins-cell amt-right" style="width:120px">0 원</td><td class="ins-cell amt-right" style="width:120px">2,576,340 원</td><td class="ins-cell amt-right" style="width:120px">3,431,680 원</td><td class="ins-cell amt-right" style="width:120px">4,838,400 원</td><td class="ins-cell amt-right" style="width:120px">0 원</td></tr><tr><th class="ins-row-label" style="width:90px">총보험료</th><td class="ins-cell amt-right" style="width:120px">101,520 원</td><td class="ins-cell amt-right" style="width:120px">40,605,840 원</td><td class="ins-cell amt-right" style="width:120px">36,648,000 원</td><td class="ins-cell amt-right" style="width:120px">10,525,200 원</td><td class="ins-cell amt-right" style="width:120px">1,651,320 원</td><td class="ins-cell amt-right" style="width:120px">38,790,720 원</td><td class="ins-cell amt-right" style="width:120px">8,880,000 원</td><td class="ins-cell amt-right" style="width:120px">2,642,400 원</td><td class="ins-cell amt-right" style="width:120px">3,676,800 원</td><td class="ins-cell amt-right" style="width:120px">5,184,000 원</td><td class="ins-cell amt-right" style="width:120px">607,370 원</td></tr></tbody></table></div>
+</div>
+<div class="section-title">보장항목별 진단</div>
+<div class="cards-row">
+<div class="cov-card">
+<div class="cov-card-head">실손의료비</div>
+<div class="cov-card-amt">5,000 / 20 만원</div>
+<div class="cov-card-label-row"><span class="cov-card-label lbl-warning">빈약</span></div>
+<div class="cov-card-mssg">기본 보장 미달 - 보강 필요</div>
+</div>
+<div class="cov-card">
+<div class="cov-card-head">암 (진단·치료)</div>
+<div class="cov-card-amt">5,600만원</div>
+<div class="cov-card-label-row"><span class="cov-card-label lbl-good">보통</span></div>
+<div class="cov-card-mssg">권장 수준에 부합하는 적정 보장</div>
+</div>
+<div class="cov-card">
+<div class="cov-card-head">뇌혈관 (진단·치료)</div>
+<div class="cov-card-amt">2,000만원</div>
+<div class="cov-card-label-row"><span class="cov-card-label lbl-warning">빈약</span></div>
+<div class="cov-card-mssg">기본 보장 미달 - 보강 필요</div>
+</div>
+<div class="cov-card">
+<div class="cov-card-head">심장 (진단·치료)</div>
+<div class="cov-card-amt">2,000만원</div>
+<div class="cov-card-label-row"><span class="cov-card-label lbl-warning">빈약</span></div>
+<div class="cov-card-mssg">기본 보장 미달 - 보강 필요</div>
+</div>
+<div class="cov-card">
+<div class="cov-card-head">수술보장</div>
+<div class="cov-card-amt">2,340만원</div>
+<div class="cov-card-label-row"><span class="cov-card-label lbl-rich">과잉</span></div>
+<div class="cov-card-mssg">필요이상과다가입 - 보험료낭비위험</div>
+</div>
+</div>
+<div class="renewal-box"><div class="renewal-title">⚠ 갱신형 보험 4건 보유</div><div class="renewal-list">메리츠화재해상보험 (무) 메리츠 유병력자 실손의료비보험2501, 교보생명 무배당교보큰사랑플러스CI보험(두번보장형,1종,표준체), 메리츠화재해상보험 (무) 메리츠 통합간편건강보험(Ⅱ)2501(통합간편심사형), AXA손해보험 무배당 AXA나를지켜주는건강보험Ⅱ(갱신형)2501이 갱신형으로 구성 또는 보장항목(특약) 중 갱신형으로 구성된 항목이 있습니다.</div><div class="renewal-conclusion">→ 보험료 인상 위험 — 추가적 점검 필요</div></div>
+<div class="advisor-box">
+<div class="advisor-title">토스 보험분석 어드바이저 보험점검사항 요약 안내</div>
+<ol class="advisor-ol">
+<li>본 레포트는 필수보장의 구성이 올바르게 되어 있는지 확인하시도록 작성되어 있습니다.</li>
+<li>기존보험 중 보유되어 있는 보장항목이라고 하더라도 실질적인 효율이 없는 보장항목은 제외되어 있을 수 있으며, 제외된 보장항목이 많을수록 내 보험료의 낭비가 큰 요인이 많은 상태로 보셔야 합니다.</li>
+<li>보험료의 낭비 요인이 클수록 지체없이 보험의 올바른 보완에 대한 추가검토를 하셔야 합니다. 시간이 지날수록 보험료 낭비금액이 커지게 됩니다.</li>
+</ol>
+<ul class="advisor-auto">
+<li class="auto-li"><strong class="auto-strong">박상기님의 기존보험은 핵심 의료보장이 완성되지 않았습니다.</strong></li>
+<li class="auto-li"><strong class="auto-strong">박상기님의 기존보험에 갱신형보험이 다수 포함되어 보험료 누수가 발생되고 있습니다.</strong></li>
+<li class="auto-li"><strong class="auto-strong">박상기님 보험의 보장은 빈약이나 뇌·심장·실손 보장이 부족하여 보강이 필요합니다.</strong></li>
+</ul>
+<ol class="advisor-ol" start="4"><li>레포트를 받으시고 1~3일 후, 토스 보험분석 어드바이저가 추가안내를 드릴 예정입니다.</li><li>본 레포트를 받으시고 궁금하시거나 추가로 요청하실 부분이 있으신 경우 미리 메시지로 남겨주세요. 추가안내시 말씀주신 내용을 반영하여 안내드리도록 하겠습니다.</li></ol>
+</div>
+<div class="section-title">카테고리별 상세정보</div>
+<div class="matrix-info">- 보장 총액 / 만원 단위</div>
+<table class="cov-matrix"><tbody><tr class="matrix-head"><th class="cat-cell">대분류</th><th class="sub-cell">소분류</th><th class="total-cell">보장총액</th><th class="ins-col matrix-col-head">(무) 메리츠 ...</th><th class="ins-col matrix-col-head">무배당교보큰사랑...</th><th class="ins-col matrix-col-head">(무) 메리츠 ...</th><th class="ins-col matrix-col-head">무배당 AXA나...</th><th class="ins-col matrix-col-head">무배당 AXA생...</th><th class="ins-col matrix-col-head">무배당프라임평생...</th><th class="ins-col matrix-col-head">올커버건강보험(...</th><th class="ins-col matrix-col-head">(무) 메리츠 ...</th><th class="ins-col matrix-col-head">(무) 메리츠 ...</th><th class="ins-col matrix-col-head">(무) 메리츠 ...</th><th class="ins-col matrix-col-head">애니카다이렉트_...</th></tr><tr class=""><th class="cat-cell " rowspan="6">실비</th><td class="sub-cell ">질병입원의료비</td><td class="total-cell  amt-blue total-bold">5,000 만원</td><td class="ins-col ">-</td><td class="ins-col ">5,000만원</td><td class="ins-col ">-</td><td class="ins-col ">-</td><td class="ins-col ">-</td><td class="ins-col ">-</td><td class="ins-col ">-</td><td class="ins-col ">-</td><td class="ins-col ">-</td><td class="ins-col ">-</td><td class="ins-col ">-</td></tr><tr class=""><td class="sub-cell ">질병외래의료비</td><td class="total-cell  amt-blue total-bold">20 만원</td><td class="ins-col ">-</td><td class="ins-col ">20만원</td><td class="ins-col ">-</td><td class="ins-col ">-</td><td class="ins-col ">-</td><td class="ins-col ">-</td><td class="ins-col ">-</td><td class="ins-col ">-</td><td class="ins-col ">-</td><td class="ins-col ">-</td><td class="ins-col ">-</td></tr><tr class=""><td class="sub-cell ">질병처방조제료</td><td class="total-cell  amt-blue total-bold">10 만원</td><td class="ins-col ">-</td><td class="ins-col ">10만원</td><td class="ins-col ">-</td><td class="ins-col ">-</td><td class="ins-col ">-</td><td class="ins-col ">-</td><td class="ins-col ">-</td><td class="ins-col ">-</td><td class="ins-col ">-</td><td class="ins-col ">-</td><td class="ins-col ">-</td></tr><tr class=""><td class="sub-cell ">상해입원의료비</td><td class="total-cell  amt-blue total-bold">5,000 만원</td><td class="ins-col ">5,000만원</td><td class="ins-col ">-</td><td class="ins-col ">-</td><td class="ins-col ">-</td><td class="ins-col ">-</td><td class="ins-col ">-</td><td class="ins-col ">-</td><td class="ins-col ">-</td><td class="ins-col ">-</td><td class="ins-col ">-</td><td class="ins-col ">-</td></tr><tr class=""><td class="sub-cell ">상해외래의료비</td><td class="total-cell  amt-blue total-bold">20 만원</td><td class="ins-col ">20만원</td><td class="ins-col ">-</td><td class="ins-col ">-</td><td class="ins-col ">-</td><td class="ins-col ">-</td><td class="ins-col ">-</td><td class="ins-col ">-</td><td class="ins-col ">-</td><td class="ins-col ">-</td><td class="ins-col ">-</td><td class="ins-col ">-</td></tr><tr class=""><td class="sub-cell ">상해처방조제료</td><td class="total-cell  empty">-</td><td class="ins-col ">-</td><td class="ins-col ">-</td><td class="ins-col ">-</td><td class="ins-col ">-</td><td class="ins-col ">-</td><td class="ins-col ">-</td><td class="ins-col ">-</td><td class="ins-col ">-</td><td class="ins-col ">-</td><td class="ins-col ">-</td><td class="ins-col ">-</td></tr><tr class="row-3jin row-3jin-top"><th class="cat-cell bg-amni" rowspan="8">3대진단</th><td class="sub-cell bg-amni">일반암진단</td><td class="total-cell bg-amni amt-blue total-bold">5,600 만원</td><td class="ins-col bg-amni">-</td><td class="ins-col bg-amni">1,600만원</td><td class="ins-col bg-amni">1,000만원</td><td class="ins-col bg-amni">-</td><td class="ins-col bg-amni">-</td><td class="ins-col bg-amni">2,000만원</td><td class="ins-col bg-amni">1,000만원</td><td class="ins-col bg-amni">-</td><td class="ins-col bg-amni">-</td><td class="ins-col bg-amni">-</td><td class="ins-col bg-amni">-</td></tr><tr class="row-3jin"><td class="sub-cell bg-amni">소액암(유사암)진단</td><td class="total-cell bg-amni amt-blue total-bold">1,400 만원</td><td class="ins-col bg-amni">-</td><td class="ins-col bg-amni">-</td><td class="ins-col bg-amni">1,000만원</td><td class="ins-col bg-amni">-</td><td class="ins-col bg-amni">-</td><td class="ins-col bg-amni">400만원</td><td class="ins-col bg-amni">-</td><td class="ins-col bg-amni">-</td><td class="ins-col bg-amni">-</td><td class="ins-col bg-amni">-</td><td class="ins-col bg-amni">-</td></tr><tr class="row-3jin"><td class="sub-cell bg-amni">암 치료비</td><td class="total-cell bg-amni empty">-</td><td class="ins-col bg-amni">-</td><td class="ins-col bg-amni">-</td><td class="ins-col bg-amni">-</td><td class="ins-col bg-amni">-</td><td class="ins-col bg-amni">-</td><td class="ins-col bg-amni">-</td><td class="ins-col bg-amni">-</td><td class="ins-col bg-amni">-</td><td class="ins-col bg-amni">-</td><td class="ins-col bg-amni">-</td><td class="ins-col bg-amni">-</td></tr><tr class="row-3jin"><td class="sub-cell bg-amni">고액항암치료비</td><td class="total-cell bg-amni amt-blue">5,000 만원</td><td class="ins-col bg-amni">-</td><td class="ins-col bg-amni">-</td><td class="ins-col bg-amni">-</td><td class="ins-col bg-amni">-</td><td class="ins-col bg-amni">-</td><td class="ins-col bg-amni">5,000만원</td><td class="ins-col bg-amni">-</td><td class="ins-col bg-amni">-</td><td class="ins-col bg-amni">-</td><td class="ins-col bg-amni">-</td><td class="ins-col bg-amni">-</td></tr><tr class="row-3jin"><td class="sub-cell bg-brain">뇌혈관질환진단</td><td class="total-cell bg-brain amt-blue total-bold">2,000 만원</td><td class="ins-col bg-brain">-</td><td class="ins-col bg-brain">-</td><td class="ins-col bg-brain">1,000만원</td><td class="ins-col bg-brain">1,000만원</td><td class="ins-col bg-brain">-</td><td class="ins-col bg-brain">-</td><td class="ins-col bg-brain">-</td><td class="ins-col bg-brain">-</td><td class="ins-col bg-brain">-</td><td class="ins-col bg-brain">-</td><td class="ins-col bg-brain">-</td></tr><tr class="row-3jin"><td class="sub-cell bg-brain">뇌혈관질환치료비</td><td class="total-cell bg-brain empty">-</td><td class="ins-col bg-brain">-</td><td class="ins-col bg-brain">-</td><td class="ins-col bg-brain">-</td><td class="ins-col bg-brain">-</td><td class="ins-col bg-brain">-</td><td class="ins-col bg-brain">-</td><td class="ins-col bg-brain">-</td><td class="ins-col bg-brain">-</td><td class="ins-col bg-brain">-</td><td class="ins-col bg-brain">-</td><td class="ins-col bg-brain">-</td></tr><tr class="row-3jin"><td class="sub-cell bg-heart">허혈성심장진단</td><td class="total-cell bg-heart amt-blue">2,000 만원</td><td class="ins-col bg-heart">-</td><td class="ins-col bg-heart">-</td><td class="ins-col bg-heart">1,000만원</td><td class="ins-col bg-heart">1,000만원</td><td class="ins-col bg-heart">-</td><td class="ins-col bg-heart">-</td><td class="ins-col bg-heart">-</td><td class="ins-col bg-heart">-</td><td class="ins-col bg-heart">-</td><td class="ins-col bg-heart">-</td><td class="ins-col bg-heart">-</td></tr><tr class="row-3jin row-3jin-bot"><td class="sub-cell bg-heart">심장질환치료비</td><td class="total-cell bg-heart empty">-</td><td class="ins-col bg-heart">-</td><td class="ins-col bg-heart">-</td><td class="ins-col bg-heart">-</td><td class="ins-col bg-heart">-</td><td class="ins-col bg-heart">-</td><td class="ins-col bg-heart">-</td><td class="ins-col bg-heart">-</td><td class="ins-col bg-heart">-</td><td class="ins-col bg-heart">-</td><td class="ins-col bg-heart">-</td><td class="ins-col bg-heart">-</td></tr><tr class="spacer-row"><td colspan="14" style="height:6px;border:0;background:transparent;padding:0;"></td></tr><tr class="row-surg-box row-surg-top"><th class="cat-cell bg-surg" rowspan="5">수술비</th><td class="sub-cell bg-surg">질병수술</td><td class="total-cell bg-surg amt-blue total-bold">1,170 만원</td><td class="ins-col bg-surg">-</td><td class="ins-col bg-surg">-</td><td class="ins-col bg-surg">1,000만원</td><td class="ins-col bg-surg">-</td><td class="ins-col bg-surg">-</td><td class="ins-col bg-surg">120만원</td><td class="ins-col bg-surg">50만원</td><td class="ins-col bg-surg">-</td><td class="ins-col bg-surg">-</td><td class="ins-col bg-surg">-</td><td class="ins-col bg-surg">-</td></tr><tr class="row-surg-box"><td class="sub-cell bg-surg">상해수술</td><td class="total-cell bg-surg amt-blue total-bold">1,170 만원</td><td class="ins-col bg-surg">-</td><td class="ins-col bg-surg">-</td><td class="ins-col bg-surg">1,000만원</td><td class="ins-col bg-surg">-</td><td class="ins-col bg-surg">50만원</td><td class="ins-col bg-surg">120만원</td><td class="ins-col bg-surg">-</td><td class="ins-col bg-surg">-</td><td class="ins-col bg-surg">-</td><td class="ins-col bg-surg">-</td><td class="ins-col bg-surg">-</td></tr><tr class="row-surg-box"><td class="sub-cell bg-surg">암수술</td><td class="total-cell bg-surg amt-blue total-bold">400 만원</td><td class="ins-col bg-surg">-</td><td class="ins-col bg-surg">-</td><td class="ins-col bg-surg">-</td><td class="ins-col bg-surg">-</td><td class="ins-col bg-surg">-</td><td class="ins-col bg-surg">400만원</td><td class="ins-col bg-surg">-</td><td class="ins-col bg-surg">-</td><td class="ins-col bg-surg">-</td><td class="ins-col bg-surg">-</td><td class="ins-col bg-surg">-</td></tr><tr class="row-surg-box"><td class="sub-cell bg-surg">뇌혈관질환수술</td><td class="total-cell bg-surg empty">-</td><td class="ins-col bg-surg">-</td><td class="ins-col bg-surg">-</td><td class="ins-col bg-surg">-</td><td class="ins-col bg-surg">-</td><td class="ins-col bg-surg">-</td><td class="ins-col bg-surg">-</td><td class="ins-col bg-surg">-</td><td class="ins-col bg-surg">-</td><td class="ins-col bg-surg">-</td><td class="ins-col bg-surg">-</td><td class="ins-col bg-surg">-</td></tr><tr class="row-surg-box row-surg-bot"><td class="sub-cell bg-surg">허혈성심장질환수술</td><td class="total-cell bg-surg empty">-</td><td class="ins-col bg-surg">-</td><td class="ins-col bg-surg">-</td><td class="ins-col bg-surg">-</td><td class="ins-col bg-surg">-</td><td class="ins-col bg-surg">-</td><td class="ins-col bg-surg">-</td><td class="ins-col bg-surg">-</td><td class="ins-col bg-surg">-</td><td class="ins-col bg-surg">-</td><td class="ins-col bg-surg">-</td><td class="ins-col bg-surg">-</td></tr><tr class="warning-spacer"><td colspan="14"></td></tr><tr class="warning-row"><td colspan="14">매우 비효율적인 보장항목 = 받는 보험금보다 내는 보험료가 몇 배 많은 비효율 보장</td></tr><tr class=""><th class="cat-cell bg-grey" rowspan="2">입원일당</th><td class="sub-cell bg-grey">질병입원</td><td class="total-cell bg-grey amt-blue">5 만원</td><td class="ins-col bg-grey">-</td><td class="ins-col bg-grey">-</td><td class="ins-col bg-grey">-</td><td class="ins-col bg-grey">-</td><td class="ins-col bg-grey">-</td><td class="ins-col bg-grey">3만원</td><td class="ins-col bg-grey">2만원</td><td class="ins-col bg-grey">-</td><td class="ins-col bg-grey">-</td><td class="ins-col bg-grey">-</td><td class="ins-col bg-grey">-</td></tr><tr class=""><td class="sub-cell bg-grey">상해입원</td><td class="total-cell bg-grey amt-blue total-bold">4 만원</td><td class="ins-col bg-grey">-</td><td class="ins-col bg-grey">-</td><td class="ins-col bg-grey">-</td><td class="ins-col bg-grey">-</td><td class="ins-col bg-grey">-</td><td class="ins-col bg-grey">2만원</td><td class="ins-col bg-grey">2만원</td><td class="ins-col bg-grey">-</td><td class="ins-col bg-grey">-</td><td class="ins-col bg-grey">-</td><td class="ins-col bg-grey">-</td></tr><tr class=""><th class="cat-cell bg-grey" rowspan="3">사망보장</th><td class="sub-cell bg-grey">일반사망</td><td class="total-cell bg-grey empty">-</td><td class="ins-col bg-grey">-</td><td class="ins-col bg-grey">-</td><td class="ins-col bg-grey">-</td><td class="ins-col bg-grey">-</td><td class="ins-col bg-grey">-</td><td class="ins-col bg-grey">-</td><td class="ins-col bg-grey">-</td><td class="ins-col bg-grey">-</td><td class="ins-col bg-grey">-</td><td class="ins-col bg-grey">-</td><td class="ins-col bg-grey">-</td></tr><tr class=""><td class="sub-cell bg-grey">질병사망</td><td class="total-cell bg-grey amt-blue">7,000 만원</td><td class="ins-col bg-grey">-</td><td class="ins-col bg-grey">2,000만원</td><td class="ins-col bg-grey">-</td><td class="ins-col bg-grey">-</td><td class="ins-col bg-grey">-</td><td class="ins-col bg-grey">5,000만원</td><td class="ins-col bg-grey">-</td><td class="ins-col bg-grey">-</td><td class="ins-col bg-grey">-</td><td class="ins-col bg-grey">-</td><td class="ins-col bg-grey">-</td></tr><tr class=""><td class="sub-cell bg-grey">상해사망</td><td class="total-cell bg-grey amt-blue total-bold">14,100 만원</td><td class="ins-col bg-grey">-</td><td class="ins-col bg-grey">2,000만원</td><td class="ins-col bg-grey">100만원</td><td class="ins-col bg-grey">-</td><td class="ins-col bg-grey">-</td><td class="ins-col bg-grey">10,000만원</td><td class="ins-col bg-grey">-</td><td class="ins-col bg-grey">-</td><td class="ins-col bg-grey">2,000만원</td><td class="ins-col bg-grey">-</td><td class="ins-col bg-grey">-</td></tr><tr class=""><th class="cat-cell bg-grey" rowspan="4">후유장해</th><td class="sub-cell bg-grey">질병 50%이상 후유장해</td><td class="total-cell bg-grey empty">-</td><td class="ins-col bg-grey">-</td><td class="ins-col bg-grey">-</td><td class="ins-col bg-grey">-</td><td class="ins-col bg-grey">-</td><td class="ins-col bg-grey">-</td><td class="ins-col bg-grey">-</td><td class="ins-col bg-grey">-</td><td class="ins-col bg-grey">-</td><td class="ins-col bg-grey">-</td><td class="ins-col bg-grey">-</td><td class="ins-col bg-grey">-</td></tr><tr class=""><td class="sub-cell bg-grey">상해 50%이상 후유장해</td><td class="total-cell bg-grey amt-blue">100 만원</td><td class="ins-col bg-grey">-</td><td class="ins-col bg-grey">-</td><td class="ins-col bg-grey">100만원</td><td class="ins-col bg-grey">-</td><td class="ins-col bg-grey">-</td><td class="ins-col bg-grey">-</td><td class="ins-col bg-grey">-</td><td class="ins-col bg-grey">-</td><td class="ins-col bg-grey">-</td><td class="ins-col bg-grey">-</td><td class="ins-col bg-grey">-</td></tr><tr class=""><td class="sub-cell bg-grey">질병 3%이상 후유장해</td><td class="total-cell bg-grey empty">-</td><td class="ins-col bg-grey">-</td><td class="ins-col bg-grey">-</td><td class="ins-col bg-grey">-</td><td class="ins-col bg-grey">-</td><td class="ins-col bg-grey">-</td><td class="ins-col bg-grey">-</td><td class="ins-col bg-grey">-</td><td class="ins-col bg-grey">-</td><td class="ins-col bg-grey">-</td><td class="ins-col bg-grey">-</td><td class="ins-col bg-grey">-</td></tr><tr class=""><td class="sub-cell bg-grey">상해 3%이상 후유장해</td><td class="total-cell bg-grey amt-blue">15,000 만원</td><td class="ins-col bg-grey">-</td><td class="ins-col bg-grey">-</td><td class="ins-col bg-grey">-</td><td class="ins-col bg-grey">-</td><td class="ins-col bg-grey">5,000만원</td><td class="ins-col bg-grey">5,000만원</td><td class="ins-col bg-grey">-</td><td class="ins-col bg-grey">-</td><td class="ins-col bg-grey">5,000만원</td><td class="ins-col bg-grey">-</td><td class="ins-col bg-grey">-</td></tr><tr class=""><th class="cat-cell " rowspan="2">골절화상</th><td class="sub-cell ">골절진단</td><td class="total-cell  amt-blue total-bold">1,050 만원</td><td class="ins-col ">-</td><td class="ins-col ">-</td><td class="ins-col ">20만원</td><td class="ins-col ">-</td><td class="ins-col ">1,000만원</td><td class="ins-col ">30만원</td><td class="ins-col ">-</td><td class="ins-col ">-</td><td class="ins-col ">-</td><td class="ins-col ">-</td><td class="ins-col ">-</td></tr><tr class=""><td class="sub-cell ">화상진단</td><td class="total-cell  amt-blue total-bold">40 만원</td><td class="ins-col ">-</td><td class="ins-col ">-</td><td class="ins-col ">20만원</td><td class="ins-col ">-</td><td class="ins-col ">20만원</td><td class="ins-col ">-</td><td class="ins-col ">-</td><td class="ins-col ">-</td><td class="ins-col ">-</td><td class="ins-col ">-</td><td class="ins-col ">-</td></tr><tr class=""><th class="cat-cell " rowspan="2">배상책임</th><td class="sub-cell ">가족생활배상책임담보</td><td class="total-cell  amt-blue total-bold">10,000 만원</td><td class="ins-col ">-</td><td class="ins-col ">-</td><td class="ins-col ">10,000만원</td><td class="ins-col ">-</td><td class="ins-col ">-</td><td class="ins-col ">-</td><td class="ins-col ">-</td><td class="ins-col ">-</td><td class="ins-col ">-</td><td class="ins-col ">-</td><td class="ins-col ">-</td></tr><tr class=""><td class="sub-cell ">일상생활배상책임담보</td><td class="total-cell  empty">-</td><td class="ins-col ">-</td><td class="ins-col ">-</td><td class="ins-col ">-</td><td class="ins-col ">-</td><td class="ins-col ">-</td><td class="ins-col ">-</td><td class="ins-col ">-</td><td class="ins-col ">-</td><td class="ins-col ">-</td><td class="ins-col ">-</td><td class="ins-col ">-</td></tr><tr class="cat-info-row"><td colspan="14" style="background:#4F46E5;color:#fff;text-align:center;padding:6px 8px;font-weight:700;font-size:11px;border:0;">운전을 할 경우, 운전자보험 준비 필요 (최신기준 운전자보험 필수)</td></tr><tr class=""><th class="cat-cell bg-driver" rowspan="5">운전자</th><td class="sub-cell bg-driver">교통사고처리지원금</td><td class="total-cell bg-driver amt-blue">20,000 만원</td><td class="ins-col bg-driver">-</td><td class="ins-col bg-driver">-</td><td class="ins-col bg-driver">-</td><td class="ins-col bg-driver">-</td><td class="ins-col bg-driver">-</td><td class="ins-col bg-driver">-</td><td class="ins-col bg-driver">-</td><td class="ins-col bg-driver">-</td><td class="ins-col bg-driver">20,000만원</td><td class="ins-col bg-driver">-</td><td class="ins-col bg-driver">-</td></tr><tr class=""><td class="sub-cell bg-driver">벌금(대물)</td><td class="total-cell bg-driver amt-blue">500 만원</td><td class="ins-col bg-driver">-</td><td class="ins-col bg-driver">-</td><td class="ins-col bg-driver">-</td><td class="ins-col bg-driver">-</td><td class="ins-col bg-driver">-</td><td class="ins-col bg-driver">-</td><td class="ins-col bg-driver">-</td><td class="ins-col bg-driver">-</td><td class="ins-col bg-driver">500만원</td><td class="ins-col bg-driver">-</td><td class="ins-col bg-driver">-</td></tr><tr class=""><td class="sub-cell bg-driver">벌금(대인)</td><td class="total-cell bg-driver amt-blue">3,000 만원</td><td class="ins-col bg-driver">-</td><td class="ins-col bg-driver">-</td><td class="ins-col bg-driver">-</td><td class="ins-col bg-driver">-</td><td class="ins-col bg-driver">-</td><td class="ins-col bg-driver">-</td><td class="ins-col bg-driver">-</td><td class="ins-col bg-driver">-</td><td class="ins-col bg-driver">3,000만원</td><td class="ins-col bg-driver">-</td><td class="ins-col bg-driver">-</td></tr><tr class=""><td class="sub-cell bg-driver">변호사선임비용</td><td class="total-cell bg-driver amt-blue">5,000 만원</td><td class="ins-col bg-driver">-</td><td class="ins-col bg-driver">-</td><td class="ins-col bg-driver">-</td><td class="ins-col bg-driver">-</td><td class="ins-col bg-driver">-</td><td class="ins-col bg-driver">-</td><td class="ins-col bg-driver">-</td><td class="ins-col bg-driver">-</td><td class="ins-col bg-driver">5,000만원</td><td class="ins-col bg-driver">-</td><td class="ins-col bg-driver">-</td></tr><tr class=""><td class="sub-cell bg-driver">자동차부상치료비</td><td class="total-cell bg-driver amt-blue total-bold">30 만원</td><td class="ins-col bg-driver">-</td><td class="ins-col bg-driver">-</td><td class="ins-col bg-driver">-</td><td class="ins-col bg-driver">-</td><td class="ins-col bg-driver">-</td><td class="ins-col bg-driver">-</td><td class="ins-col bg-driver">-</td><td class="ins-col bg-driver">-</td><td class="ins-col bg-driver">30만원</td><td class="ins-col bg-driver">-</td><td class="ins-col bg-driver">-</td></tr><tr class="cat-info-row"><td colspan="14" style="background:#EA580C;color:#fff;text-align:center;padding:6px 8px;font-weight:700;font-size:11px;border:0;">주택화재에 대한 위험 대비 검토 필요</td></tr><tr class=""><th class="cat-cell bg-fire" rowspan="4">주택화재보험</th><td class="sub-cell bg-fire">화재벌금</td><td class="total-cell bg-fire amt-blue">2,000 만원</td><td class="ins-col bg-fire">-</td><td class="ins-col bg-fire">-</td><td class="ins-col bg-fire">-</td><td class="ins-col bg-fire">-</td><td class="ins-col bg-fire">-</td><td class="ins-col bg-fire">-</td><td class="ins-col bg-fire">-</td><td class="ins-col bg-fire">-</td><td class="ins-col bg-fire">-</td><td class="ins-col bg-fire">2,000만원</td><td class="ins-col bg-fire">-</td></tr><tr class=""><td class="sub-cell bg-fire">화재폭발배상책임</td><td class="total-cell bg-fire empty">-</td><td class="ins-col bg-fire">-</td><td class="ins-col bg-fire">-</td><td class="ins-col bg-fire">-</td><td class="ins-col bg-fire">-</td><td class="ins-col bg-fire">-</td><td class="ins-col bg-fire">-</td><td class="ins-col bg-fire">-</td><td class="ins-col bg-fire">-</td><td class="ins-col bg-fire">-</td><td class="ins-col bg-fire">-</td><td class="ins-col bg-fire">-</td></tr><tr class=""><td class="sub-cell bg-fire">붕괴·침강</td><td class="total-cell bg-fire empty">-</td><td class="ins-col bg-fire">-</td><td class="ins-col bg-fire">-</td><td class="ins-col bg-fire">-</td><td class="ins-col bg-fire">-</td><td class="ins-col bg-fire">-</td><td class="ins-col bg-fire">-</td><td class="ins-col bg-fire">-</td><td class="ins-col bg-fire">-</td><td class="ins-col bg-fire">-</td><td class="ins-col bg-fire">-</td><td class="ins-col bg-fire">-</td></tr><tr class=""><td class="sub-cell bg-fire">누수(급배수)</td><td class="total-cell bg-fire empty">-</td><td class="ins-col bg-fire">-</td><td class="ins-col bg-fire">-</td><td class="ins-col bg-fire">-</td><td class="ins-col bg-fire">-</td><td class="ins-col bg-fire">-</td><td class="ins-col bg-fire">-</td><td class="ins-col bg-fire">-</td><td class="ins-col bg-fire">-</td><td class="ins-col bg-fire">-</td><td class="ins-col bg-fire">-</td><td class="ins-col bg-fire">-</td></tr><tr class="cat-info-row"><td colspan="14" style="background:#0D9488;color:#fff;text-align:center;padding:6px 8px;font-weight:700;font-size:11px;border:0;">치아 치료계획이 있을 경우 치아보험 준비 필요</td></tr><tr class=""><th class="cat-cell bg-tooth" rowspan="3">치아보장</th><td class="sub-cell bg-tooth">충치치료</td><td class="total-cell bg-tooth empty">-</td><td class="ins-col bg-tooth">-</td><td class="ins-col bg-tooth">-</td><td class="ins-col bg-tooth">-</td><td class="ins-col bg-tooth">-</td><td class="ins-col bg-tooth">-</td><td class="ins-col bg-tooth">-</td><td class="ins-col bg-tooth">-</td><td class="ins-col bg-tooth">-</td><td class="ins-col bg-tooth">-</td><td class="ins-col bg-tooth">-</td><td class="ins-col bg-tooth">-</td></tr><tr class=""><td class="sub-cell bg-tooth">크라운치료</td><td class="total-cell bg-tooth empty">-</td><td class="ins-col bg-tooth">-</td><td class="ins-col bg-tooth">-</td><td class="ins-col bg-tooth">-</td><td class="ins-col bg-tooth">-</td><td class="ins-col bg-tooth">-</td><td class="ins-col bg-tooth">-</td><td class="ins-col bg-tooth">-</td><td class="ins-col bg-tooth">-</td><td class="ins-col bg-tooth">-</td><td class="ins-col bg-tooth">-</td><td class="ins-col bg-tooth">-</td></tr><tr class=""><td class="sub-cell bg-tooth">임플란트</td><td class="total-cell bg-tooth empty">-</td><td class="ins-col bg-tooth">-</td><td class="ins-col bg-tooth">-</td><td class="ins-col bg-tooth">-</td><td class="ins-col bg-tooth">-</td><td class="ins-col bg-tooth">-</td><td class="ins-col bg-tooth">-</td><td class="ins-col bg-tooth">-</td><td class="ins-col bg-tooth">-</td><td class="ins-col bg-tooth">-</td><td class="ins-col bg-tooth">-</td><td class="ins-col bg-tooth">-</td></tr></tbody></table>
+<div class="conclusion-box">
+<h3 class="conc-title">▶ 보장항목 기준 진단결과 -</h3>
+<ol>
+<li>실손의료비 - 기본 보장 미달 - 보강 필요</li>
+<li>3대질병보장(암/뇌혈관/심장질환) - 암(진단,치료) 권장 수준에 부합하는 적정 보장 / 뇌혈관(진단,치료) 기본 보장 미달 - 보강 필요 / 심장(진단,치료) 기본 보장 미달 - 보강 필요</li>
+<li>수술보장 - 필요이상과다가입 - 보험료낭비위험</li>
+</ol>
+</div>
+<div class="important-box">
+<div class="imp-title">⚠ 중요 - 보험은 치료/사고 후에는 효율적으로 가입하기 어렵습니다.</div>
+<div class="imp-body">실손의료비는 5년이내 병원치료이력이 있으면 가입이 불가능하고, 진단비/치료비/수술비 역시 진단후엔 보장범위가 좁아지거나 가입이 거절됩니다. 현재시점이 가장 건강하기때문에 올바른 보험가입에 가장 유리한 시점이며, 시간이 지날수록 가입가능 보장범위가 좁아집니다.</div>
+</div>
+<div class="boost-box">
+<div class="boost-title">▶ 보강방향</div>
+<div class="boost-body">
+1순위 - 핵심의료보장5종 완성 (실손보험,암,뇌혈관,심장,수술비)<br/>
+2순위 - 추가보장 (운전자,치아,상해보장, 일상생활배상책임 등 손해배상 관련)<br/>
+국내 전체보험사(33개보험사)마다 적용되는 보험료 산정기준이 달라, 기준 동일 보장에서 <strong>보험료 편차가 30~40% 이상</strong> 발생되며, 추가상담을 통해 <strong>100% 정확한 안내</strong>를 받으실 수 있습니다.
+</div>
+</div>
+<div class="footer">
+<div class="footer-left">
+<div>등록번호. 20080479060011</div>
+<div>Mail. i2309006@tossinsu-advisor.com</div>
+<div>Mobile. 010-9903-8702</div>
+<div>Fax. 0504-474-4937</div>
+</div>
+<div class="footer-right">
+<div class="name">토스인슈어런스 송영종 어드바이저</div>
+<div class="role">토스인슈어런스 Pro Coach (사내강사)</div>
+</div>
+</div>
+</body></html>
