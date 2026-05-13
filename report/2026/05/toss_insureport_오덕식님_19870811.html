@@ -38,6 +38,8 @@
   --gray-700: #4E5968;
   --gray-800: #333D4B;
   --gray-900: #191F28;
+  --sticky-top-exi: 45px;
+  --sticky-top-cov: 153px;
 }
 
 /* ═══ 스킨 2~5 CSS 오버라이드 (data-skin 속성으로 전환) ═══ */
@@ -200,7 +202,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Apple SD Gothic Ne
 .panel.active{display:block;}
 
 /* PLAN HERO CARD */
-.plan-card{margin:14px 14px 0;background:var(--gray-0);border-radius:18px;border:1.5px solid var(--gray-200);overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,0.06);}
+.plan-card{margin:14px 14px 0;background:var(--gray-0);border-radius:18px;border:1.5px solid var(--gray-200);overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,0.06);scroll-margin-top:var(--sticky-top-cov);}
 .plan-card.rec{border-color:var(--toss-blue);box-shadow:0 0 0 3px rgba(49,130,246,0.1),0 4px 16px rgba(0,0,0,0.08);}
 .plan-card-top{padding:16px 16px 13px;border-bottom:1px solid var(--gray-100);}
 .rec-badge{display:inline-flex;align-items:center;gap:4px;background:var(--toss-blue);color:white;font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;margin-bottom:7px;letter-spacing:0.02em;}
@@ -1009,6 +1011,79 @@ body{scroll-behavior:smooth;}
 .card-modal-img{width:100%;border-radius:8px;display:block;}
 .card-modal-close{position:absolute;top:-10px;right:-10px;background:var(--gray-700);border:none;color:white;font-size:14px;width:26px;height:26px;border-radius:50%;cursor:pointer;font-weight:700;line-height:1;}
 .verify-loading-cancel:active{background:var(--gray-100);}
+
+/* ──── [기존보험현황] v2 (격리 CSS) ──── */
+#existing-insurance-section { max-width: 920px; margin: 28px auto 0; padding: 0 18px; box-sizing: border-box; font-family: 'Nanum Gothic', sans-serif; }
+.exi-title-row { display: flex; align-items: center; justify-content: space-between; padding: 6px 18px 14px; margin: 0 -18px 12px; gap: 12px; flex-wrap: wrap; position: sticky; top: var(--sticky-top-exi); z-index: 100; background: var(--gray-50); }
+.exi-title { font-size: 22px; font-weight: 900; color: #E04848; background: #FFF9C4; padding: 4px 10px; border-radius: 4px; letter-spacing: -0.3px; display: inline-block; }
+.collapse-all-btn { background: none; border: 1px solid var(--gray-300); color: var(--gray-600); font-size: 11.5px; padding: 5px 10px; border-radius: 14px; cursor: pointer; font-family: 'Nanum Gothic', sans-serif; transition: all 0.15s; flex-shrink: 0; line-height: 1.2; }
+.collapse-all-btn:hover { background: var(--gray-50); color: var(--gray-800); border-color: var(--gray-400); }
+.grp-block { margin-bottom: 26px; }
+.grp-title { font-size: 14px; font-weight: 700; color: var(--gray-700); margin: 0 0 8px 2px; padding: 8px 12px; background: var(--gray-50); border-left: 3px solid var(--toss-blue); border-radius: 0 6px 6px 0; }
+.ins-row { border: 1px solid var(--gray-200); border-radius: 8px; margin-bottom: 8px; overflow: hidden; background: #fff; }
+.ins-head { display: flex; justify-content: space-between; align-items: center; padding: 13px 14px; cursor: pointer; user-select: none; background: var(--gray-0); transition: background 0.15s; gap: 10px; }
+.ins-head:hover { background: var(--gray-50); }
+.ins-label { font-size: 13.5px; font-weight: 700; color: var(--gray-900); line-height: 1.4; flex: 1; min-width: 0; max-width: 283px; white-space: nowrap; overflow: hidden; text-overflow: clip; overflow-wrap: normal; word-break: keep-all; }
+.ins-price-wrap { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.ins-price { font-size: 13px; font-weight: 700; color: var(--toss-blue); }
+.ins-caret { font-size: 10px; color: var(--gray-500); transition: transform 0.2s ease; display: inline-block; }
+.ins-row.open .ins-caret { transform: rotate(180deg); }
+.ins-body { display: none; padding: 4px 12px 12px; border-top: 1px solid var(--gray-100); background: #fafbfc; }
+.ins-row.open .ins-body { display: block; }
+.cov-empty { padding: 16px 8px; text-align: center; color: var(--gray-500); font-size: 12px; }
+.cat-block { margin: 10px 0; padding: 8px 10px; border-radius: 6px; border: 1px solid; }
+.cat-block .cat-title { font-size: 12px; font-weight: 800; padding: 4px 6px; margin-bottom: 6px; border-radius: 4px; display: inline-block; }
+.cat-silson       { border-color: #E1D9F0; background: #FCFAFE; }
+.cat-silson .cat-title       { color: #7C3AED; background: #F0E7FF; }
+.cat-cancer       { border-color: #FFD9D9; background: #FFFAFA; }
+.cat-cancer .cat-title       { color: #E04848; background: #FFEAEA; }
+.cat-brain        { border-color: #D9E5FF; background: #FAFCFF; }
+.cat-brain .cat-title        { color: #2563EB; background: #E8EFFF; }
+.cat-heart        { border-color: #FFE0D9; background: #FFFCFA; }
+.cat-heart .cat-title        { color: #DC4F2C; background: #FFE9E0; }
+.cat-surgery      { border-color: #D9F0E5; background: #FAFEFC; }
+.cat-surgery .cat-title      { color: #1B9968; background: #E1F5EC; }
+.cat-injury       { border-color: #FFE8D0; background: #FFFDFA; }
+.cat-injury .cat-title       { color: #C97A1E; background: #FFEFD9; }
+.cat-nonefficient { border-color: #E0E0E0; background: #FAFAFA; }
+.cat-nonefficient .cat-title { color: #6B7280; background: #EEEEEE; }
+/* 폰트 축소 + 1줄 자르기 (말줄임표 ❌) */
+.cov-row { display: flex; justify-content: space-between; align-items: center; padding: 5px 8px; font-size: 11.5px; line-height: 1.55; border-bottom: 1px dashed #E5E7EB; gap: 24px; }
+.cov-row:last-child { border-bottom: none; }
+.cov-name { flex: 1; min-width: 0; max-width: 301px; color: var(--gray-800); font-weight: 400; white-space: nowrap; overflow: hidden; text-overflow: clip; overflow-wrap: normal; word-break: keep-all; }
+.cov-amt  { font-weight: 700; color: var(--gray-900); white-space: nowrap; flex-shrink: 0; font-size: 11.5px; }
+.cov-row.cov-hl { background: #FFF9C4; border-radius: 3px; padding: 5px 8px; border-bottom-color: transparent; }
+.cov-row.cov-hl .cov-name { font-weight: 400; }
+/* ▼ 화살표 — 높이 1.5배·너비 7배 */
+.exi-arrow { max-width: 920px; margin: 30px auto; padding: 0 18px; box-sizing: border-box; }
+.exi-arrow::before { content: ''; display: block; height: 1px; background: var(--gray-200); }
+.exi-newtitle-wrap { max-width: 920px; margin: 30px auto 16px; padding: 6px 18px 14px; box-sizing: border-box; display: flex; align-items: center; justify-content: flex-start; gap: 12px; flex-wrap: wrap; }
+.exi-newtitle { font-family: 'Nanum Gothic', sans-serif; font-size: 22px; font-weight: 900; color: #E04848; background: #FFF9C4; padding: 4px 10px; border-radius: 4px; display: inline-block; letter-spacing: -0.3px; }
+/* 본 본 본 본 본 본 본 본 본 본 본 본 본 본 본 본 본 — v2 잔존 룰 삭제 */
+@media (max-width: 480px) {
+  .exi-title, .exi-newtitle { font-size: 18px; }
+  .ins-label { font-size: 12.5px; }
+  .ins-price { font-size: 12px; }
+  .cov-row { font-size: 11px; }
+  .cov-amt { font-size: 11px; }
+  .cat-block .cat-title { font-size: 11px; }
+  .collapse-all-btn { font-size: 11px; padding: 4px 8px; }
+  .exi-arrow::before { font-size: 26px; }
+}
+
+
+/* 본 본 본 본 본 본 본 본 — 본 본 cov-card 본 본 본 본 본 본 본 본 본 본 */
+.cov-list-toolbar { max-width: 920px; margin: 0 auto 8px; padding: 0 18px; display: flex; justify-content: flex-end; box-sizing: border-box; }
+.cov-list-toolbar .collapse-all-btn { font-family: 'Nanum Gothic', sans-serif; }
+
+
+/* ▼ 글자 → 옅은 1px 구분선 */
+.exi-divider { max-width: 920px; margin: 30px auto; padding: 0 18px; border: none; border-top: 1px solid var(--gray-200); box-sizing: content-box; }
+/* 보장항목별상세 타이틀 + 버튼 같은 행 배치 */
+.cov-title-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin: 0 -14px 8px; position: sticky; top: var(--sticky-top-cov); z-index: 99; background: var(--gray-50); padding: 6px 14px; }
+.cov-title-row .cov-title { margin-bottom: 0; }
+.cov-title-row .collapse-all-btn { font-family: 'Nanum Gothic', sans-serif; }
+
 </style>
 
 <!-- EmailJS SDK — 동적·조건부 로드 (외부 차단 환경에서도 화면 정상 표시) -->
@@ -1124,6 +1199,212 @@ function smoothScrollToTop() {
   </div>
 </div>
 
+
+<!-- ──────────── [기존보험현황] v2 ──────────── -->
+<section id="existing-insurance-section">
+  <div class="exi-title-row">
+    <div class="exi-title">[기존보험현황]</div>
+    <button class="collapse-all-btn" type="button" data-collapse-target="#existing-insurance-section">펼친내용모두접기</button>
+  </div>
+<div class="grp-block">
+  <div class="grp-title">본인 오덕식님 보험 : 총 7건 (월납 4건, 총보험료 183,492원)</div>
+  <div class="ins-row" data-ins-row>
+    <div class="ins-head" data-ins-toggle>
+      <div class="ins-label">[삼성생명] 실손의료비보장1.0無갱신형_종합_선택</div>
+      <div class="ins-price-wrap"><span class="ins-price">37,860원 (월납)</span><span class="ins-caret">▼</span></div>
+    </div>
+    <div class="ins-body">
+    <div class="cat-block cat-silson">
+      <div class="cat-title">실손의료비보장</div>
+      <div class="cov-row cov-hl"><span class="cov-name">상해및질병-입원의료비/실손의료비보장1.0無갱신형_종합_선택</span><span class="cov-amt">5,000 만원</span></div>
+      <div class="cov-row cov-hl"><span class="cov-name">상해및질병-외래의료비/실손의료비보장1.0無갱신형_종합_선택</span><span class="cov-amt">5,000 만원</span></div>
+      <div class="cov-row "><span class="cov-name">상해및질병-처방조제료/실손의료비보장1.0無갱신형_종합_선택</span><span class="cov-amt">5,000 만원</span></div>
+      <div class="cov-row cov-hl"><span class="cov-name">상해및질병-입원의료비/실손의료비보장1.0無갱신형_종합_선택</span><span class="cov-amt">5,000 만원</span></div>
+      <div class="cov-row cov-hl"><span class="cov-name">상해및질병-외래의료비/실손의료비보장1.0無갱신형_종합_선택</span><span class="cov-amt">5,000 만원</span></div>
+      <div class="cov-row "><span class="cov-name">상해및질병-처방조제료/실손의료비보장1.0無갱신형_종합_선택</span><span class="cov-amt">5,000 만원</span></div>
+    </div>
+    </div>
+  </div>
+  <div class="ins-row" data-ins-row>
+    <div class="ins-head" data-ins-toggle>
+      <div class="ins-label">[농협손해보험] (무) NH가성비굿건강보험[5종:납입면제형/해약환급금미지급형Ⅱ]2304</div>
+      <div class="ins-price-wrap"><span class="ins-price">90,443원 (월납)</span><span class="ins-caret">▼</span></div>
+    </div>
+    <div class="ins-body">
+    <div class="cat-block cat-cancer">
+      <div class="cat-title">암관련보장</div>
+      <div class="cov-row cov-hl"><span class="cov-name">암진단/암진단비(유사암제외)</span><span class="cov-amt">3,000 만원</span></div>
+      <div class="cov-row "><span class="cov-name">소액암진단/유사암진단비</span><span class="cov-amt">600 만원</span></div>
+      <div class="cov-row "><span class="cov-name">기타_인보험_정액담보/보험료납입지원(유사암진단)</span><span class="cov-amt">4 만원</span></div>
+    </div>
+    <div class="cat-block cat-brain">
+      <div class="cat-title">뇌혈관관련</div>
+      <div class="cov-row cov-hl"><span class="cov-name">뇌혈관질환진단/뇌혈관질환진단비</span><span class="cov-amt">2,000 만원</span></div>
+    </div>
+    <div class="cat-block cat-heart">
+      <div class="cat-title">심장관련</div>
+      <div class="cov-row cov-hl"><span class="cov-name">허혈성심장질환진단/허혈성심장질환진단비</span><span class="cov-amt">2,000 만원</span></div>
+      <div class="cov-row "><span class="cov-name">특정질병진단/심혈관특정질환Ⅰ진단비</span><span class="cov-amt">500 만원</span></div>
+      <div class="cov-row "><span class="cov-name">특정질병진단/심혈관특정질환Ⅰ(기타심장부정맥제외)진단비</span><span class="cov-amt">500 만원</span></div>
+    </div>
+    <div class="cat-block cat-surgery">
+      <div class="cat-title">수술관련</div>
+      <div class="cov-row cov-hl"><span class="cov-name">질병종수술/질병수술비(1~5종)Ⅱ</span><span class="cov-amt">450 만원</span></div>
+      <div class="cov-row cov-hl"><span class="cov-name">상해수술/일반상해수술비</span><span class="cov-amt">50 만원</span></div>
+      <div class="cov-row cov-hl"><span class="cov-name">상해종수술/일반상해수술비(1~5종)</span><span class="cov-amt">450 만원</span></div>
+    </div>
+    <div class="cat-block cat-injury">
+      <div class="cat-title">상해/기타보장</div>
+      <div class="cov-row cov-hl"><span class="cov-name">상해사망/일반상해사망</span><span class="cov-amt">3,000 만원</span></div>
+    </div>
+    <div class="cat-block cat-nonefficient">
+      <div class="cat-title">보험료 효율이 높지 않은 보장</div>
+      <div class="cov-row "><span class="cov-name">질병80퍼센트이상후유장해/질병후유장해(80%이상)</span><span class="cov-amt">3,000 만원</span></div>
+      <div class="cov-row "><span class="cov-name">질병후유장해/질병후유장해(80%미만)</span><span class="cov-amt">3,000 만원</span></div>
+      <div class="cov-row "><span class="cov-name">상해80퍼센이상후유장해/기본계약(일반상해후유장해(80%이상))</span><span class="cov-amt">5,000 만원</span></div>
+      <div class="cov-row "><span class="cov-name">상해후유장해/기본계약(일반상해후유장해(80%미만))</span><span class="cov-amt">5,000 만원</span></div>
+      <div class="cov-row "><span class="cov-name">특정질병진단/보험료납입면제대상</span><span class="cov-amt">10 만원</span></div>
+    </div>
+    </div>
+  </div>
+  <div class="ins-row" data-ins-row>
+    <div class="ins-head" data-ins-toggle>
+      <div class="ins-label">[DB손해보험] 착하고간편한건강보험1901</div>
+      <div class="ins-price-wrap"><span class="ins-price">54,920원 (월납)</span><span class="ins-caret">▼</span></div>
+    </div>
+    <div class="ins-body">
+    <div class="cat-block cat-cancer">
+      <div class="cat-title">암관련보장</div>
+      <div class="cov-row cov-hl"><span class="cov-name">암진단/암진단비Ⅱ(유사암제외)</span><span class="cov-amt">2,000 만원</span></div>
+      <div class="cov-row "><span class="cov-name">소액암진단/유사암진단비Ⅱ</span><span class="cov-amt">1,000 만원</span></div>
+      <div class="cov-row cov-hl"><span class="cov-name">암수술/암수술비Ⅱ</span><span class="cov-amt">200 만원</span></div>
+      <div class="cov-row "><span class="cov-name">암수술/암수술비Ⅰ(상피내암,경계성종양,기타피부암,갑상샘암구분0.1)</span><span class="cov-amt">200 만원</span></div>
+      <div class="cov-row "><span class="cov-name">특정암진단/11대특정암진단비</span><span class="cov-amt">1,000 만원</span></div>
+      <div class="cov-row "><span class="cov-name">특정암진단/남성생식기관련(전립선,음경,고환)암진단비</span><span class="cov-amt">1,000 만원</span></div>
+      <div class="cov-row "><span class="cov-name">항암방사선약물치료비/항암방사선약물치료비(기타피부암,갑상샘암 구분0.1)</span><span class="cov-amt">500 만원</span></div>
+    </div>
+    <div class="cat-block cat-brain">
+      <div class="cat-title">뇌혈관관련</div>
+      <div class="cov-row "><span class="cov-name">뇌졸중진단/뇌졸중진단비(비흡연체)</span><span class="cov-amt">1,000 만원</span></div>
+      <div class="cov-row "><span class="cov-name">뇌출혈진단/뇌출혈진단비(비흡연체)</span><span class="cov-amt">1,000 만원</span></div>
+      <div class="cov-row "><span class="cov-name">뇌혈관질환수술/뇌혈관질환수술비</span><span class="cov-amt">1,000 만원</span></div>
+      <div class="cov-row "><span class="cov-name">특정질병진단/양성뇌종양진단비</span><span class="cov-amt">500 만원</span></div>
+    </div>
+    <div class="cat-block cat-heart">
+      <div class="cat-title">심장관련</div>
+      <div class="cov-row "><span class="cov-name">급성심근경색진단/급성심근경색증진단비(비흡연체)</span><span class="cov-amt">1,000 만원</span></div>
+      <div class="cov-row "><span class="cov-name">허혈성심장질환수술/허혈성심질환수술비</span><span class="cov-amt">1,000 만원</span></div>
+    </div>
+    <div class="cat-block cat-surgery">
+      <div class="cat-title">수술관련</div>
+      <div class="cov-row cov-hl"><span class="cov-name">질병수술/질병수술비</span><span class="cov-amt">30 만원</span></div>
+      <div class="cov-row cov-hl"><span class="cov-name">질병종수술/질병1~5종수술비(동일질병당 1회지급)</span><span class="cov-amt">150 만원</span></div>
+      <div class="cov-row "><span class="cov-name">특정질병수술/40대질병수술비</span><span class="cov-amt">300 만원</span></div>
+      <div class="cov-row "><span class="cov-name">특정상해수술/중대상해수술비(뇌,내장손상)</span><span class="cov-amt">1,000 만원</span></div>
+    </div>
+    <div class="cat-block cat-injury">
+      <div class="cat-title">상해/기타보장</div>
+      <div class="cov-row cov-hl"><span class="cov-name">상해사망/상해사망,80%이상후유장해(보통약관)</span><span class="cov-amt">100 만원</span></div>
+      <div class="cov-row "><span class="cov-name">상해80퍼센이상후유장해/상해사망,80%이상후유장해(보통약관)</span><span class="cov-amt">100 만원</span></div>
+      <div class="cov-row cov-hl"><span class="cov-name">골절진단/골절진단비(치아제외)</span><span class="cov-amt">20 만원</span></div>
+      <div class="cov-row cov-hl"><span class="cov-name">골절진단/골절진단비(치아포함)</span><span class="cov-amt">30 만원</span></div>
+      <div class="cov-row "><span class="cov-name">중대골절진단/5대골절진단비</span><span class="cov-amt">100 만원</span></div>
+      <div class="cov-row "><span class="cov-name">깁스치료/깁스치료비</span><span class="cov-amt">30 만원</span></div>
+    </div>
+    <div class="cat-block cat-nonefficient">
+      <div class="cat-title">보험료 효율이 높지 않은 보장</div>
+      <div class="cov-row "><span class="cov-name">질병입원일당/질병입원일당(1일이상)</span><span class="cov-amt">2 만원</span></div>
+      <div class="cov-row "><span class="cov-name">질병중환자실입원일당/질병중환자실입원일당(1일이상)</span><span class="cov-amt">10 만원</span></div>
+      <div class="cov-row "><span class="cov-name">질병80퍼센트이상후유장해/질병80%이상후유장해(비흡연체)</span><span class="cov-amt">100 만원</span></div>
+      <div class="cov-row "><span class="cov-name">상해80퍼센이상후유장해/상해80%이상후유장해</span><span class="cov-amt">100 만원</span></div>
+      <div class="cov-row cov-hl"><span class="cov-name">기타_가족생활배상책임/가족일상생활배상책임(실손)</span><span class="cov-amt">10,000 만원</span></div>
+      <div class="cov-row "><span class="cov-name">특정상해후유장해/상해후유장해(20-100%)</span><span class="cov-amt">100 만원</span></div>
+    </div>
+    </div>
+  </div>
+  <div class="ins-row" data-ins-row>
+    <div class="ins-head" data-ins-toggle>
+      <div class="ins-label">[메트라이프생명] 무배당 백만인을 위한 달러종신보험(저해지환급금형)</div>
+      <div class="ins-price-wrap"><span class="ins-price">269원 (월납)</span><span class="ins-caret">▼</span></div>
+    </div>
+    <div class="ins-body">
+    <div class="cat-block cat-injury">
+      <div class="cat-title">상해/기타보장</div>
+      <div class="cov-row cov-hl"><span class="cov-name">상해사망/일반사망</span><span class="cov-amt">3,800 만원</span></div>
+    </div>
+    <div class="cat-block cat-nonefficient">
+      <div class="cat-title">보험료 효율이 높지 않은 보장</div>
+      <div class="cov-row "><span class="cov-name">질병사망/일반사망</span><span class="cov-amt">3,800 만원</span></div>
+    </div>
+    </div>
+  </div>
+  <div class="ins-row" data-ins-row>
+    <div class="ins-head" data-ins-toggle>
+      <div class="ins-label">[현대해상화재보험] Hicar 개인용(CM)</div>
+      <div class="ins-price-wrap"><span class="ins-price">582,250원 (일시납)</span><span class="ins-caret">▼</span></div>
+    </div>
+    <div class="ins-body">
+    <div class="cat-block cat-nonefficient">
+      <div class="cat-title">보험료 효율이 높지 않은 보장</div>
+      <div class="cov-row "><span class="cov-name">Hicar 개인용(CM)</span><span class="cov-amt">-</span></div>
+    </div>
+    </div>
+  </div>
+  <div class="ins-row" data-ins-row>
+    <div class="ins-head" data-ins-toggle>
+      <div class="ins-label">[현대해상화재보험] Hicar 개인용(CM)</div>
+      <div class="ins-price-wrap"><span class="ins-price">1,074,230원 (일시납)</span><span class="ins-caret">▼</span></div>
+    </div>
+    <div class="ins-body">
+    <div class="cat-block cat-nonefficient">
+      <div class="cat-title">보험료 효율이 높지 않은 보장</div>
+      <div class="cov-row "><span class="cov-name">Hicar 개인용(CM)</span><span class="cov-amt">-</span></div>
+    </div>
+    </div>
+  </div>
+  <div class="ins-row" data-ins-row>
+    <div class="ins-head" data-ins-toggle>
+      <div class="ins-label">[현대해상화재보험] Hicar 업무용(CM)</div>
+      <div class="ins-price-wrap"><span class="ins-price">319,790원 (일시납)</span><span class="ins-caret">▼</span></div>
+    </div>
+    <div class="ins-body">
+    <div class="cat-block cat-nonefficient">
+      <div class="cat-title">보험료 효율이 높지 않은 보장</div>
+      <div class="cov-row "><span class="cov-name">Hicar 업무용(CM)</span><span class="cov-amt">-</span></div>
+    </div>
+    </div>
+  </div>
+</div>
+<div class="grp-block">
+  <div class="grp-title">가족 김*란님 보험 : 총 1건 (월납 1건, 총보험료 126,328원)</div>
+  <div class="ins-row" data-ins-row>
+    <div class="ins-head" data-ins-toggle>
+      <div class="ins-label">[KB손해보험] (무)KB손보실손의료비보장보험(20.04)</div>
+      <div class="ins-price-wrap"><span class="ins-price">126,328원 (월납)</span><span class="ins-caret">▼</span></div>
+    </div>
+    <div class="ins-body">
+    <div class="cat-block cat-silson">
+      <div class="cat-title">실손의료비보장</div>
+      <div class="cov-row cov-hl"><span class="cov-name">(선택형Ⅱ:급여90%,비급여80%)상해입원형실손의료비(기본형)(갱신형)</span><span class="cov-amt">5,000 만원</span></div>
+      <div class="cov-row cov-hl"><span class="cov-name">(선택형Ⅱ)상해통원형(외래)실손의료비(기본형)(갱신형)</span><span class="cov-amt">25 만원</span></div>
+      <div class="cov-row "><span class="cov-name">(선택형Ⅱ)상해통원형(약제)실손의료비(기본형)(갱신형)</span><span class="cov-amt">5 만원</span></div>
+      <div class="cov-row cov-hl"><span class="cov-name">(선택형Ⅱ:급여90%,비급여80%)질병입원형실손의료비(기본형)(갱신형)</span><span class="cov-amt">5,000 만원</span></div>
+      <div class="cov-row cov-hl"><span class="cov-name">(선택형Ⅱ)질병통원형(외래)실손의료비(기본형)(갱신형)</span><span class="cov-amt">25 만원</span></div>
+      <div class="cov-row "><span class="cov-name">(선택형Ⅱ)질병통원형(약제)실손의료비(기본형)(갱신형)</span><span class="cov-amt">5 만원</span></div>
+      <div class="cov-row cov-hl"><span class="cov-name">비급여도수치료ㆍ체외충격파치료ㆍ증식치료 실손의료비(특약형)(갱신형)</span><span class="cov-amt">350 만원</span></div>
+      <div class="cov-row cov-hl"><span class="cov-name">비급여주사료 실손의료비(특약형)(갱신형)</span><span class="cov-amt">250 만원</span></div>
+      <div class="cov-row cov-hl"><span class="cov-name">비급여자기공명영상진단(MRI/MRA)실손의료비(특약형)(갱신형)</span><span class="cov-amt">300 만원</span></div>
+    </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<hr class="exi-divider" aria-hidden="true">
+
+<div class="exi-newtitle-wrap"><div class="exi-newtitle">[보험 효율 개선을 위한 신규 보험 안내]</div></div>
+<!-- ──────────── 섹션 끝 ──────────── -->
+
 <!-- TABS -->
 <div class="tab-bar">
   <div class="tabs">
@@ -1177,7 +1458,10 @@ function smoothScrollToTop() {
     </div>
   </div>
   <div class="cov-wrap">
-    <div class="cov-title">보장 항목별 상세</div>
+    <div class="cov-title-row">
+      <div class="cov-title">보장 항목별 상세</div>
+      <button class="collapse-all-btn collapse-cov-cards" type="button" data-cov-tab="cov-list-tab1">펼친내용모두접기</button>
+    </div>
     <div class="cov-list" id="cov-list-tab1">
       <div class="cov-card reveal">
   <div class="cov-hd ripple-host" onclick="tog(this)">
@@ -1378,7 +1662,10 @@ function smoothScrollToTop() {
     </div>
   </div>
   <div class="cov-wrap">
-    <div class="cov-title">보장 항목별 상세</div>
+    <div class="cov-title-row">
+      <div class="cov-title">보장 항목별 상세</div>
+      <button class="collapse-all-btn collapse-cov-cards" type="button" data-cov-tab="cov-list-tab2">펼친내용모두접기</button>
+    </div>
     <div class="cov-list" id="cov-list-tab2">
       <div class="cov-card reveal">
   <div class="cov-hd ripple-host" onclick="tog(this)">
@@ -1589,7 +1876,10 @@ function smoothScrollToTop() {
     </div>
   </div>
   <div class="cov-wrap">
-    <div class="cov-title">보장 항목별 상세</div>
+    <div class="cov-title-row">
+      <div class="cov-title">보장 항목별 상세</div>
+      <button class="collapse-all-btn collapse-cov-cards" type="button" data-cov-tab="cov-list-tab3">펼친내용모두접기</button>
+    </div>
     <div class="cov-list" id="cov-list-tab3">
       <div class="cov-card reveal">
   <div class="cov-hd ripple-host" onclick="tog(this)">
@@ -2045,8 +2335,11 @@ function go(p) {
   // 비추천 탭 t-name/t-cover 색상: 선택=blue, 미선택=gray
   updateTabColors(p);
 
-  // Scroll to very top
-  smoothScrollToTop();
+  // Scroll to plan-card position (scroll-margin-top 114px 적용)
+  var planCard = document.getElementById('plan-card-' + p);
+  if (planCard) {
+    planCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
 
   // Re-trigger reveal animations for new panel
   setTimeout(function(){
@@ -3260,5 +3553,108 @@ function closeCardModal(){
 }
 </script>
 
+<script>
+/* ──── [기존보험현황] 토글 + 펼친내용모두접기 + 보장항목별상세 모두접기 ──── */
+(function(){
+  // 1. 보험 row 토글 (각 보험 독립)
+  document.addEventListener('click', function(e){
+    var head = e.target.closest('[data-ins-toggle]');
+    if (head) {
+      var row = head.closest('[data-ins-row]');
+      if (row) row.classList.toggle('open');
+      return;
+    }
+    // 2. 펼친내용모두접기 버튼
+    var btn = e.target.closest('.collapse-all-btn');
+    if (btn) {
+      var targetSel = btn.getAttribute('data-collapse-target');
+      if (!targetSel) return; // data-collapse-target ❌ 버튼은 본 핸들러 무시 (보장 항목별 버튼 → 핸들러 ②)
+      var scope = document.querySelector(targetSel) || document;
+      // 본 영역 .ins-row.open 제거
+      scope.querySelectorAll('.ins-row.open').forEach(function(r){ r.classList.remove('open'); });
+      // 보장항목별 상세 모두 접기 (.cov-card.expanded)
+      document.querySelectorAll('.cov-card.expanded').forEach(function(c){ c.classList.remove('expanded'); });
+      // 카드 접힘 후 #existing-insurance-section 위치(헤더 직하·실측)로 이동
+      var __exiParent = document.getElementById('existing-insurance-section');
+      var __topNav1 = document.querySelector('.top-nav');
+      if (__exiParent) {
+        var __topNavH1 = __topNav1 ? __topNav1.offsetHeight : 45;
+        var __absExi = __exiParent.getBoundingClientRect().top + window.scrollY;
+        window.scrollTo({top: __absExi - __topNavH1, behavior: 'smooth'});
+      }
+    }
+  });
+})();
+</script>
+<script>
+/* 본 본 본 본 본 본 본 본 (cov-card 본 본 본 본 본 본 본) */
+(function(){
+  document.addEventListener('click', function(e){
+    var collapseBtn = e.target.closest('.collapse-cov-cards');
+    if (!collapseBtn) return;
+    var tabId = collapseBtn.getAttribute('data-cov-tab');
+    var scope = document.getElementById(tabId) || document;
+    scope.querySelectorAll('.cov-card.expanded').forEach(function(card){
+      card.classList.remove('expanded');
+      var hd = card.querySelector('.cov-hd');
+      if (hd) {
+        var det = hd.nextElementSibling;
+        if (det) det.classList.remove('open');
+        var togBtn = hd.querySelector('.tog');
+        if (togBtn) togBtn.classList.remove('open');
+      }
+    });
+    // 카드 접힘 후 .cov-wrap 위치(탭 직하·실측)로 이동
+    var __covParent = collapseBtn.closest('.cov-wrap');
+    var __topNav2 = document.querySelector('.top-nav');
+    var __tabBar2 = document.querySelector('.tab-bar');
+    if (__covParent) {
+      var __topNavH2 = __topNav2 ? __topNav2.offsetHeight : 45;
+      var __tabBarH2 = __tabBar2 ? __tabBar2.offsetHeight : 108;
+      var __absCov = __covParent.getBoundingClientRect().top + window.scrollY;
+      window.scrollTo({top: __absCov - __topNavH2 - __tabBarH2, behavior: 'smooth'});
+    }
+  });
+})();
+</script>
+<script>
+/* CSS 변수 동적 갱신 — sticky 영역 접합 본문 (viewport 무관 + scroll 시점 추적) */
+(function(){
+  var lastExi = 0, lastCov = 0;
+  function updateStickyVars(){
+    var topNav = document.querySelector('.top-nav');
+    var tabBar = document.querySelector('.tab-bar');
+    var topNavH = topNav ? topNav.offsetHeight : 45;
+    var tabBarH = tabBar ? tabBar.offsetHeight : 108;
+    var exi = topNavH;
+    var cov = topNavH + tabBarH;
+    if (exi !== lastExi) {
+      document.documentElement.style.setProperty('--sticky-top-exi', exi + 'px');
+      lastExi = exi;
+    }
+    if (cov !== lastCov) {
+      document.documentElement.style.setProperty('--sticky-top-cov', cov + 'px');
+      lastCov = cov;
+    }
+  }
+  var rafId = null;
+  function scheduleUpdate(){
+    if (rafId !== null) return;
+    rafId = requestAnimationFrame(function(){
+      rafId = null;
+      updateStickyVars();
+    });
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', updateStickyVars);
+  } else {
+    updateStickyVars();
+  }
+  window.addEventListener('load', updateStickyVars);
+  window.addEventListener('resize', scheduleUpdate);
+  window.addEventListener('orientationchange', scheduleUpdate);
+  window.addEventListener('scroll', scheduleUpdate, { passive: true });
+})();
+</script>
 </body>
 </html>
