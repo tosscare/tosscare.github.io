@@ -1083,6 +1083,38 @@ body{scroll-behavior:smooth;}
 .cov-title-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin: 0 -14px 8px; position: sticky; top: var(--sticky-top-cov); z-index: 99; background: var(--gray-50); padding: 6px 14px; box-shadow: 0 2px 0 0 var(--gray-50); }
 .cov-title-row .cov-title { margin-bottom: 0; }
 .cov-title-row .collapse-all-btn { font-family: 'Nanum Gothic', sans-serif; }
+/* ── 보험료 비교 섹션 ── */
+.hero-intro{font-family:'Nanum Gothic',sans-serif;font-size:13px;font-weight:400;color:var(--gray-700);line-height:1.6;margin-bottom:32.4px;}
+.hero-intro strong{font-weight:700;}
+.hero-intro-em{color:#E04848;font-weight:700;}
+.pcmp-wrap{max-width:920px;margin:0 auto 8px;padding:0 18px;box-sizing:border-box;font-family:'Nanum Gothic',sans-serif;}
+.pcmp-subtitle{font-size:15px;font-weight:800;color:var(--gray-900);margin:18px 0 22px;padding-left:10px;border-left:3px solid var(--toss-blue);line-height:1.4;}
+.pcmp-subtitle-applied{margin-top:46.8px;margin-bottom:0;}
+.pcmp-block{margin-bottom:22px;}
+.pcmp-block-title{font-size:14px;font-weight:800;color:var(--toss-blue-dark);margin:0 0 8px;}
+.pcmp-table{width:100%;border-collapse:collapse;table-layout:fixed;font-size:13px;background:#fff;border:1px solid var(--gray-200);border-radius:8px;overflow:hidden;}
+.pcmp-table th,.pcmp-table td{border:1px solid var(--gray-200);padding:9px 8px;text-align:center;vertical-align:middle;word-break:break-word;overflow-wrap:anywhere;}
+.pcmp-table th{background:var(--gray-100);color:var(--gray-700);font-weight:700;font-size:12px;}
+.pcmp-table td{color:var(--gray-900);}
+.pcmp-table th:nth-child(1),.pcmp-table td:nth-child(1){width:22%;}
+.pcmp-table th:nth-child(2),.pcmp-table td:nth-child(2){width:56%;}
+.pcmp-table th:nth-child(3),.pcmp-table td:nth-child(3){width:22%;}
+.pcmp-table .pcmp-col-price{font-weight:700;white-space:nowrap;}
+.pcmp-row-hl td{background:var(--toss-blue-bg);font-weight:800;color:var(--toss-blue-dark);}
+.pcmp-hl{background:#FFF9C4;color:#E04848;-webkit-box-decoration-break:clone;box-decoration-break:clone;padding:1px 5px;border-radius:2px;}
+.pcmp-note{margin:10px 0 0;padding:6px 12px;background:var(--gray-100);border-left:3px solid var(--gray-500);border-radius:4px;font-size:12px;color:var(--gray-700);line-height:1.16;white-space:pre-line;}
+.pcmp-note-item{padding-left:18px;text-indent:-18px;margin-bottom:1.5px;}
+.pcmp-note-item:last-child{margin-bottom:0;}
+.pcmp-note-label{display:inline-block;text-indent:0;min-width:13px;}
+.pcmp-plan-list{margin-top:6px;margin-bottom:8px;padding-left:13px;}
+.pcmp-plan-item{padding-left:13px;text-indent:-13px;font-size:15px;font-weight:400;color:var(--gray-900);line-height:1.5;}
+.pcmp-plan-bul{display:inline-block;text-indent:0;width:13px;}
+.pcmp-plan-paren{padding-left:13px;font-size:13px;color:var(--gray-500);margin-top:2px;}
+.pcmp-product{max-width:920px;margin:25.92px auto 37.44px;padding:0;box-sizing:border-box;}
+.pcmp-product-name{font-family:'Nanum Gothic',sans-serif;font-size:19px;font-weight:800;color:var(--gray-900);line-height:1.55;letter-spacing:-0.03em;margin-bottom:3px;}
+.pcmp-product-sub{font-size:11px;color:var(--gray-500);padding-left:5px;}
+.pcmp-product-plan{font-family:'Nanum Gothic',sans-serif;font-size:15px;font-weight:700;color:var(--gray-900);line-height:1.4;margin-top:8px;}
+@media (max-width:600px){.pcmp-table{font-size:12px;}.pcmp-table th,.pcmp-table td{padding:7px 5px;}.pcmp-product-name{font-size:16px;}}
 </style>
 
 <!-- EmailJS SDK — 동적·조건부 로드 (외부 차단 환경에서도 화면 정상 표시) -->
@@ -1172,8 +1204,7 @@ function smoothScrollToTop() {
 <!-- HERO -->
 <div class="hero">
   <div class="hero-eyebrow">보장요약 리포트</div>
-  <div class="hero-title">삼성화재<br>건강보험 내돈내삼1640건강보험 (10년건강고지형)</div>
-  <div class="hero-sub">(납입면제형), (해약환급금미지급형) / 동일보장 기준 최소보험료 구성</div>
+  <div class="hero-intro">안시연님의 기존보험 점검을 통한 신규보험 보강/보완을 위한 레포트입니다.<br>이번 안내를 끝으로 <strong>보장성보험이 100% 완성될 수 있도록 구성</strong>하였으며, <strong>동일한 기준에서 보험료가 가장 절약</strong>될 수 있도록 검토하여 안내드립니다.<br><span class="hero-intro-em">안내를 받으시면서 아래의 내용을 확인하시면, 정확하게 이해하시는데 도움이 됩니다.</span></div>
   <div class="info-cards">
     <div class="info-card">
       <div class="ic-eyebrow">피보험자</div>
@@ -1346,6 +1377,67 @@ function smoothScrollToTop() {
 <hr class="exi-divider" aria-hidden="true">
 
 <div class="exi-newtitle-wrap"><div class="exi-newtitle">[보험 효율 개선을 위한 신규 보험 안내]</div></div>
+
+<div class="pcmp-wrap">
+  <div class="pcmp-subtitle">[안시연님 기준 적용보험 보험료 비교 (최저보험료 확인)]</div>
+<div class="pcmp-block">
+  <div class="pcmp-block-title">1순위 손해보험 청소년 5.10.10보험 (보험료 할인)</div>
+  <table class="pcmp-table">
+    <thead><tr><th>보험사</th><th>보험상품명</th><th class="pcmp-col-price">보험료</th></tr></thead>
+    <tbody>
+      <tr class="pcmp-row-hl"><td>삼성화재</td><td>무)New내돈내삼1640(2603.8)(16-40)</td><td class="pcmp-col-price">100,030원</td></tr>
+      <tr><td>메리츠화재</td><td>무)The건강한내Mom대로5.10.5보장보험</td><td class="pcmp-col-price">102,708원</td></tr>
+      <tr><td>롯데손해</td><td>무)let:play1540 종합보험(10플러스 플러스 건강보험)(2604)</td><td class="pcmp-col-price">104,120원</td></tr>
+      <tr><td>KB손해</td><td>무)5.10.10 Young 건강보험2604</td><td class="pcmp-col-price">106,180원</td></tr>
+      <tr><td>DB손해</td><td>무)건강할때 가입하는 청춘어람 플러스 종합보험</td><td class="pcmp-col-price">112,694원</td></tr>
+      <tr><td>흥국화재</td><td>무)홍 Good The 건강한 0545 종합보</td><td class="pcmp-col-price">114,073원</td></tr>
+      <tr><td>한화손해</td><td>무)더건강한 0540 종합보험2604</td><td class="pcmp-col-price">119,187원</td></tr>
+      <tr><td>현대해상화재</td><td>무)굿앤굿스타종합보험(Hi2601)</td><td class="pcmp-col-price">141,104원</td></tr>
+    </tbody>
+  </table>
+  <div class="pcmp-note">
+    <div class="pcmp-note-item"><span class="pcmp-note-label">1.</span>위의 보험료 비교표는 ① 심사가 잘 통과되었을때,② 동일한 보장을 구성하는데 ③ 보험료가 가장 낮은 보험 카테고리입니다.</div>
+    <div class="pcmp-note-item"><span class="pcmp-note-label">-</span>40세미만까지 가입이 가능한 청소년보험 중, 건강상의 아무 이슈가 없을 때 가입이 가능한 유형의 보험입니다.</div>
+    <div class="pcmp-note-item"><span class="pcmp-note-label">-</span>질병의 진단, 성인 기저질환, 입원/수술이력이 없는 경우 가입이 가능한 유형의 보험입니다.</div>
+    <div class="pcmp-note-item"><span class="pcmp-note-label">※</span>위의 내용은 실제심사를 통해 확정되며, 실제심사 이후 100% 확정된 내용의 확인이 가능합니다.</div>
+  </div>
+</div>
+<div class="pcmp-block">
+  <div class="pcmp-block-title">2순위 손해보험 청소년보험</div>
+  <table class="pcmp-table">
+    <thead><tr><th>보험사</th><th>보험상품명</th><th class="pcmp-col-price">보험료</th></tr></thead>
+    <tbody>
+      <tr><td>농협손해</td><td>무)NH굿스타트 건강보험2601</td><td class="pcmp-col-price">111,234원</td></tr>
+      <tr><td>DB손해</td><td>무)청춘어람 플러스종합보험2605</td><td class="pcmp-col-price">134,899원</td></tr>
+      <tr><td>롯데손해</td><td>무)let:play종합 건강보험(토닥토닥)(2604)</td><td class="pcmp-col-price">138,010원</td></tr>
+      <tr><td>메리츠화재</td><td>무)내Mom대로 보장보험2604</td><td class="pcmp-col-price">144,881원</td></tr>
+      <tr><td>KB손해</td><td>무)금쪽같은희망 플러스건강보험2604</td><td class="pcmp-col-price">150,723원</td></tr>
+      <tr><td>흥국화재</td><td>무)홍 Good The 건강한 0545 종합보</td><td class="pcmp-col-price">154,269원</td></tr>
+      <tr><td>하나손해</td><td>무)하나더퍼스트5N5 건강보험(1640)2604</td><td class="pcmp-col-price">154,606원</td></tr>
+      <tr><td>삼성화재</td><td>무)New내돈내삼1640(2603.8)(16-40)</td><td class="pcmp-col-price">157,876원</td></tr>
+      <tr><td>한화손해</td><td>무)더건강한 0540 종합보험2604</td><td class="pcmp-col-price">173,895원</td></tr>
+      <tr><td>현대해상화재</td><td>무)굿앤굿스타종합보험(Hi2601)</td><td class="pcmp-col-price">180,520원</td></tr>
+    </tbody>
+  </table>
+  <div class="pcmp-note">
+    <div class="pcmp-note-item"><span class="pcmp-note-label">2.</span>1번보험의 심사가 통과되지 않을 때 2순위 보험입니다.</div>
+    <div class="pcmp-note-item"><span class="pcmp-note-label">-</span>심사과정에서 아내분의 치료이력에 이슈가 있을 경우, 이 유형이 적용될 수 있습니다.</div>
+    <div class="pcmp-note-item"><span class="pcmp-note-label">-</span>동일한 청소년보험으로 보험료 할인/할증이 없는 일반 보험유형입니다. (여전히 보험료가 낮은 보험군입니다.)</div>
+  </div>
+</div>
+  <div class="pcmp-subtitle pcmp-subtitle-applied">보험료 비교를 통해 적용된 보험상품</div>
+  <div class="pcmp-product">
+    <div class="pcmp-product-name"><span class="pcmp-hl">삼성화재<br>건강보험 내돈내삼1640건강보험 (10년건강고지형)</span></div>
+    <div class="pcmp-product-sub">(납입면제형), (해약환급금미지급형) / 동일보장 기준 최소보험료 구성</div>
+    <div class="pcmp-product-plan">▶ 보장플랜별 보장항목,보험료 비교를 위한 3개 플랜 구성</div>
+    <div class="pcmp-plan-list">
+      <div class="pcmp-plan-item"><span class="pcmp-plan-bul">·</span>기존보험동일(30%높음) - 월 81,800원 / 총 19,632,000원</div>
+      <div class="pcmp-plan-item"><span class="pcmp-plan-bul">·</span>안심보장플랜(동일) - 월 128,271원 / 총 30,785,040원</div>
+      <div class="pcmp-plan-item"><span class="pcmp-plan-bul">·</span>full보장플랜(암강화) - 월 158,656원 / 총 38,077,440원</div>
+      <div class="pcmp-plan-paren">(20년납 90세만기 / 비갱신형 구성)</div>
+    </div>
+  </div>
+</div>
 <!-- ──────────── 섹션 끝 ──────────── -->
 
 <!-- TABS -->
